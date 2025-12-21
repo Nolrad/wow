@@ -26,7 +26,7 @@
   nav.className = "navbar";
   nav.innerHTML = `
     <div class="navbar-inner">
-      <a class="nav-brand" href="${brandHref}">ZaïZaï</a>
+      <a class="nav-brand" href="${brandHref}">Home</a>
       <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu">Menu</button>
       <div class="nav-links" id="nav-links">
         ${items.map(i => `<a href="${i.href}" data-nav="${i.key}">${i.label}</a>`).join("")}
