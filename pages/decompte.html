@@ -1,58 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Décompte – OaSiS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Décompte — WoW TBC Pré-patch (J0 14 janvier 2026)</title>
 
-    <!-- CSS global -->
-    <link rel="stylesheet" href="../assets/css/site.css">
+  <!-- CSS global -->
+  <link rel="stylesheet" href="../assets/css/site.css" />
 </head>
 
-<body>
-<!-- Navbar injectée par nav.js -->
+<body class="decompte-page">
 
-<header class="page-header">
-    <h1>Décompte</h1>
-    <p>Un simple compte à rebours, sauvegardé dans ton navigateur.</p>
-</header>
+  <!-- Navbar injectée par nav.js -->
 
-<main class="container">
-    <section class="card">
-        <h2>Configurer le décompte</h2>
-        <p class="muted">
-            Saisis une date/heure au format ISO, par exemple :
-            <code>2026-01-01T00:00:00</code>
-        </p>
+  <div class="decompte-wrap">
+    <header class="decompte-header">
+      <h1>Décompte — WoW TBC Pré-patch</h1>
+      <p class="decompte-sub">
+        Objectif : <strong>J0 le 14 janvier 2026</strong> (heure Europe/Paris).<br/>
+        Le décompte se met à jour automatiquement.
+      </p>
+    </header>
 
-        <div class="row">
-            <input id="targetInput" placeholder="2026-01-01T00:00:00" />
-            <button class="btn-primary" id="saveTargetBtn">Sauvegarder</button>
-            <button class="btn-secondary" id="clearTargetBtn">Effacer</button>
+    <section class="decompte-card">
+      <div class="decompte-grid" aria-label="Compte à rebours">
+        <div class="decompte-tile">
+          <div class="decompte-num" id="days">—</div>
+          <div class="decompte-label">Jours</div>
+        </div>
+        <div class="decompte-tile">
+          <div class="decompte-num" id="hours">—</div>
+          <div class="decompte-label">Heures</div>
+        </div>
+        <div class="decompte-tile">
+          <div class="decompte-num" id="minutes">—</div>
+          <div class="decompte-label">Minutes</div>
+        </div>
+        <div class="decompte-tile">
+          <div class="decompte-num" id="seconds">—</div>
+          <div class="decompte-label">Secondes</div>
+        </div>
+      </div>
+
+      <div class="decompte-meta">
+        <div class="decompte-pill" id="statusPill">
+          <span class="decompte-dot" id="statusDot"></span>
+          <span id="statusText">Calcul…</span>
         </div>
 
-        <h3 class="range" id="countdown">--j --h --m --s</h3>
-        <p class="muted" id="targetText">Aucune date définie.</p>
+        <div class="decompte-small" id="targetText"></div>
 
-        <p class="hint">
-            La date est mémorisée dans <code>localStorage</code> (sur ce navigateur).
-        </p>
+        <div class="decompte-btns">
+          <button type="button" id="copyBtn">Copier le lien</button>
+          <button type="button" id="addCalBtn">Ajouter au calendrier (ICS)</button>
+        </div>
+      </div>
     </section>
+  </div>
 
-    <footer class="footer">
-        © OaSiS — Décompte • GitHub Pages
-    </footer>
-</main>
+  <script>
+    // Cible: 14 janvier 2026 à 00:00:00 Europe/Paris.
+    const TARGET_LOCAL_ISO = "2026-01-14T00:00:00";
+    const TARGET_TZ = "Europe/Paris";
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const TARGET_KEY = "decompte_target_iso";
+    function pad2(n) { return String(n).padStart(2, "0"); }
 
-    const targetInput = document.getElementById("targetInput");
-    const saveBtn = document.getElementById("saveTargetBtn");
-    const clearBtn = document.getElementById("clearTargetBtn");
+    function partsInTimeZone(date, timeZone) {
+      const fmt = new Intl.DateTimeFormat("en-CA", {
+        timeZone,
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit",
+        hourCycle: "h23"
+      });
+      const parts = fmt.formatToParts(date);
+      const out = {};
+      for (const p of parts) if (p.type !== "literal") out[p.type] = p.value;
+      return {
+        year: Number(out.year),
+        month: Number(out.month),
+        day: Number(out.day),
+        hour: Number(out.hour),
+        minute: Number(out.minute),
+        second: Number(out.second)
+      };
+    }
 
-    const countdownEl = document.getElementById("countdown");
-    const targetTextEl = document.getElementById("targetText");
+    function tzOffsetMinutes(date, timeZone) {
+      const utc = partsInTimeZone(date, "UTC");
+      const tz  = partsInTimeZone(date, timeZone);
+      const utcMs = Date.UTC(utc.year, utc.month - 1, utc.day, utc.hour, utc.minute, utc.second);
+      const tzMs  = Date.UTC(tz.year,  tz.month - 1,  tz.day,  tz.hour,  tz.minute,  tz.second);
+      return (tzMs - utcMs) / 60000;
+    }
 
-    function load
+    function zonedLocalIsoToUtcMs(localIso, timeZone) {
+      const [d, t] = localIso.split("T");
+      const [Y, M, D] = d.split("-").map(Number);
+      const [h, m, s] = t.split(":").map(Number);
+
+      const approxUtc = new Date(Date.UTC(Y, M - 1, D, h, m, s));
+      const offMin = tzOffsetMinutes(approxUtc, timeZone);
+      return Date.UTC(Y, M - 1, D, h, m, s) - offMin * 60000;
+    }
+
+    const targetUtcMs = zonedLocalIsoToUtcMs(TARGET_LOCAL_ISO, TARGET_TZ);
+
+    const elDays = document.getElementById("days");
+    const elHours = document.getElementById("hours");
+    const elMinutes = document.getElementById("minutes");
+    const elSeconds = document.getElementById("seconds");
+    const statusPill = document.getElementById("statusPill");
+    const statusText = document.getElementById("statusText");
+    const targetText = document.getElementById("targetText");
+
+    targetText.textContent =
+      "Cible : 14 janvier 2026 (Europe/Paris) — " +
+      TARGET_LOCAL_ISO.replace("T"," ") + " " + TARGET_TZ;
+
+    function render() {
+      const now = Date.now();
+      let diff = targetUtcMs - now;
+
+      if (diff <= 0) {
+        diff = 0;
+        statusPill.classList.add("is-ok");
+        statusPill.classList.remove("is-warn");
+        statusText.textContent = "J0 atteint — bon pré-patch !";
+      } else {
+        const hoursLeft = diff / 3600000;
+        statusPill.classList.toggle("is-warn", hoursLeft <= 24);
+        statusPill.classList.remove("is-ok");
+        statusText.textContent = hoursLeft <= 24 ? "Dernière ligne droite…" : "En approche…";
+      }
+
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      elDays.textContent = String(days);
+      elHours.textContent = pad2(hours);
+      elMinutes.textContent = pad2(minutes);
+      elSeconds.textContent = pad2(seconds);
+    }
+
+    render();
+    setInterval(render, 250);
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        statusText.textContent = "Lien copié ✅";
+        setTimeout(render, 1200);
+      } catch {
+        statusText.textContent = "Impossible de copier (droits navigateur).";
+        setTimeout(render, 1200);
+      }
+    });
+
+    function downloadIcs() {
+      const dt = new Date(targetUtcMs);
+      const y = dt.getUTCFullYear();
+      const mo = pad2(dt.getUTCMonth()+1);
+      const da = pad2(dt.getUTCDate());
+      const hh = pad2(dt.getUTCHours());
+      const mm = pad2(dt.getUTCMinutes());
+      const ss = pad2(dt.getUTCSeconds());
+      const dtstamp = `${y}${mo}${da}T${hh}${mm}${ss}Z`;
+
+      const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//OaSiS//WoW TBC Prepatch Countdown//FR
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:wow-tbc-prepatch-20260114T000000@local
+DTSTAMP:${dtstamp}
+DTSTART:${dtstamp}
+SUMMARY:WoW — Pré-patch TBC (J0)
+DESCRIPTION:Début du pré-patch TBC (cible): 14 janvier 2026 (Europe/Paris).
+END:VEVENT
+END:VCALENDAR
+`;
+
+      const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "wow-tbc-prepatch-j0.ics";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    }
+
+    document.getElementById("addCalBtn").addEventListener("click", downloadIcs);
+  </script>
+
+  <script src="../assets/js/nav.js"></script>
+</body>
+</html>
