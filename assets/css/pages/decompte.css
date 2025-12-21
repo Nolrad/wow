@@ -1,47 +1,17 @@
 body.decompte-page{
-  --d-bg: #0b1020;
-  --d-panel: rgba(255,255,255,0.06);
-  --d-panel2: rgba(255,255,255,0.10);
-  --d-text: #e8ecff;
-  --d-muted: rgba(232,236,255,0.75);
-  --d-accent: #7aa2ff;
-  --d-good: #6dffb3;
-  --d-warn: #ffcf6d;
-
-  background:
-    radial-gradient(1000px 600px at 20% 10%, rgba(122,162,255,0.25), transparent 60%),
-    radial-gradient(900px 700px at 80% 20%, rgba(109,255,179,0.18), transparent 55%),
-    linear-gradient(180deg, #070a13, var(--d-bg));
-
-  color: var(--d-text);
-  min-height: 100vh;
-
-  /* IMPORTANT: on ne centre pas le body, sinon la navbar n'est plus "en haut" */
-  display: block;
-
-  /* padding global ok, mais pas de padding-top forcé */
-  padding: 24px;
+  /* Variables page (optionnel, mais pratique) */
+  --d-text: var(--text);
+  --d-muted: var(--muted);
 }
 
+/* IMPORTANT: on ne centre PAS le body (sinon navbar bizarre) */
 body.decompte-page .decompte-wrap{
   width: min(980px, 100%);
+  margin: 0 auto;
+  padding: 24px 16px 28px;
+
   display: grid;
   gap: 18px;
-
-  /* IMPORTANT: on centre le contenu ici (pas le body) */
-  min-height: calc(100vh - 24px - 24px); /* body padding haut/bas */
-  margin: 0 auto;
-  place-items: center;
-}
-
-/* Sur mobile, on laisse un peu plus respirer */
-@media (max-width: 720px){
-  body.decompte-page{
-    padding: 16px;
-  }
-  body.decompte-page .decompte-wrap{
-    min-height: calc(100vh - 16px - 16px);
-  }
 }
 
 body.decompte-page .decompte-header{
@@ -64,122 +34,13 @@ body.decompte-page .decompte-sub{
 }
 
 body.decompte-page .decompte-card{
-  background: var(--d-panel);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 18px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow);
 }
-
-body.decompte-page .decompte-grid{
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-@media (max-width: 720px){
-  body.decompte-page .decompte-grid{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-body.decompte-page .decompte-tile{
-  background: var(--d-panel2);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 16px;
-  padding: 16px 14px;
-  text-align: center;
-}
-
-body.decompte-page .decompte-num{
-  font-variant-numeric: tabular-nums;
-  font-size: clamp(30px, 5vw, 56px);
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  margin: 2px 0 4px;
-  color: var(--d-text);
-}
-
-body.decompte-page .decompte-label{
-  color: var(--d-muted);
-  font-size: 12px;
-  letter-spacing: 0.9px;
-  text-transform: uppercase;
-}
-
-body.decompte-page .decompte-meta{
-  display: grid;
-  gap: 8px;
-  margin-top: 14px;
-  text-align: center;
-  color: var(--d-muted);
-  font-size: 13px;
-}
-
-body.decompte-page .decompte-pill{
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(0,0,0,0.18);
-}
-
-body.decompte-page .decompte-dot{
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--d-accent);
-  box-shadow: 0 0 18px rgba(122,162,255,0.9);
-}
-
-body.decompte-page .decompte-pill.is-ok .decompte-dot{
-  background: var(--d-good);
-  box-shadow: 0 0 18px rgba(109,255,179,0.9);
-}
-
-body.decompte-page .decompte-pill.is-warn .decompte-dot{
-  background: var(--d-warn);
-  box-shadow: 0 0 18px rgba(255,207,109,0.9);
-}
-
-body.decompte-page .decompte-small{
-  font-size: 12px;
-  color: rgba(232,236,255,0.65);
-}
-
-body.decompte-page .decompte-btns{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-body.decompte-page .decompte-btns button{
-  cursor: pointer;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.08);
-  color: var(--d-text);
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-body.decompte-page .decompte-btns button:hover{
-  background: rgba(255,255,255,0.12);
-}
-
-/* Optionnel : rendre la navbar plus "glass" sur cette page uniquement */
-body.decompte-page .navbar{
-  background: rgba(11,17,32,0.65);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255,255,255,0.10);
-}
-
 
 /* ===== Décompte en bulles ===== */
 body.decompte-page .decompte-bubbles{
@@ -257,7 +118,59 @@ body.decompte-page .bubble-label{
   text-transform: uppercase;
 }
 
-/* Optionnel : micro animation “vivante” */
+/* Meta dessous */
+body.decompte-page .decompte-meta{
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  text-align: center;
+  color: var(--d-muted);
+  font-size: 13px;
+}
+
+body.decompte-page .decompte-pill{
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+}
+
+body.decompte-page .decompte-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 18px rgba(122,162,255,0.9);
+}
+
+body.decompte-page .decompte-pill.is-ok .decompte-dot{
+  background: var(--good);
+  box-shadow: 0 0 18px rgba(109,255,179,0.9);
+}
+
+body.decompte-page .decompte-pill.is-warn .decompte-dot{
+  background: var(--warn);
+  box-shadow: 0 0 18px rgba(255,207,109,0.9);
+}
+
+body.decompte-page .decompte-small{
+  font-size: 12px;
+  color: var(--muted2);
+}
+
+body.decompte-page .decompte-btns{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+/* Petite animation optionnelle */
 @media (prefers-reduced-motion: no-preference){
   body.decompte-page .bubble{
     animation: floaty 6.5s ease-in-out infinite;
@@ -271,4 +184,3 @@ body.decompte-page .bubble-label{
     50%{ transform: translateY(-6px); }
   }
 }
-
