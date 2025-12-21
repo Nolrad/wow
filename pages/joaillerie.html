@@ -1,201 +1,23 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Guide Joaillerie 1-300 sans achat HV - WoW TBC Classic</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #020617;
-            color: #e5e7eb;
-        }
-        header {
-            background: #0b1120;
-            padding: 20px 40px;
-            border-bottom: 1px solid #1f2937;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: #fbbf24;
-        }
-        header p {
-            margin: 4px 0 0;
-            color: #9ca3af;
-            font-size: 0.9rem;
-        }
-        main {
-            max-width: 1100px;
-            margin: 20px auto 40px;
-            padding: 0 16px;
-        }
-        .card {
-            background: #020617;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #1f2937;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.45);
-        }
-        h2 {
-            margin-top: 0;
-            color: #fbbf24;
-        }
-        h3 {
-            color: #fdba74;
-            margin-top: 1.2em;
-        }
-        p {
-            line-height: 1.6;
-        }
-        ul {
-            padding-left: 20px;
-        }
-        li {
-            margin: 3px 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-            font-size: 0.95rem;
-        }
-        th, td {
-            border: 1px solid #1f2937;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background: #0f172a;
-            color: #e5e7eb;
-        }
-        tr:nth-child(even) td {
-            background: #020617;
-        }
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            background: #1f2937;
-            color: #fbbf24;
-            margin-left: 6px;
-        }
-        .range {
-            font-weight: 600;
-            color: #bfdbfe;
-        }
-        .footer {
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.85rem;
-            margin-top: 30px;
-        }
-        .tag {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 999px;
-            background: #1d283a;
-            color: #93c5fd;
-            font-size: 0.75rem;
-            margin: 2px 4px 2px 0;
-        }
-        .origin-mining {
-            color: #6ee7b7;
-            font-size: 0.8rem;
-            font-style: italic;
-        }
-        .origin-drop {
-            color: #fca5a5;
-            font-size: 0.8rem;
-            font-style: italic;
-        }
-        input.input-owned {
-            width: 80px;
-            background: #020617;
-            border: 1px solid #374151;
-            border-radius: 6px;
-            padding: 4px 6px;
-            color: #e5e7eb;
-        }
-        #save-stock {
-            margin-top: 16px;
-            padding: 8px 16px;
-            background: #fbbf24;
-            color: #111827;
-            border: none;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        #save-stock:hover {
-            background: #f59e0b;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        /* Boutons ajoutés (import/export) - style proche du bouton principal */
-        .btn-secondary {
-            margin-top: 16px;
-            padding: 8px 16px;
-            background: #111827;
-            color: #e5e7eb;
-            border: 1px solid #374151;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-secondary:hover {
-            background: #0b1120;
-        }
-        .btn-danger {
-            margin-top: 16px;
-            padding: 8px 16px;
-            background: #1f2937;
-            color: #fecaca;
-            border: 1px solid #7f1d1d;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-danger:hover {
-            background: #111827;
-        }
-        .import-label {
-            margin-top: 16px;
-            display: inline-block;
-            padding: 8px 16px;
-            background: #111827;
-            color: #e5e7eb;
-            border: 1px solid #374151;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .import-label:hover {
-            background: #0b1120;
-        }
-
-        .hint {
-            font-size: 0.8rem;
-            color: #9ca3af;
-            margin-top: 8px;
-        }
-        /* Quand une ressource de la route est OK, on la met en vert */
-        .route-ok {
-            color: #22c55e;
-            font-weight: 600;
-        }
-    </style>
+    <!-- CSS global (TOUT le style est dans assets) -->
+    <link rel="stylesheet" href="../assets/css/site.css">
 </head>
+
 <body>
-<header>
+<!-- Navbar injectée par ../assets/js/nav.js -->
+
+<header class="page-header">
     <h1>Joaillerie 1-300 sans achat HV</h1>
     <p>Basé sur le guide WowIsClassic, adapté pour tout farmer soi-même (minage + drops) en TBC Classic / pré-patch.</p>
 </header>
 
-<main>
+<main class="container">
     <section class="card">
         <h2>Vue d'ensemble</h2>
         <p>
@@ -203,9 +25,7 @@
             <strong>rien acheter à l'HV</strong> : tu mines tes minerais, tu prospectes pour les gemmes
             et tu farms les composants qui tombent sur les monstres.
         </p>
-        <p>
-            Métiers conseillés&nbsp;:
-        </p>
+        <p>Métiers conseillés&nbsp;:</p>
         <ul>
             <li><span class="tag">Joaillerie</span><span class="tag">Minage</span></li>
         </ul>
@@ -231,7 +51,7 @@
                 <tr>
                     <td>Barre de cuivre</td>
                     <td>40</td>
-                    <td class="origin-mining">Minerai de cuivre &rarr; fonderie</td>
+                    <td class="origin-mining">Minerai de cuivre → fonderie</td>
                 </tr>
                 <tr>
                     <td>Pierre brute</td>
@@ -246,7 +66,7 @@
                 <tr>
                     <td>Barre d'argent</td>
                     <td>50</td>
-                    <td class="origin-mining">Minerai d'argent &rarr; fonderie</td>
+                    <td class="origin-mining">Minerai d'argent → fonderie</td>
                 </tr>
                 <tr>
                     <td>Pierre lourde</td>
@@ -256,17 +76,17 @@
                 <tr>
                     <td>Barre de mithril</td>
                     <td>100</td>
-                    <td class="origin-mining">Minerai de mithril &rarr; fonderie</td>
+                    <td class="origin-mining">Minerai de mithril → fonderie</td>
                 </tr>
                 <tr>
                     <td>Barre de vrai-argent</td>
                     <td>60</td>
-                    <td class="origin-mining">Minerai de vrai-argent &rarr; fonderie</td>
+                    <td class="origin-mining">Minerai de vrai-argent → fonderie</td>
                 </tr>
                 <tr>
                     <td>Barre de thorium</td>
                     <td>50</td>
-                    <td class="origin-mining">Minerai de thorium &rarr; fonderie</td>
+                    <td class="origin-mining">Minerai de thorium → fonderie</td>
                 </tr>
                 <tr>
                     <td>Oeil de tigre</td>
@@ -339,15 +159,13 @@
                 <tr>
                     <td>Coeur de fauve</td>
                     <td>20</td>
-                    <td class="origin-drop">Bêtes haut niveau (gangrebois, Winterspring...)</td>
+                    <td class="origin-drop">Bêtes haut niveau (Gangrebois, Winterspring...)</td>
                 </tr>
             </tbody>
         </table>
 
-        <button id="save-stock">Enregistrer mon stock (txt)</button>
-
-        <!-- AJOUT : Import/Export + Reset (sans changer ta structure) -->
-        <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+        <div class="row" style="margin-top: 12px;">
+            <button id="save-stock" class="btn-primary">Enregistrer mon stock (TXT)</button>
             <button id="export-json" class="btn-secondary">Exporter JSON</button>
             <button id="export-csv" class="btn-secondary">Exporter CSV</button>
 
@@ -360,13 +178,12 @@
         </div>
 
         <p class="hint">
-            Ton stock est mémorisé dans le navigateur. Tu peux aussi l’exporter (TXT/JSON/CSV) et le réimporter.
-            Le fichier texte <strong>stock_joaillerie.txt</strong> est compatible import.
+            Le stock est mémorisé dans le navigateur (localStorage). Tu peux exporter en TXT/JSON/CSV et réimporter.
         </p>
 
         <p>
             <strong>Important :</strong> si tu veux vraiment ne rien acheter, prévois de
-            <strong>garder tous tes minerais/ pierres</strong> et de farmer ces composants en même temps
+            <strong>garder tous tes minerais / pierres</strong> et de farmer ces composants en même temps
             que ton leveling 40+.
         </p>
     </section>
@@ -377,234 +194,134 @@
         <h3 class="range">1 → 20</h3>
         <p><strong>Créer 20 × Fil de cuivre délicat</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de cuivre">
-                    40 × Barre de cuivre
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre de cuivre">40 × Barre de cuivre</span></li>
         </ul>
 
         <h3 class="range">20 → 30</h3>
         <p><strong>Créer 10 × Statue en pierre brute</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Pierre brute">
-                    80 × Pierre brute
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Pierre brute">80 × Pierre brute</span></li>
         </ul>
 
         <h3 class="range">30 → 50</h3>
         <p><strong>Créer 20 × Bague d'oeil de tigre</strong></p>
         <ul>
             <li>20 × Fil de cuivre délicat (garde les 20 craftés au début)</li>
-            <li>
-                <span class="route-ressource" data-ressource="Oeil de tigre">
-                    20 × Oeil de tigre (prospection cuivre)
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Oeil de tigre">20 × Oeil de tigre (prospection cuivre)</span></li>
         </ul>
 
         <h3 class="range">50 → 75</h3>
         <p><strong>Créer 30 × Monture en bronze</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de bronze">
-                    60 × Barre de bronze
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre de bronze">60 × Barre de bronze</span></li>
         </ul>
-        <p>Garde ces montures pour plus tard (120-150).</p>
+        <p class="hint">Garde ces montures pour plus tard (120-150).</p>
 
         <h3 class="range">75 → 80</h3>
         <p><strong>Créer 5 × Anneau solide en bronze</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de bronze">
-                    20 × Barre de bronze
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre de bronze">20 × Barre de bronze</span></li>
         </ul>
 
         <h3 class="range">80 → 90</h3>
         <p><strong>Créer 10 × Anneau d'argent élégant</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre d'argent">
-                    10 × Barre d'argent
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre d'argent">10 × Barre d'argent</span></li>
         </ul>
 
         <h3 class="range">90 → 110</h3>
         <p><strong>Créer 20 × Anneau du pouvoir argenté</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre d'argent">
-                    40 × Barre d'argent
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre d'argent">40 × Barre d'argent</span></li>
         </ul>
 
         <h3 class="range">110 → 120</h3>
         <p><strong>Créer 10 × Statue en pierre lourde</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Pierre lourde">
-                    80 × Pierre lourde
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Pierre lourde">80 × Pierre lourde</span></li>
         </ul>
 
         <h3 class="range">120 → 150</h3>
         <p><strong>Créer 30 × Pendentif du bouclier d'agate</strong></p>
         <ul>
             <li>30 × Monture en bronze (garde celles faites 50-75 + complète au besoin)</li>
-            <li>
-                <span class="route-ressource" data-ressource="Agate mousse">
-                    30 × Agate mousse (prospection étain / fer ou drops)
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Agate mousse">30 × Agate mousse (prospection étain / fer ou drops)</span></li>
         </ul>
 
         <h3 class="range">150 → 180</h3>
         <p><strong>Créer 30 × Filigrane en mithril</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de mithril">
-                    60 × Barre de mithril
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre de mithril">60 × Barre de mithril</span></li>
         </ul>
 
         <h3 class="range">180 → 200</h3>
         <p><strong>Créer 20 × Anneau ciselé en vrai-argent</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de vrai-argent">
-                    20 × Barre de vrai-argent
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre de vrai-argent">20 × Barre de vrai-argent</span></li>
             <li>40 × Filigrane en mithril (faits juste avant)</li>
         </ul>
 
         <h3 class="range">200 → 210</h3>
         <p><strong>Créer 10 × Anneau de citrine de soin accéléré</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Citrine">
-                    10 × Citrine
-                </span>
-            </li>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de mithril">
-                    20 × Barre de mithril
-                </span>
-            </li>
-            <li>
-                <span class="route-ressource" data-ressource="Eau élémentaire">
-                    20 × Eau élémentaire (farm élémentaires)
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Citrine">10 × Citrine</span></li>
+            <li><span class="route-ressource" data-ressource="Barre de mithril">20 × Barre de mithril</span></li>
+            <li><span class="route-ressource" data-ressource="Eau élémentaire">20 × Eau élémentaire (farm élémentaires)</span></li>
         </ul>
 
         <h3 class="range">210 → 225</h3>
         <p><strong>Créer 15 × Chevalière d'aigue-marine</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Aigue-marine">
-                    45 × Aigue-marine
-                </span>
-            </li>
-            <li>
-                <span class="route-ressource" data-ressource="Flacon de mojo">
-                    60 × Flacon de mojo (farm trolls / humanoïdes)
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Aigue-marine">45 × Aigue-marine</span></li>
+            <li><span class="route-ressource" data-ressource="Flacon de mojo">60 × Flacon de mojo (farm trolls / humanoïdes)</span></li>
         </ul>
 
         <h3 class="range">225 → 250</h3>
         <p><strong>Créer 25 × Monture en thorium</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de thorium">
-                    25 × Barre de thorium
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre de thorium">25 × Barre de thorium</span></li>
         </ul>
 
         <h3 class="range">250 → 255</h3>
         <p><strong>Créer 5 × Bague de destruction rouge</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Rubis étoilé">
-                    5 × Rubis étoilé
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Rubis étoilé">5 × Rubis étoilé</span></li>
             <li>5 × Monture en thorium</li>
         </ul>
 
         <h3 class="range">255 → 265</h3>
         <p><strong>Créer 10 × Anneau de soin en vrai-argent</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de vrai-argent">
-                    20 × Barre de vrai-argent
-                </span>
-            </li>
-            <li>
-                <span class="route-ressource" data-ressource="Coeur de fauve">
-                    20 × Coeur de fauve (farm bêtes)
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Barre de vrai-argent">20 × Barre de vrai-argent</span></li>
+            <li><span class="route-ressource" data-ressource="Coeur de fauve">20 × Coeur de fauve (farm bêtes)</span></li>
         </ul>
 
         <h3 class="range">265 → 275</h3>
         <p><strong>Créer 10 × Anneau d'opale simple</strong></p>
         <ul>
             <li>10 × Monture en thorium</li>
-            <li>
-                <span class="route-ressource" data-ressource="Grande opale">
-                    10 × Grande opale
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Grande opale">10 × Grande opale</span></li>
         </ul>
 
         <h3 class="range">275 → 285</h3>
         <p><strong>Créer 10 × Chevalière de saphir</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Saphir bleu">
-                    40 × Saphir bleu
-                </span>
-            </li>
-            <li>
-                <span class="route-ressource" data-ressource="Barre de vrai-argent">
-                    20 × Barre de vrai-argent
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Saphir bleu">40 × Saphir bleu</span></li>
+            <li><span class="route-ressource" data-ressource="Barre de vrai-argent">20 × Barre de vrai-argent</span></li>
             <li>10 × Monture en thorium</li>
         </ul>
 
         <h3 class="range">285 → 290</h3>
         <p><strong>Créer 5 × Bague à diamant de focalisation</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Diamant d'Azeroth">
-                    5 × Diamant d'Azeroth
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Diamant d'Azeroth">5 × Diamant d'Azeroth</span></li>
             <li>5 × Monture en thorium</li>
         </ul>
 
         <h3 class="range">290 → 300</h3>
         <p><strong>Créer 10 × Anneau d'émeraude du lion</strong></p>
         <ul>
-            <li>
-                <span class="route-ressource" data-ressource="Énorme émeraude">
-                    20 × Énorme émeraude
-                </span>
-            </li>
+            <li><span class="route-ressource" data-ressource="Énorme émeraude">20 × Énorme émeraude</span></li>
             <li>10 × Monture en thorium</li>
         </ul>
     </section>
@@ -620,13 +337,25 @@
     </section>
 
     <div class="footer">
-        Guide Joaillerie 1-300 (farm perso, minage + drops) &mdash; inspiré de WowIsClassic
+        Guide Joaillerie 1-300 (farm perso, minage + drops) — inspiré de WowIsClassic
     </div>
 </main>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const STORAGE_KEY = 'joaillerie_stock';
+
+    function downloadFile(filename, content, mime) {
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
     // Ajoute les colonnes "Tu as" et "Manque" à chaque tableau
     function enhanceTables() {
@@ -636,6 +365,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!table.tHead || !table.tBodies.length) return;
 
             const headerRow = table.tHead.rows[0];
+
+            // Evite double ajout si reload/SPA
+            const headers = Array.from(headerRow.cells).map(th => th.textContent.trim().toLowerCase());
+            if (headers.includes('tu as') || headers.includes('manque')) return;
+
             const thOwned = document.createElement('th');
             thOwned.textContent = 'Tu as';
             const thMissing = document.createElement('th');
@@ -669,15 +403,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Met à jour la couleur de la route 1-300 pour une ressource donnée
     function updateRouteForResource(resourceName, isOk) {
         document.querySelectorAll('.route-ressource').forEach(function (el) {
             if (el.dataset.ressource === resourceName) {
-                if (isOk) {
-                    el.classList.add('route-ok');
-                } else {
-                    el.classList.remove('route-ok');
-                }
+                if (isOk) el.classList.add('route-ok');
+                else el.classList.remove('route-ok');
             }
         });
     }
@@ -686,40 +416,25 @@ document.addEventListener('DOMContentLoaded', function () {
         const required = parseInt(input.dataset.required, 10) || 0;
         const owned = parseInt(input.value, 10) || 0;
         const missing = Math.max(required - owned, 0);
-        const row = input.closest('tr');
-        const span = row.querySelector('span.missing');
-        if (span) {
-            span.textContent = missing > 0 ? missing : 'OK';
-        }
 
-        // Mise à jour de la route 1-300
-        const resName = input.dataset.ressource;
-        updateRouteForResource(resName, missing === 0);
+        const row = input.closest('tr');
+        const span = row ? row.querySelector('span.missing') : null;
+        if (span) span.textContent = missing > 0 ? missing : 'OK';
+
+        updateRouteForResource(input.dataset.ressource, missing === 0);
     }
 
     function updateAllMissing() {
-        document.querySelectorAll('input.input-owned').forEach(function (input) {
-            updateMissingForInput(input);
-        });
+        document.querySelectorAll('input.input-owned').forEach(updateMissingForInput);
     }
 
     function loadStock() {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-            updateAllMissing();
-            return;
-        }
+        if (!raw) { updateAllMissing(); return; }
+
         let data;
-        try {
-            data = JSON.parse(raw);
-        } catch (e) {
-            updateAllMissing();
-            return;
-        }
-        if (!data) {
-            updateAllMissing();
-            return;
-        }
+        try { data = JSON.parse(raw); } catch { updateAllMissing(); return; }
+        if (!data || typeof data !== 'object') { updateAllMissing(); return; }
 
         document.querySelectorAll('input.input-owned').forEach(function (input) {
             const name = input.dataset.ressource;
@@ -729,16 +444,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         updateAllMissing();
-    }
-
-    function buildOwnedMapFromInputs() {
-        const data = {};
-        document.querySelectorAll('input.input-owned').forEach(function (input) {
-            const name = input.dataset.ressource;
-            const owned = parseInt(input.value, 10) || 0;
-            data[name] = owned;
-        });
-        return data;
     }
 
     function collectItems() {
@@ -753,60 +458,43 @@ document.addEventListener('DOMContentLoaded', function () {
         return items;
     }
 
-    function downloadFile(filename, content, mime) {
-        const blob = new Blob([content], { type: mime });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    function saveStockAndDownload() {
+    function saveStockToLocalStorage() {
         const data = {};
-        const lines = [];
-
         document.querySelectorAll('input.input-owned').forEach(function (input) {
             const name = input.dataset.ressource;
-            const required = parseInt(input.dataset.required, 10) || 0;
             const owned = parseInt(input.value, 10) || 0;
-            const missing = Math.max(required - owned, 0);
-
             data[name] = owned;
-            lines.push(name + " ; requis=" + required + " ; possédé=" + owned + " ; manque=" + missing);
         });
-
-        // Sauvegarde dans le navigateur
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
-        // Génération du fichier texte
-        const content = lines.join("\n");
-        downloadFile('stock_joaillerie.txt', content, 'text/plain;charset=utf-8');
     }
 
-    // === AJOUTS : Export JSON / CSV ===
+    // === Exports ===
+    function exportTXT() {
+        const items = collectItems();
+        saveStockToLocalStorage();
+        const lines = items.map(it => `${it.name} ; requis=${it.required} ; possédé=${it.owned} ; manque=${it.missing}`);
+        downloadFile('stock_joaillerie.txt', lines.join("\n"), 'text/plain;charset=utf-8');
+    }
+
     function exportJSON() {
         const payload = {
             version: 1,
             exported_at: new Date().toISOString(),
             items: collectItems()
         };
+        saveStockToLocalStorage();
         downloadFile('stock_joaillerie.json', JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
     }
 
     function exportCSV() {
         const items = collectItems();
+        saveStockToLocalStorage();
         const header = "ressource;requis;possede;manque\n";
-        const rows = items.map(function (it) {
-            return it.name + ";" + it.required + ";" + it.owned + ";" + it.missing;
-        }).join("\n");
+        const rows = items.map(it => `${it.name};${it.required};${it.owned};${it.missing}`).join("\n");
         downloadFile('stock_joaillerie.csv', header + rows, 'text/csv;charset=utf-8');
     }
 
-    // === AJOUTS : Import JSON / TXT ===
+    // === Import ===
     function applyOwnedMap(ownedMap) {
         document.querySelectorAll('input.input-owned').forEach(function (input) {
             const name = input.dataset.ressource;
@@ -821,7 +509,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function importFromJSONText(text) {
         const data = JSON.parse(text);
 
-        // Format payload {version, exported_at, items:[{name, owned,...}]}
+        // Format payload {items:[{name, owned,...}]}
         if (data && Array.isArray(data.items)) {
             const ownedMap = {};
             data.items.forEach(function (it) {
@@ -836,9 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Format simple {"Barre de cuivre": 12, ...}
         if (data && typeof data === 'object') {
             const ownedMap = {};
-            Object.keys(data).forEach(function (k) {
-                ownedMap[k] = parseInt(data[k], 10) || 0;
-            });
+            Object.keys(data).forEach(k => ownedMap[k] = parseInt(data[k], 10) || 0);
             applyOwnedMap(ownedMap);
             return;
         }
@@ -847,10 +533,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function importFromTxt(text) {
-        // Supporte ton format export TXT :
+        // Supporte ton format TXT :
         // "Ressource ; requis=40 ; possédé=12 ; manque=28"
         const ownedMap = {};
-        const lines = text.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+        const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
 
         lines.forEach(function (line) {
             const parts = line.split(";");
@@ -868,39 +554,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            if (name && owned !== null) {
-                ownedMap[name] = Math.max(owned, 0);
-            }
+            if (name && owned !== null) ownedMap[name] = Math.max(owned, 0);
         });
 
         applyOwnedMap(ownedMap);
     }
 
-    // Initialisation
+    // === Reset ===
+    function resetStock() {
+        if (!confirm("Reset du stock ? (efface la sauvegarde navigateur)")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        document.querySelectorAll('input.input-owned').forEach(input => input.value = "");
+        updateAllMissing();
+    }
+
+    // Init
     enhanceTables();
     loadStock();
 
-    // Mise à jour "Manque" + route en live
+    // Live update
     document.addEventListener('input', function (e) {
-        if (e.target.matches('input.input-owned')) {
+        if (e.target && e.target.matches('input.input-owned')) {
             updateMissingForInput(e.target);
+            saveStockToLocalStorage();
         }
     });
 
-    // Bouton "Enregistrer mon stock" (TXT)
-    const saveButton = document.getElementById('save-stock');
-    if (saveButton) {
-        saveButton.addEventListener('click', saveStockAndDownload);
-    }
+    // Buttons
+    const saveBtn = document.getElementById('save-stock');
+    if (saveBtn) saveBtn.addEventListener('click', exportTXT);
 
-    // Boutons export JSON / CSV
     const exportJsonBtn = document.getElementById('export-json');
     if (exportJsonBtn) exportJsonBtn.addEventListener('click', exportJSON);
 
     const exportCsvBtn = document.getElementById('export-csv');
     if (exportCsvBtn) exportCsvBtn.addEventListener('click', exportCSV);
 
-    // Import fichier JSON/TXT
+    const resetBtn = document.getElementById('reset-stock');
+    if (resetBtn) resetBtn.addEventListener('click', resetStock);
+
     const importInput = document.getElementById('import-file');
     if (importInput) {
         importInput.addEventListener('change', function () {
@@ -925,21 +617,10 @@ document.addEventListener('DOMContentLoaded', function () {
             reader.readAsText(file, 'utf-8');
         });
     }
-
-    // Reset stock
-    const resetBtn = document.getElementById('reset-stock');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', function () {
-            if (!confirm("Reset du stock ? (efface la sauvegarde navigateur)")) return;
-            localStorage.removeItem(STORAGE_KEY);
-            document.querySelectorAll('input.input-owned').forEach(function (input) {
-                input.value = "";
-            });
-            updateAllMissing();
-        });
-    }
 });
 </script>
 
+<!-- Navbar -->
+<script src="../assets/js/nav.js"></script>
 </body>
 </html>
