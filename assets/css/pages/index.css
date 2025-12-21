@@ -1,1 +1,6 @@
 
+/* Page index : pas indispensable si tout est déjà global,
+   mais tu peux mettre des ajustements ici si besoin. */
+body.index-page .grid {
+  margin-bottom: 20px;
+}
