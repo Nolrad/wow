@@ -1,366 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Décompte — WoW TBC Pré-patch (J0 14 janvier 2026)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>ZaïZaï - Outils WoW</title>
   <style>
-    :root {
-      --bg: #0b1020;
-      --panel: rgba(255,255,255,0.06);
-      --panel2: rgba(255,255,255,0.10);
-      --text: #e8ecff;
-      --muted: rgba(232,236,255,0.75);
-      --accent: #7aa2ff;
-      --good: #6dffb3;
-      --warn: #ffcf6d;
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      margin:0; background:#020617; color:#e5e7eb;
     }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
-      background: radial-gradient(1000px 600px at 20% 10%, rgba(122,162,255,0.25), transparent 60%),
-                  radial-gradient(900px 700px at 80% 20%, rgba(109,255,179,0.18), transparent 55%),
-                  linear-gradient(180deg, #070a13, var(--bg));
-      color: var(--text);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+    header{
+      padding:24px 18px; border-bottom:1px solid #1f2937; background:#0b1120;
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
     }
-
-    .wrap {
-      width: min(980px, 100%);
-      display: grid;
-      gap: 18px;
+    h1{ margin:0; font-size:1.4rem; color:#fbbf24; }
+    p{ margin:6px 0 0; color:#9ca3af; }
+    main{ max-width:1000px; margin:24px auto; padding:0 16px; }
+    .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; }
+    .card{
+      border:1px solid #1f2937; border-radius:14px; padding:16px;
+      background:#020617; box-shadow: 0 15px 40px rgba(0,0,0,0.35);
     }
-
-    header {
-      display: grid;
-      gap: 8px;
-      text-align: center;
+    .card h2{ margin:0 0 8px; color:#fdba74; font-size:1.1rem; }
+    .card p{ margin:0 0 14px; line-height:1.5; }
+    .btn{
+      display:inline-block; padding:10px 14px; border-radius:999px;
+      background:#fbbf24; color:#111827; text-decoration:none; font-weight:700;
     }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(22px, 3vw, 34px);
-      letter-spacing: 0.2px;
+    .btn:hover{ background:#f59e0b; }
+    .btn.secondary{
+      background:#111827; color:#e5e7eb; border:1px solid #374151;
+      font-weight:600;
     }
-
-    .sub {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 18px;
-      padding: 18px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-    }
-
-    .grid {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    @media (max-width: 720px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    .tile {
-      background: var(--panel2);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 16px;
-      padding: 16px 14px;
-      text-align: center;
-    }
-
-    .num {
-      font-variant-numeric: tabular-nums;
-      font-size: clamp(30px, 5vw, 56px);
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      margin: 2px 0 4px;
-      color: var(--text);
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 0.9px;
-      text-transform: uppercase;
-    }
-
-    .meta {
-      display: grid;
-      gap: 8px;
-      margin-top: 14px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .pill {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.18);
-    }
-
-    .dot {
-      width: 10px; height: 10px; border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 18px rgba(122,162,255,0.9);
-    }
-
-    .ok .dot {
-      background: var(--good);
-      box-shadow: 0 0 18px rgba(109,255,179,0.9);
-    }
-
-    .warn .dot {
-      background: var(--warn);
-      box-shadow: 0 0 18px rgba(255,207,109,0.9);
-    }
-
-    .small {
-      font-size: 12px;
-      color: rgba(232,236,255,0.65);
-    }
-
-    .btns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 10px;
-    }
-
-    button {
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
-    button:hover {
-      background: rgba(255,255,255,0.12);
-    }
+    .btn.secondary:hover{ background:#0b1120; }
+    footer{ text-align:center; color:#6b7280; padding:24px 0; }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Décompte — WoW TBC Pré-patch</h1>
-      <p class="sub">
-        Objectif : <strong>J0 le 14 janvier 2026</strong> (heure Europe/Paris).<br/>
-        Le décompte se met à jour automatiquement.
-      </p>
-    </header>
+  <header>
+    <div>
+      <h1>ZaïZaï - Outils WoW</h1>
+      <p>Homepage → accès rapide à mes pages (Joaillerie, Décompte, etc.)</p>
+    </div>
+  </header>
 
-    <section class="card">
-      <div class="grid" aria-label="Compte à rebours">
-        <div class="tile">
-          <div class="num" id="days">—</div>
-          <div class="label">Jours</div>
-        </div>
-        <div class="tile">
-          <div class="num" id="hours">—</div>
-          <div class="label">Heures</div>
-        </div>
-        <div class="tile">
-          <div class="num" id="minutes">—</div>
-          <div class="label">Minutes</div>
-        </div>
-        <div class="tile">
-          <div class="num" id="seconds">—</div>
-          <div class="label">Secondes</div>
-        </div>
-      </div>
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>Guide Joaillerie 1-300</h2>
+        <p>Page interactive avec stock, “manque”, export txt, surlignage des ressources OK.</p>
+        <a class="btn" href="./joaillerie.html">Ouvrir la page Joaillerie</a>
+      </section>
 
-      <div class="meta">
-        <div class="pill" id="statusPill">
-          <span class="dot" id="statusDot"></span>
-          <span id="statusText">Calcul…</span>
-        </div>
-        <div class="small" id="targetText"></div>
+      <section class="card">
+        <h2>Décompte</h2>
+        <p>Une page de countdown (événement, sortie, reset, objectif perso…).</p>
+        <a class="btn" href="./decompte.html">Ouvrir le Décompte</a>
+        <a class="btn secondary" href="./decompte.html#config">Configurer</a>
+      </section>
+    </div>
+  </main>
 
-        <div class="btns">
-          <button type="button" id="copyBtn">Copier le lien (si servi en local)</button>
-          <button type="button" id="addCalBtn">Ajouter au calendrier (ICS)</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    // Cible: 14 janvier 2026 à 00:00:00 Europe/Paris.
-    // IMPORTANT:
-    // - JS Date manipule des instants; ici on ancre une date/heure Paris via Intl.
-    // - On calcule l'instant correspondant en utilisant l'offset Europe/Paris au moment cible.
-    // - Sans librairie externe, on fait une conversion robuste via formatToParts.
-
-    const TARGET_LOCAL_ISO = "2026-01-14T00:00:00"; // "2026-01-14T00:00:00"
-    const TARGET_TZ = "Europe/Paris";
-
-    function pad2(n) { return String(n).padStart(2, "0"); }
-
-    // Retourne un objet {year,month,day,hour,minute,second} de "date" vue dans une timezone IANA
-    function partsInTimeZone(date, timeZone) {
-      const fmt = new Intl.DateTimeFormat("en-CA", {
-        timeZone,
-        year: "numeric", month: "2-digit", day: "2-digit",
-        hour: "2-digit", minute: "2-digit", second: "2-digit",
-        hourCycle: "h23"
-      });
-      const parts = fmt.formatToParts(date);
-      const out = {};
-      for (const p of parts) {
-        if (p.type !== "literal") out[p.type] = p.value;
-      }
-      return {
-        year: Number(out.year),
-        month: Number(out.month),
-        day: Number(out.day),
-        hour: Number(out.hour),
-        minute: Number(out.minute),
-        second: Number(out.second)
-      };
-    }
-
-    // Calcule l'offset (en minutes) entre UTC et timeZone pour un instant donné
-    function tzOffsetMinutes(date, timeZone) {
-      const utc = partsInTimeZone(date, "UTC");
-      const tz  = partsInTimeZone(date, timeZone);
-      const utcMs = Date.UTC(utc.year, utc.month - 1, utc.day, utc.hour, utc.minute, utc.second);
-      const tzMs  = Date.UTC(tz.year,  tz.month - 1,  tz.day,  tz.hour,  tz.minute,  tz.second);
-      return (tzMs - utcMs) / 60000;
-    }
-
-    // Convertit "YYYY-MM-DDTHH:mm:ss" (supposé dans timeZone) en timestamp UTC (ms)
-    function zonedLocalIsoToUtcMs(localIso, timeZone) {
-      const [d, t] = localIso.split("T");
-      const [Y, M, D] = d.split("-").map(Number);
-      const [h, m, s] = t.split(":").map(Number);
-
-      // Première approximation: interpréter comme UTC
-      const approxUtc = new Date(Date.UTC(Y, M - 1, D, h, m, s));
-      // Offset réel à cet instant en timeZone
-      const offMin = tzOffsetMinutes(approxUtc, timeZone);
-      // Ajuster pour obtenir l'instant UTC correspondant à l'heure locale voulue
-      return Date.UTC(Y, M - 1, D, h, m, s) - offMin * 60000;
-    }
-
-    const targetUtcMs = zonedLocalIsoToUtcMs(TARGET_LOCAL_ISO, TARGET_TZ);
-
-    const elDays = document.getElementById("days");
-    const elHours = document.getElementById("hours");
-    const elMinutes = document.getElementById("minutes");
-    const elSeconds = document.getElementById("seconds");
-    const statusPill = document.getElementById("statusPill");
-    const statusDot = document.getElementById("statusDot");
-    const statusText = document.getElementById("statusText");
-    const targetText = document.getElementById("targetText");
-
-    targetText.textContent =
-      "Cible : " + "14 janvier 2026" + " (Europe/Paris) — " + TARGET_LOCAL_ISO.replace("T"," ") + " " + TARGET_TZ;
-
-    function render() {
-      const now = Date.now();
-      let diff = targetUtcMs - now;
-
-      if (diff <= 0) {
-        diff = 0;
-        statusPill.classList.add("ok");
-        statusText.textContent = "J0 atteint — bon pré-patch !";
-      } else {
-        // Petit indicateur "warn" si moins de 24h
-        const hoursLeft = diff / 3600000;
-        statusPill.classList.toggle("warn", hoursLeft <= 24);
-        statusPill.classList.remove("ok");
-        statusText.textContent = hoursLeft <= 24 ? "Dernière ligne droite…" : "En approche…";
-      }
-
-      const totalSeconds = Math.floor(diff / 1000);
-      const days = Math.floor(totalSeconds / 86400);
-      const hours = Math.floor((totalSeconds % 86400) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      elDays.textContent = String(days);
-      elHours.textContent = pad2(hours);
-      elMinutes.textContent = pad2(minutes);
-      elSeconds.textContent = pad2(seconds);
-    }
-
-    render();
-    setInterval(render, 250);
-
-    // Bouton copier
-    document.getElementById("copyBtn").addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(location.href);
-        statusText.textContent = "Lien copié ✅";
-        setTimeout(render, 1200);
-      } catch {
-        statusText.textContent = "Impossible de copier (droits navigateur).";
-        setTimeout(render, 1200);
-      }
-    });
-
-    // Génération ICS basique
-    function downloadIcs() {
-      // 14/01/2026 00:00 Paris => UTC à calculer avec targetUtcMs
-      const dt = new Date(targetUtcMs);
-      const y = dt.getUTCFullYear();
-      const mo = pad2(dt.getUTCMonth()+1);
-      const da = pad2(dt.getUTCDate());
-      const hh = pad2(dt.getUTCHours());
-      const mm = pad2(dt.getUTCMinutes());
-      const ss = pad2(dt.getUTCSeconds());
-      const dtstamp = `${y}${mo}${da}T${hh}${mm}${ss}Z`;
-
-      // Event instantané (pas de DTEND)
-      const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Zaizai//WoW TBC Prepatch Countdown//FR
-CALSCALE:GREGORIAN
-BEGIN:VEVENT
-UID:wow-tbc-prepatch-20260114T000000@local
-DTSTAMP:${dtstamp}
-DTSTART:${dtstamp}
-SUMMARY:WoW — Pré-patch TBC (J0)
-DESCRIPTION:Début du pré-patch TBC (cible): 14 janvier 2026 (Europe/Paris).
-END:VEVENT
-END:VCALENDAR
-`;
-
-      const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "wow-tbc-prepatch-j0.ics";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
-    }
-
-    document.getElementById("addCalBtn").addEventListener("click", downloadIcs);
-  </script>
+  <footer>
+    © ZaïZaï — GitHub Pages
+  </footer>
 </body>
 </html>
