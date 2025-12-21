@@ -29,9 +29,17 @@ html, body{ height: 100%; }
 body{
   margin: 0;
   font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background: var(--bg);
+
+  /* Fond GLOBAL OaSiS (ex-décompte) */
+  background:
+    radial-gradient(1000px 600px at 20% 10%, rgba(122,162,255,0.25), transparent 60%),
+    radial-gradient(900px 700px at 80% 20%, rgba(109,255,179,0.18), transparent 55%),
+    linear-gradient(180deg, #070a13, #0b1020);
+
   color: var(--text);
+  min-height: 100vh;
 }
+
 
 a{ color: inherit; }
 
