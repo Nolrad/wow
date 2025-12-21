@@ -1,52 +1,66 @@
-
 :root{
-  --bg: #020617;
-  --panel: #0b1120;
-  --panel2: #111827;
-  --border: #1f2937;
-  --border2: #374151;
+  /* Couleurs (global) */
+  --bg-0: #070a13;
+  --bg-1: #0b1020;
+  --panel: rgba(255,255,255,0.06);
+  --panel-strong: rgba(255,255,255,0.10);
+  --border: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.14);
 
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --muted2: #6b7280;
+  --text: #e8ecff;
+  --muted: rgba(232,236,255,0.75);
+  --muted2: rgba(232,236,255,0.60);
 
-  --brand: #fbbf24;
-  --brand2: #f59e0b;
+  /* Accents OaSiS */
+  --accent: #7aa2ff;
+  --good: #6dffb3;
+  --warn: #ffcf6d;
+  --danger: #ff8a8a;
 
-  --info: #93c5fd;
-  --ok: #22c55e;
-  --warn: #fbbf24;
-  --danger: #fca5a5;
+  /* Layout tokens */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 20px 60px rgba(0,0,0,0.35);
+  --shadow-soft: 0 12px 35px rgba(0,0,0,0.28);
 
-  --shadow: 0 15px 40px rgba(0,0,0,.45);
-  --radius: 12px;
+  --container: 1100px;
+  --gap: 16px;
+
+  /* Focus ring */
+  --focus: 0 0 0 3px rgba(122,162,255,0.22);
 }
 
 *{ box-sizing: border-box; }
-
 html, body{ height: 100%; }
 
 body{
   margin: 0;
-  font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
+  color: var(--text);
+  min-height: 100vh;
 
-  /* Fond GLOBAL OaSiS (ex-décompte) */
+  /* Fond GLOBAL (identique partout) */
   background:
     radial-gradient(1000px 600px at 20% 10%, rgba(122,162,255,0.25), transparent 60%),
     radial-gradient(900px 700px at 80% 20%, rgba(109,255,179,0.18), transparent 55%),
-    linear-gradient(180deg, #070a13, #0b1020);
-
-  color: var(--text);
-  min-height: 100vh;
+    linear-gradient(180deg, var(--bg-0), var(--bg-1));
 }
 
-
-a{ color: inherit; }
+a{ color: inherit; text-decoration: none; }
+a:hover{ text-decoration: none; }
 
 code{
-  background: rgba(17,24,39,.75);
-  border: 1px solid var(--border2);
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
   padding: 2px 6px;
-  border-radius: 8px;
-  font-size: 0.95em;
+  border-radius: 10px;
+  font-size: .95em;
 }
+
+hr{
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 18px 0;
+}
+
+.hidden{ display: none !important; }
