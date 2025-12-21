@@ -15,16 +15,33 @@ body.decompte-page{
 
   color: var(--d-text);
   min-height: 100vh;
-  display: grid;
-  place-items: center;
+
+  /* IMPORTANT: on ne centre pas le body, sinon la navbar n'est plus "en haut" */
+  display: block;
+
+  /* padding global ok, mais pas de padding-top forcé */
   padding: 24px;
-  padding-top: 72px; /* laisse de la place à la navbar sticky */
 }
 
 body.decompte-page .decompte-wrap{
   width: min(980px, 100%);
   display: grid;
   gap: 18px;
+
+  /* IMPORTANT: on centre le contenu ici (pas le body) */
+  min-height: calc(100vh - 24px - 24px); /* body padding haut/bas */
+  margin: 0 auto;
+  place-items: center;
+}
+
+/* Sur mobile, on laisse un peu plus respirer */
+@media (max-width: 720px){
+  body.decompte-page{
+    padding: 16px;
+  }
+  body.decompte-page .decompte-wrap{
+    min-height: calc(100vh - 16px - 16px);
+  }
 }
 
 body.decompte-page .decompte-header{
