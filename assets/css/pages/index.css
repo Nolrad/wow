@@ -137,3 +137,38 @@ body.index-page .bubble.is-link:active{
     height: 150px;
   }
 }
+/* ===== Cartes homepage : mêmes hauteurs ===== */
+
+/* Si ton conteneur s'appelle .grid (comme dans mes CSS) */
+body.index-page .grid{
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;      /* étire les items */
+  grid-auto-rows: 1fr;       /* toutes les “cases” même hauteur */
+}
+
+@media (max-width: 920px){
+  body.index-page .grid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px){
+  body.index-page .grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* La carte prend toute la hauteur de sa cellule */
+body.index-page .grid .card{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Optionnel : pousse le dernier lien/bouton en bas de la carte */
+body.index-page .grid .card .card-cta,
+body.index-page .grid .card a:last-child{
+  margin-top: auto;
+}
