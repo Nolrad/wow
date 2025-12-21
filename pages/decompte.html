@@ -14,15 +14,14 @@
 
 <header class="page-header">
     <h1>Décompte</h1>
-    <p>Countdown + checklist de farm (synchronisée avec ton stock Joaillerie)</p>
+    <p>Un simple compte à rebours, sauvegardé dans ton navigateur.</p>
 </header>
 
 <main class="container">
-
     <section class="card">
-        <h2>Countdown</h2>
+        <h2>Configurer le décompte</h2>
         <p class="muted">
-            Choisis une date cible (format ISO). Exemple :
+            Saisis une date/heure au format ISO, par exemple :
             <code>2026-01-01T00:00:00</code>
         </p>
 
@@ -32,114 +31,28 @@
             <button class="btn-secondary" id="clearTargetBtn">Effacer</button>
         </div>
 
-        <h3 class="range" id="countdownBig">--j --h --m --s</h3>
+        <h3 class="range" id="countdown">--j --h --m --s</h3>
         <p class="muted" id="targetText">Aucune date définie.</p>
-    </section>
-
-    <section class="card">
-        <h2>Progression Joaillerie</h2>
-        <p class="muted">
-            Basé sur <code>localStorage["joaillerie_stock"]</code>.
-            Ici tu vois ce qu’il te manque réellement, trié pour le farm.
-        </p>
-
-        <div class="row" style="display:none;" id="noInlineNote"></div>
-
-        <div class="row">
-            <span class="pill" id="pillOk">OK: --</span>
-            <span class="pill" id="pillMissing">Manquants: --</span>
-            <span class="pill" id="pillTotal">Total: --</span>
-            <span class="pill" id="pillPercent">Progression: --%</span>
-        </div>
-
-        <!-- La barre est construite en JS (pas de CSS inline) -->
-        <div id="progressMount"></div>
-
-        <div class="row" style="margin-top:12px;">
-            <select id="viewMode">
-                <option value="missing">Afficher : Manquants seulement</option>
-                <option value="all">Afficher : Tout</option>
-            </select>
-
-            <select id="sortMode">
-                <option value="missing_desc">Tri : Manque décroissant</option>
-                <option value="name_asc">Tri : Nom A→Z</option>
-                <option value="required_desc">Tri : Requis décroissant</option>
-            </select>
-
-            <button class="btn-secondary" id="refreshBtn">Rafraîchir</button>
-            <button class="btn-danger" id="resetStockBtn">Reset stock</button>
-        </div>
-
-        <div class="row" style="margin-top:12px;">
-            <button class="btn-secondary" id="exportMissingTxt">Export manquants TXT</button>
-            <button class="btn-secondary" id="exportMissingJson">Export manquants JSON</button>
-            <button class="btn-secondary" id="exportMissingCsv">Export manquants CSV</button>
-
-            <label class="import-label">
-                Importer stock (JSON/TXT)
-                <input id="importFile" type="file" accept=".json,.txt" style="display:none;">
-            </label>
-        </div>
-
-        <table id="missingTable">
-            <thead>
-                <tr>
-                    <th>Ressource</th>
-                    <th>Requis</th>
-                    <th>Possédé</th>
-                    <th>Manque</th>
-                    <th>Statut</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
 
         <p class="hint">
-            Astuce : tu peux remplir le stock sur la page Joaillerie, puis revenir ici et cliquer “Rafraîchir”.
+            La date est mémorisée dans <code>localStorage</code> (sur ce navigateur).
         </p>
     </section>
 
     <footer class="footer">
-        © OaSiS — Décompte & Farming • GitHub Pages
+        © OaSiS — Décompte • GitHub Pages
     </footer>
-
 </main>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // =========================
-    // Countdown
-    // =========================
     const TARGET_KEY = "decompte_target_iso";
+
     const targetInput = document.getElementById("targetInput");
-    const saveTargetBtn = document.getElementById("saveTargetBtn");
-    const clearTargetBtn = document.getElementById("clearTargetBtn");
-    const countdownBig = document.getElementById("countdownBig");
-    const targetText = document.getElementById("targetText");
+    const saveBtn = document.getElementById("saveTargetBtn");
+    const clearBtn = document.getElementById("clearTargetBtn");
 
-    function loadTarget() {
-        const saved = localStorage.getItem(TARGET_KEY);
-        if (saved) targetInput.value = saved;
-    }
+    const countdownEl = document.getElementById("countdown");
+    const targetTextEl = document.getElementById("targetText");
 
-    function formatCountdown(ms) {
-        if (ms <= 0) return "🎉 C’est le moment !";
-        const total = Math.floor(ms / 1000);
-        const days = Math.floor(total / 86400);
-        const hours = Math.floor((total % 86400) / 3600);
-        const mins = Math.floor((total % 3600) / 60);
-        const secs = total % 60;
-        return `${days}j ${hours}h ${mins}m ${secs}s`;
-    }
-
-    function tickCountdown() {
-        const iso = (targetInput.value || "").trim();
-        if (!iso) {
-            countdownBig.textContent = "--j --h --m --s";
-            targetText.textContent = "Aucune date définie.";
-            return;
-        }
-        const d = new Date(iso);
-        if (Number.isNaN(d.getTime())) {
-            countdownBig.textConte
+    function load
