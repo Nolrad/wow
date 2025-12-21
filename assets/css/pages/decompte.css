@@ -1,7 +1,4 @@
-/* =========================================
-   PAGE DECOMPTE — OaSiS
-   ========================================= */
-body.decompte-page {
+body.decompte-page{
   --d-bg: #0b1020;
   --d-panel: rgba(255,255,255,0.06);
   --d-panel2: rgba(255,255,255,0.10);
@@ -15,12 +12,153 @@ body.decompte-page {
     radial-gradient(1000px 600px at 20% 10%, rgba(122,162,255,0.25), transparent 60%),
     radial-gradient(900px 700px at 80% 20%, rgba(109,255,179,0.18), transparent 55%),
     linear-gradient(180deg, #070a13, var(--d-bg));
+
+  color: var(--d-text);
   min-height: 100vh;
   display: grid;
   place-items: center;
   padding: 24px;
-  padding-top: 72px;
+  padding-top: 72px; /* laisse de la place à la navbar sticky */
+}
+
+body.decompte-page .decompte-wrap{
+  width: min(980px, 100%);
+  display: grid;
+  gap: 18px;
+}
+
+body.decompte-page .decompte-header{
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+body.decompte-page .decompte-header h1{
+  margin: 0;
+  font-size: clamp(22px, 3vw, 34px);
+  letter-spacing: 0.2px;
+}
+
+body.decompte-page .decompte-sub{
+  margin: 0;
+  color: var(--d-muted);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+body.decompte-page .decompte-card{
+  background: var(--d-panel);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 18px;
+  padding: 18px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+
+body.decompte-page .decompte-grid{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 720px){
+  body.decompte-page .decompte-grid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+body.decompte-page .decompte-tile{
+  background: var(--d-panel2);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px;
+  padding: 16px 14px;
+  text-align: center;
+}
+
+body.decompte-page .decompte-num{
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(30px, 5vw, 56px);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 2px 0 4px;
   color: var(--d-text);
 }
 
-/* … le reste EXACTEMENT comme avant … */
+body.decompte-page .decompte-label{
+  color: var(--d-muted);
+  font-size: 12px;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+}
+
+body.decompte-page .decompte-meta{
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  text-align: center;
+  color: var(--d-muted);
+  font-size: 13px;
+}
+
+body.decompte-page .decompte-pill{
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+}
+
+body.decompte-page .decompte-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--d-accent);
+  box-shadow: 0 0 18px rgba(122,162,255,0.9);
+}
+
+body.decompte-page .decompte-pill.is-ok .decompte-dot{
+  background: var(--d-good);
+  box-shadow: 0 0 18px rgba(109,255,179,0.9);
+}
+
+body.decompte-page .decompte-pill.is-warn .decompte-dot{
+  background: var(--d-warn);
+  box-shadow: 0 0 18px rgba(255,207,109,0.9);
+}
+
+body.decompte-page .decompte-small{
+  font-size: 12px;
+  color: rgba(232,236,255,0.65);
+}
+
+body.decompte-page .decompte-btns{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+body.decompte-page .decompte-btns button{
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  color: var(--d-text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+body.decompte-page .decompte-btns button:hover{
+  background: rgba(255,255,255,0.12);
+}
+
+/* Optionnel : rendre la navbar plus "glass" sur cette page uniquement */
+body.decompte-page .navbar{
+  background: rgba(11,17,32,0.65);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
