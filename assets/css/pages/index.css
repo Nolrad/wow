@@ -1,3 +1,7 @@
+/* ===========================
+   PAGE INDEX — OaSiS
+   =========================== */
+
 body.index-page main.container{
   padding-top: 12px;
   padding-bottom: 24px;
@@ -5,4 +9,131 @@ body.index-page main.container{
 
 body.index-page .card{
   text-align: left;
+}
+
+/* ===== Bulles homepage (taille identique) =====
+   Attendu en HTML:
+   <div class="bubbles">
+     <div class="bubble">
+       <div class="bubble-num">...</div>
+       <div class="bubble-label">...</div>
+     </div>
+   </div>
+*/
+
+body.index-page .bubbles{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  justify-items: center;
+  align-items: start;
+  margin-top: 12px;
+}
+
+@media (max-width: 820px){
+  body.index-page .bubbles{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+body.index-page .bubble{
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+
+  display: grid;
+  place-items: center;
+  text-align: center;
+
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+
+  background:
+    radial-gradient(120px 120px at 30% 25%, rgba(255,255,255,0.16), transparent 60%),
+    radial-gradient(140px 120px at 70% 75%, rgba(122,162,255,0.20), transparent 60%),
+    rgba(255,255,255,0.06);
+
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 18px 50px rgba(0,0,0,0.35),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+
+  backdrop-filter: blur(10px);
+}
+
+/* Anneau léger pour donner un look “orb” */
+body.index-page .bubble::after{
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow:
+    inset 0 0 18px rgba(122,162,255,0.16),
+    0 0 30px rgba(122,162,255,0.08);
+  pointer-events: none;
+}
+
+/* Highlight doux */
+body.index-page .bubble::before{
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,0.18), transparent 45%),
+    radial-gradient(circle at 70% 80%, rgba(109,255,179,0.10), transparent 55%);
+  transform: rotate(18deg);
+  pointer-events: none;
+}
+
+body.index-page .bubble-num{
+  position: relative;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.4px;
+  margin: 0 0 6px;
+  color: var(--text);
+  text-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+body.index-page .bubble-label{
+  position: relative;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+/* Optionnel: hover “cliquable” si la bulle est un lien */
+body.index-page a.bubble,
+body.index-page .bubble.is-link{
+  cursor: pointer;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+body.index-page a.bubble:hover,
+body.index-page .bubble.is-link:hover{
+  transform: translateY(-2px);
+  background:
+    radial-gradient(120px 120px at 30% 25%, rgba(255,255,255,0.18), transparent 60%),
+    radial-gradient(140px 120px at 70% 75%, rgba(122,162,255,0.24), transparent 60%),
+    rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.16);
+}
+
+body.index-page a.bubble:active,
+body.index-page .bubble.is-link:active{
+  transform: translateY(0);
+}
+
+/* Mobile size */
+@media (max-width: 520px){
+  body.index-page .bubble{
+    width: 150px;
+    height: 150px;
+  }
 }
