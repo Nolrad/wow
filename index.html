@@ -1,71 +1,148 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>OaSiS - Outils WoW</title>
-  <style>
-    body{
-      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
-      margin:0; background:#020617; color:#e5e7eb;
-    }
-    header{
-      padding:24px 18px; border-bottom:1px solid #1f2937; background:#0b1120;
-      display:flex; justify-content:space-between; align-items:center; gap:12px;
-    }
-    h1{ margin:0; font-size:1.4rem; color:#fbbf24; }
-    p{ margin:6px 0 0; color:#9ca3af; }
-    main{ max-width:1000px; margin:24px auto; padding:0 16px; }
-    .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; }
-    .card{
-      border:1px solid #1f2937; border-radius:14px; padding:16px;
-      background:#020617; box-shadow: 0 15px 40px rgba(0,0,0,0.35);
-    }
-    .card h2{ margin:0 0 8px; color:#fdba74; font-size:1.1rem; }
-    .card p{ margin:0 0 14px; line-height:1.5; }
-    .btn{
-      display:inline-block; padding:10px 14px; border-radius:999px;
-      background:#fbbf24; color:#111827; text-decoration:none; font-weight:700;
-    }
-    .btn:hover{ background:#f59e0b; }
-    .btn.secondary{
-      background:#111827; color:#e5e7eb; border:1px solid #374151;
-      font-weight:600;
-    }
-    .btn.secondary:hover{ background:#0b1120; }
-    footer{ text-align:center; color:#6b7280; padding:24px 0; }
-  </style>
+    <meta charset="UTF-8">
+    <title>ZaïZaï – Guides WoW Classic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS global (navbar + variables) -->
+    <link rel="stylesheet" href="./assets/css/site.css">
+
+    <!-- CSS spécifique homepage -->
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #020617;
+            color: #e5e7eb;
+        }
+
+        header {
+            background: #020617;
+            padding: 40px 16px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: #fbbf24;
+            text-align: center;
+        }
+
+        header p {
+            margin-top: 8px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 20px auto 60px;
+            padding: 0 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #0b1120;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card h2 {
+            margin: 0;
+            color: #fbbf24;
+            font-size: 1.4rem;
+        }
+
+        .card p {
+            color: #d1d5db;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .card a {
+            align-self: flex-start;
+            padding: 10px 16px;
+            background: #fbbf24;
+            color: #111827;
+            text-decoration: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .card a:hover {
+            background: #f59e0b;
+        }
+
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <div>
-      <h1>OaSiS - Outils WoW</h1>
-      <p>Homepage → accès rapide à mes pages (Joaillerie, Décompte, etc.)</p>
+<!-- ⚠️ La navbar est injectée automatiquement par nav.js -->
+
+<header>
+    <h1>ZaïZaï</h1>
+    <p>Guides World of Warcraft Classic – farm intelligent, zéro gaspillage</p>
+</header>
+
+<main>
+    <section class="grid">
+
+        <div class="card">
+            <h2>Joaillerie 1–300</h2>
+            <p>
+                Guide complet basé sur WowIsClassic, adapté pour tout farmer soi-même :
+                minage, prospection, drops, suivi de stock, import / export.
+            </p>
+            <a href="./pages/joaillerie.html">Ouvrir le guide</a>
+        </div>
+
+        <div class="card">
+            <h2>Décompte & Farming</h2>
+            <p>
+                Page dédiée au suivi de ce qu’il te manque réellement,
+                pour optimiser tes sessions de farm sans repasser inutilement à l’HV.
+            </p>
+            <a href="./pages/decompte.html">Voir le décompte</a>
+        </div>
+
+        <!-- Carte future -->
+        <div class="card">
+            <h2>À venir</h2>
+            <p>
+                Autres métiers, routes de leveling, checklists TBC,
+                et outils orientés joueur autonome.
+            </p>
+            <a href="#" onclick="return false;">Bientôt</a>
+        </div>
+
+    </section>
+
+    <div class="footer">
+        © ZaïZaï – WoW Classic / TBC • Site statique GitHub Pages
     </div>
-  </header>
+</main>
 
-  <main>
-    <div class="grid">
-      <section class="card">
-        <h2>Guide Joaillerie 1-300</h2>
-        <p>Page interactive avec stock, “manque”, export txt, surlignage des ressources OK.</p>
-        <a class="btn" href="./joaillerie.html">Ouvrir la page Joaillerie</a>
-      </section>
-
-      <section class="card">
-        <h2>Décompte</h2>
-        <p>Une page de countdown (événement, sortie, reset, objectif perso…).</p>
-        <a class="btn" href="./decompte.html">Ouvrir le Décompte</a>
-        <a class="btn secondary" href="./decompte.html#config">Configurer</a>
-      </section>
-    </div>
-  </main>
-
-  <footer>
-    © OaSiS — GitHub Pages
-  </footer>
+<!-- JS navbar (injection + active link) -->
+<script src="./assets/js/nav.js"></script>
 </body>
 </html>
-
-
-
