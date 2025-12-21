@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Guide Joaillerie 1-300 sans achat HV - WoW TBC Classic</title>
+
+<style>
+body {
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  margin:0;
+  background:#020617;
+  color:#e5e7eb;
+}
+header {
+  background:#0b1120;
+  padding:20px 40px;
+  border-bottom:1px solid #1f2937;
+}
+header h1 {margin:0;color:#fbbf24;font-size:1.8rem}
+header p {margin:4px 0 0;color:#9ca3af}
+main {max-width:1100px;margin:20px auto;padding:0 16px}
+.card {
+  background:#020617;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  border:1px solid #1f2937;
+  box-shadow:0 15px 40px rgba(0,0,0,.45)
+}
+h2 {color:#fbbf24;margin-top:0}
+h3 {color:#fdba74}
+table {width:100%;border-collapse:collapse;margin-top:12px}
+th,td {border:1px solid #1f2937;padding:8px}
+th {background:#0f172a}
+input.input-owned {
+  width:80px;
+  background:#020617;
+  border:1px solid #374151;
+  border-radius:6px;
+  color:#e5e7eb;
+  padding:4px
+}
+button {
+  padding:8px 16px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  font-weight:600
+}
+.primary {background:#fbbf24;color:#111827}
+.secondary {
+  background:#111827;
+  color:#e5e7eb;
+  border:1px solid #374151
+}
+.danger {
+  background:#1f2937;
+  border:1px solid #7f1d1d;
+  color:#fecaca
+}
+.route-ok {color:#22c55e;font-weight:700}
+.footer {text-align:center;color:#6b7280;margin:30px 0}
+.hint {font-size:.8rem;color:#9ca3af}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Joaillerie 1-300 sans achat HV</h1>
+  <p>Guide interactif – farm personnel (TBC Classic)</p>
+</header>
+
+<main>
+
+<section class="card">
+<h2>Matériaux requis</h2>
+
+<table>
+<thead>
+<tr><th>Ressource</th><th>Quantité</th><th>Origine</th></tr>
+</thead>
+<tbody>
+<tr><td>Barre de cuivre</td><td>40</td><td>Minage</td></tr>
+<tr><td>Pierre brute</td><td>80</td><td>Minage</td></tr>
+<tr><td>Barre de bronze</td><td>80</td><td>Cuivre + Étain</td></tr>
+<tr><td>Barre d'argent</td><td>50</td><td>Minage</td></tr>
+<tr><td>Pierre lourde</td><td>80</td><td>Minage</td></tr>
+<tr><td>Barre de mithril</td><td>100</td><td>Minage</td></tr>
+<tr><td>Barre de vrai-argent</td><td>60</td><td>Minage</td></tr>
+<tr><td>Barre de thorium</td><td>50</td><td>Minage</td></tr>
+</tbody>
+</table>
+
+<div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px">
+  <button class="primary" id="save-stock">Export TXT</button>
+  <button class="secondary" id="export-json">Export JSON</button>
+  <button class="secondary" id="export-csv">Export CSV</button>
+
+  <label class="secondary">
+    Importer
+    <input type="file" id="import-file" accept=".json,.txt" hidden>
+  </label>
+
+  <button class="danger" id="reset-stock">Reset</button>
+</div>
+
+<p class="hint">Import/export compatible GitHub Pages – données stockées localement.</p>
+</section>
+
+<section class="card">
+<h2>Route 1-300</h2>
+<p><span class="route-ressource" data-ressource="Barre de cuivre">40× Barre de cuivre</span></p>
+<p><span class="route-ressource" data-ressource="Pierre brute">80× Pierre brute</span></p>
+<p><span class="route-ressource" data-ressource="Barre de bronze">80× Barre de bronze</span></p>
+<p><span class="route-ressource" data-ressource="Barre d'argent">50× Barre d'argent</span></p>
+<p><span class="route-ressource" data-ressource="Barre de mithril">100× Barre de mithril</span></p>
+<p><span class="route-ressource" data-ressource="Barre de thorium">50× Barre de thorium</span></p>
+</section>
+
+<div class="footer">Guide Joaillerie – ZaïZaï</div>
+</main>
+
+<script>
+const STORAGE_KEY="joaillerie_stock";
+
+/* Ajout colonnes */
+document.querySelectorAll("tbody tr").forEach(tr=>{
+  const qty=parseInt(tr.children[1].textContent,10);
+  const name=tr.children[0].textContent.trim();
+
+  const tdInput=document.createElement("td");
+  const input=document.createElement("input");
+  input.type="number"; input.min=0;
+  input.className="input-owned";
+  input.dataset.ressource=name;
+  input.dataset.required=qty;
+  tdInput.appendChild(input);
+
+  const tdMissing=document.createElement("td");
+  tdMissing.className="missing";
+
+  tr.append(tdInput,tdMissing);
+});
+
+function update(){
+  document.querySelectorAll(".input-owned").forEach(i=>{
+    const req=+i.dataset.required;
+    const own=+i.value||0;
+    const miss=Math.max(req-own,0);
+    i.closest("tr").querySelector(".missing").textContent=miss?miss:"OK";
+    document.querySelectorAll(".route-ressource").forEach(r=>{
+      if(r.dataset.ressource===i.dataset.ressource){
+        r.classList.toggle("route-ok",miss===0);
+      }
+    });
+  });
+}
+
+function collect(){
+  const items=[];
+  document.querySelectorAll(".input-owned").forEach(i=>{
+    items.push({
+      name:i.dataset.ressource,
+      required:+i.dataset.required,
+      owned:+i.value||0
+    });
+  });
+  return items;
+}
+
+function download(name,content,type){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=name;
+  a.click();
+}
+
+document.getElementById("save-stock").onclick=()=>{
+  const lines=collect().map(i=>`${i.name}; requis=${i.required}; possédé=${i.owned}`);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(Object.fromEntries(collect().map(i=>[i.name,i.owned]))));
+  download("stock_joaillerie.txt",lines.join("\n"),"text/plain");
+};
+
+document.getElementById("export-json").onclick=()=>{
+  download("stock_joaillerie.json",JSON.stringify({items:collect()},null,2),"application/json");
+};
+
+document.getElementById("export-csv").onclick=()=>{
+  const rows=["ressource;requis;possede",...collect().map(i=>`${i.name};${i.required};${i.owned}`)];
+  download("stock_joaillerie.csv",rows.join("\n"),"text/csv");
+};
+
+document.getElementById("import-file").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const t=r.result;
+      const map={};
+      if(f.name.endsWith(".json")){
+        JSON.parse(t).items.forEach(i=>map[i.name]=i.owned);
+      } else {
+        t.split("\n").forEach(l=>{
+          const [n,,p]=l.split(";");
+          if(n&&p) map[n.trim()]=parseInt(p.split("=")[1]);
+        });
+      }
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(map));
+      document.querySelectorAll(".input-owned").forEach(i=>i.value=map[i.dataset.ressource]||"");
+      update();
+    }catch{alert("Erreur import");}
+  };
+  r.readAsText(f);
+};
+
+document.getElementById("reset-stock").onclick=()=>{
+  if(confirm("Effacer le stock ?")){
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll(".input-owned").forEach(i=>i.value="");
+    update();
+  }
+};
+
+const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+document.querySelectorAll(".input-owned").forEach(i=>i.value=saved[i.dataset.ressource]||"");
+document.addEventListener("input",e=>e.target.classList.contains("input-owned")&&update());
+update();
+</script>
+
+</body>
+</html>
