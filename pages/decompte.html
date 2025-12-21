@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Décompte</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:0;background:#020617;color:#e5e7eb}
+    header{background:#0b1120;padding:20px;border-bottom:1px solid #1f2937}
+    h1{margin:0;color:#fbbf24}
+    main{max-width:900px;margin:20px auto;padding:0 16px}
+    .card{border:1px solid #1f2937;border-radius:14px;padding:16px;background:#020617;box-shadow:0 15px 40px rgba(0,0,0,.35)}
+    .big{font-size:2rem;font-weight:800;color:#93c5fd}
+    .muted{color:#9ca3af}
+    input{width:100%;padding:10px;border-radius:10px;border:1px solid #374151;background:#0b1120;color:#e5e7eb}
+    a{color:#93c5fd}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Décompte</h1>
+  </header>
+
+  <main>
+    <section class="card">
+      <p class="muted">Retour : <a href="./index.html">homepage</a></p>
+      <p>Décompte vers :</p>
+      <div class="big" id="countdown">--j --h --m --s</div>
+      <p class="muted" id="targetText"></p>
+    </section>
+
+    <section class="card" id="config" style="margin-top:16px">
+      <h2 style="margin-top:0;color:#fdba74">Configurer</h2>
+      <p class="muted">Mets une date/heure (format ISO) : ex. <code>2026-01-01T00:00:00</code></p>
+      <input id="targetInput" placeholder="2026-01-01T00:00:00" />
+      <p class="muted">Astuce : c’est mémorisé dans ton navigateur.</p>
+    </section>
+  </main>
+
+  <script>
+    const KEY = "decompte_target_iso";
+    const input = document.getElementById("targetInput");
+    const countdownEl = document.getElementById("countdown");
+    const targetText = document.getElementById("targetText");
+
+    function loadTarget() {
+      const saved = localStorage.getItem(KEY);
+      if (saved) input.value = saved;
+      return saved || "";
+    }
+
+    function saveTarget(val) {
+      localStorage.setItem(KEY, val);
+    }
+
+    function format(ms) {
+      if (ms <= 0) return "🎉 C’est le moment !";
+      const s = Math.floor(ms / 1000);
+      const days = Math.floor(s / 86400);
+      const hours = Math.floor((s % 86400) / 3600);
+      const mins = Math.floor((s % 3600) / 60);
+      const secs = s % 60;
+      return `${days}j ${hours}h ${mins}m ${secs}s`;
+    }
+
+    function tick() {
+      const iso = input.value.trim();
+      if (!iso) {
+        countdownEl.textContent = "--j --h --m --s";
+        targetText.textContent = "Aucune date définie.";
+        return;
+      }
+      const target = new Date(iso);
+      if (isNaN(target.getTime())) {
+        countdownEl.textContent = "Format invalide";
+        targetText.textContent = "Utilise un format ISO, ex: 2026-01-01T00:00:00";
+        return;
+      }
+      targetText.textContent = "Cible : " + target.toString();
+      const ms = target.getTime() - Date.now();
+      countdownEl.textContent = format(ms);
+    }
+
+    loadTarget();
+    input.addEventListener("input", () => { saveTarget(input.value.trim()); tick(); });
+    setInterval(tick, 250);
+    tick();
+  </script>
+</body>
+</html>
