@@ -1,17 +1,9 @@
-/* ===========================
-   CSS GLOBAL – OaSiS
-   =========================== */
-
-/* Base */
+/* Point d’entrée unique */
 @import url("./base.css");
-
-/* Layout commun */
 @import url("./layout.css");
-
-/* Composants réutilisables */
 @import url("./components.css");
 
-/* Pages (chargées mais scoppées) */
+/* Pages (scopées via body.xxx-page) */
 @import url("./pages/index.css");
 @import url("./pages/joaillerie.css");
 @import url("./pages/decompte.css");
