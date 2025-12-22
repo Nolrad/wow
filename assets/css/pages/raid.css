@@ -1,0 +1,81 @@
+/* =========================
+   PAGE RAID (raid.html)
+   ========================= */
+
+.phase-row {
+  display: grid;
+  gap: 14px;
+}
+
+.phase-head {
+  display: grid;
+  gap: 4px;
+}
+
+/* Grille des raids (1 phase = 1 ligne) */
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .phase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .phase-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tuile cliquable */
+.raid-tile {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+
+  transition: transform 140ms ease,
+              background 140ms ease,
+              border-color 140ms ease;
+}
+
+.raid-tile:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.raid-tile:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  outline-offset: 3px;
+}
+
+/* Contenu */
+.raid-tile h3 {
+  margin: 0 0 4px 0;
+}
+
+.raid-meta {
+  margin: 0 0 8px 0;
+  font-size: 0.95em;
+  opacity: 0.75;
+}
+
+.raid-desc {
+  margin: 0 0 10px 0;
+  opacity: 0.9;
+}
+
+.raid-cta {
+  font-weight: 600;
+  opacity: 0.85;
+}
