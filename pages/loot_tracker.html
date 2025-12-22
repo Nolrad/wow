@@ -106,12 +106,26 @@
 
         <label class="lt-label">
           Instance
-          <input id="instanceFilter" class="lt-input" type="text" placeholder="Karazhan, SM…" />
+          <select id="instanceSelect" class="lt-select">
+            <option value="">Toutes les instances</option>
+          </select>
+        </label>
+
+        <label class="lt-label">
+          Qualité
+          <select id="qualitySelect" class="lt-select">
+            <option value="">Toutes qualités</option>
+            <option value="1">Commun</option>
+            <option value="2">Inhabituel</option>
+            <option value="3">Rare</option>
+            <option value="4">Épique</option>
+            <option value="5">Légendaire</option>
+          </select>
         </label>
 
         <label class="lt-label">
           Item
-          <input id="itemFilter" class="lt-input" type="text" placeholder="Épée, Cape…" />
+          <input id="itemFilter" class="lt-input" type="text" placeholder="ex: Chapeau, Égide..." />
         </label>
 
         <button id="btnRefresh" class="btn btn-secondary" type="button">
