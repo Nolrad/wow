@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title>Loot Tracker — Import / Historique</title>
+  <title>Loot Tracker — Historique de guilde</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- CSS global -->
@@ -12,100 +12,115 @@
 </head>
 
 <body>
-  <!-- Navbar injectée par ../assets/js/nav.js -->
+  <!-- Navbar injectée -->
+  <script src="../assets/js/nav.js"></script>
 
   <header class="page-header">
     <h1>Loot Tracker</h1>
-    <p>Importe l’export JSON de l’addon, stocke localement par profil, consulte l’historique, et charge un JSON partagé depuis <code>/json/</code>.</p>
+    <p>
+      Historique des loots de guilde — Vanilla & TBC<br />
+      Source partagée : <code>/json/loot_thunderstrike.json</code>
+    </p>
   </header>
 
   <main class="container">
+
+    <!-- ===================== -->
+    <!-- JSON partagé -->
+    <!-- ===================== -->
     <section class="card">
-      <h2>Données partagées (repo GitHub)</h2>
-      <p class="hint">
-        Ton JSON partagé est lu depuis <code>../json/loot_thunderstrike.json</code>.
-        Un site statique ne peut pas écrire dans ce dossier : pour mettre à jour, il faut remplacer le fichier puis commit/push.
-      </p>
+      <h2>Données partagées (site)</h2>
       <div class="lt-row lt-row-wrap">
-        <button id="btnReloadShared" class="btn btn-secondary" type="button">Recharger depuis le site</button>
+        <button id="btnReloadShared" class="btn btn-secondary" type="button">
+          Recharger le JSON partagé
+        </button>
         <span id="sharedStatus" class="lt-status" aria-live="polite"></span>
       </div>
+      <p class="hint">
+        Lecture seule depuis le dépôt GitHub.  
+        Pour mettre à jour : remplacer le fichier JSON et commit.
+      </p>
     </section>
 
+    <!-- ===================== -->
+    <!-- Import local -->
+    <!-- ===================== -->
     <section class="card">
-      <h2>Importer un export (local navigateur)</h2>
+      <h2>Import local (optionnel)</h2>
 
       <div class="lt-grid">
         <div class="lt-block">
           <h3>Importer un fichier JSON</h3>
           <input id="fileInput" class="lt-file" type="file" accept=".json,application/json" />
           <div class="lt-row">
-            <button id="btnImportFile" class="btn btn-primary" type="button">Importer le fichier</button>
-            <button id="btnClearPaste" class="btn btn-secondary" type="button">Vider la zone texte</button>
+            <button id="btnImportFile" class="btn btn-primary" type="button">
+              Importer
+            </button>
+            <button id="btnClearPaste" class="btn btn-secondary" type="button">
+              Vider
+            </button>
           </div>
-          <p class="hint">
-            Astuce : tu peux aussi utiliser <strong>/rlt export</strong>, copier le JSON, puis coller ci-dessous.
-          </p>
         </div>
 
         <div class="lt-block">
-          <h3>Copier / Coller JSON</h3>
-          <textarea id="pasteArea" class="lt-textarea" placeholder="Colle ici ton export JSON complet..."></textarea>
+          <h3>Coller un JSON</h3>
+          <textarea
+            id="pasteArea"
+            class="lt-textarea"
+            placeholder="Colle ici un export JSON de l’addon…"></textarea>
           <div class="lt-row">
-            <button id="btnImportPaste" class="btn btn-primary" type="button">Importer le JSON collé</button>
+            <button id="btnImportPaste" class="btn btn-primary" type="button">
+              Importer
+            </button>
           </div>
-          <p class="hint">
-            Le stockage est <strong>local au navigateur</strong> (localStorage). Tu peux ensuite exporter en download si besoin.
-          </p>
         </div>
       </div>
 
       <div class="lt-row lt-row-wrap">
         <label class="lt-check">
           <input id="chkMerge" type="checkbox" checked />
-          <span>Fusionner avec l’historique existant du profil (recommandé)</span>
+          Fusionner avec l’existant
         </label>
 
         <label class="lt-check">
           <input id="chkFilterMinQuality" type="checkbox" checked />
-          <span>Respecter <code>min_quality</code> lors de l’affichage (si présent)</span>
+          Respecter la qualité minimale
         </label>
       </div>
 
       <div id="importStatus" class="lt-status" aria-live="polite"></div>
     </section>
 
+    <!-- ===================== -->
+    <!-- Consultation -->
+    <!-- ===================== -->
     <section class="card">
-      <h2>Consulter l’historique</h2>
+      <h2>Historique des loots</h2>
 
       <div class="lt-row lt-row-wrap">
         <label class="lt-label">
-          Profil (Recorder)
+          Profil
           <select id="characterSelect" class="lt-select"></select>
         </label>
 
         <label class="lt-label">
-          Filtre instance
-          <input id="instanceFilter" class="lt-input" type="text" placeholder="ex: Karazhan, Monastère..." />
+          Instance
+          <input id="instanceFilter" class="lt-input" type="text" placeholder="Karazhan, SM…" />
         </label>
 
         <label class="lt-label">
-          Filtre item
-          <input id="itemFilter" class="lt-input" type="text" placeholder="ex: Cape, Épée..." />
+          Item
+          <input id="itemFilter" class="lt-input" type="text" placeholder="Épée, Cape…" />
         </label>
 
-        <button id="btnRefresh" class="btn btn-secondary" type="button">Rafraîchir</button>
-      </div>
-
-      <div class="lt-row lt-row-wrap">
-        <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce profil (download)</button>
-        <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce profil (local)</button>
-        <button id="btnDeleteAll" class="btn btn-danger" type="button">Tout supprimer (local)</button>
+        <button id="btnRefresh" class="btn btn-secondary" type="button">
+          Rafraîchir
+        </button>
       </div>
 
       <div id="summary" class="lt-summary"></div>
 
-      <div class="lt-tableWrap" role="region" aria-label="Table des loots" tabindex="0">
+      <div class="lt-tableWrap" role="region">
         <table class="lt-table">
           <thead>
             <tr>
@@ -121,513 +136,30 @@
           <tbody id="lootTbody"></tbody>
         </table>
       </div>
-
-      <p class="hint">
-        Partage guilde : tout le monde charge le JSON du repo. Pour mettre à jour, remplace <code>json/loot_thunderstrike.json</code> et commit.
-      </p>
     </section>
 
-    <section class="card">
-      <h2>À propos</h2>
-      <ul>
-        <li>Le site lit le fichier partagé via <code>fetch()</code> (lecture seule).</li>
-        <li>Le navigateur stocke aussi en local pour filtrer rapidement.</li>
-        <li>Import local = pratique pour tester / fusionner avant de committer dans <code>/json/</code>.</li>
-      </ul>
-    </section>
+    <footer class="footer">
+      Loot Tracker — JSON partagé + cache local navigateur
+    </footer>
 
-    <div class="footer">
-      Loot Tracker — JSON addon → lecture partagée (/json) + cache local → filtrage / consultation
-    </div>
   </main>
 
-  <script src="../assets/js/nav.js"></script>
-
-  <script>
-    // ==========================
-    // Storage format (local)
-    // ==========================
-    // localStorage keys:
-    //   LT_INDEX = JSON array of profile IDs
-    //   LT_CHAR_<id> = JSON of { id, realm, player(profile), history: [payloads...] }
-    //
-    // id = realm + "|" + player(profile)
-
-    const LT_INDEX = "LT_INDEX_V3";
-    const LT_PREFIX = "LT_CHAR_V3_";
-
-    function $(id) { return document.getElementById(id); }
-
-    function safeJsonParse(text) {
-      try { return { ok: true, value: JSON.parse(text) }; }
-      catch (e) { return { ok: false, error: String(e) }; }
-    }
-
-    function charId(realm, player) {
-      return `${String(realm)}|${String(player)}`;
-    }
-
-    function loadIndex() {
-      const raw = localStorage.getItem(LT_INDEX);
-      if (!raw) return [];
-      const p = safeJsonParse(raw);
-      return p.ok && Array.isArray(p.value) ? p.value : [];
-    }
-
-    function saveIndex(ids) {
-      localStorage.setItem(LT_INDEX, JSON.stringify(ids));
-    }
-
-    function loadChar(id) {
-      const raw = localStorage.getItem(LT_PREFIX + id);
-      if (!raw) return null;
-      const p = safeJsonParse(raw);
-      return p.ok ? p.value : null;
-    }
-
-    function saveChar(obj) {
-      localStorage.setItem(LT_PREFIX + obj.id, JSON.stringify(obj));
-    }
-
-    function addCharToIndex(id) {
-      const ids = loadIndex();
-      if (!ids.includes(id)) {
-        ids.push(id);
-        ids.sort((a,b) => a.localeCompare(b));
-        saveIndex(ids);
-      }
-    }
-
-    function setStatus(msg, kind="info") {
-      const el = $("importStatus");
-      el.className = "lt-status " + (kind ? "is-" + kind : "");
-      el.textContent = msg;
-    }
-
-    function setSharedStatus(msg, kind="info") {
-      const el = $("sharedStatus");
-      el.className = "lt-status " + (kind ? "is-" + kind : "");
-      el.textContent = msg;
-    }
-
-    // ==========================
-    // Support 2 schemas:
-    //   A) Old: {player, realm, runs:[{bosses:[{loots:[]}]}]}
-    //   B) New: {schema:1, realm, recorder, events:[{winner, winning_roll, item, itemID, quality, ...}]}
-    // Normalize into a "history payload" shape for storage.
-    // ==========================
-    function normalizePayload(raw) {
-      if (!raw || typeof raw !== "object") throw new Error("JSON invalide: pas un objet");
-
-      // New schema
-      if (raw.schema === 1 && Array.isArray(raw.events)) {
-        if (!raw.realm) throw new Error("JSON invalide: 'realm' manquant");
-        const recorder = raw.recorder || raw.profile || "Unknown";
-        return {
-          _schema: "events_v1",
-          schema: 1,
-          realm: raw.realm,
-          player: recorder, // profil
-          recorder: recorder,
-          exported_at: raw.exported_at || "",
-          events: raw.events
-        };
-      }
-
-      // Old schema
-      if (raw.player && raw.realm && Array.isArray(raw.runs)) {
-        return {
-          _schema: "runs_v1",
-          ...raw,
-          runs: raw.runs || []
-        };
-      }
-
-      throw new Error("JSON invalide: format non reconnu (schema events ou runs attendu)");
-    }
-
-    // ==========================
-    // Extract rows for table
-    // ==========================
-    function qualityLabel(q) {
-      const map = { 0:"Médiocre", 1:"Commun", 2:"Inhabituel", 3:"Rare", 4:"Épique", 5:"Légendaire" };
-      return map[Number(q)] ?? String(q);
-    }
-
-    function qualityClass(q) {
-      return "q" + String(Number(q) ?? 0);
-    }
-
-    function extractRowsFromPayload(payload, respectMinQuality=true) {
-      const rows = [];
-
-      // New schema: events[]
-      if (payload._schema === "events_v1") {
-        for (const ev of payload.events || []) {
-          const q = Number(ev.quality ?? 0);
-          rows.push({
-            date: ev.time_human || "",
-            instance: ev.instance || "",
-            boss: ev.boss || "",
-            winner: ev.winner || "",
-            item: ev.item || "",
-            itemID: Number(ev.itemID || 0),                 // ✅ IMPORTANT pour Wowhead
-            quality: q,
-            quality_name: ev.quality_name || qualityLabel(q),
-            roll: ev.winning_roll ?? null,
-          });
-        }
-        return rows;
-      }
-
-      // Old schema: runs/bosses/loots
-      const minQ = Number(payload.min_quality ?? 0);
-
-      for (const run of (payload.runs || [])) {
-        const instance = (run.instance_override && run.instance_override.trim()) ? run.instance_override : (run.instance || "");
-        const started = run.started_at_human || payload.date || "";
-
-        for (const boss of (run.bosses || [])) {
-          const bossName = boss.name || "";
-          for (const loot of (boss.loots || [])) {
-            const q = Number(loot.quality ?? 0);
-            if (respectMinQuality && q < minQ) continue;
-
-            rows.push({
-              date: loot.time_human || started,
-              instance,
-              boss: bossName,
-              winner: loot.player || payload.player,
-              item: loot.item || "",
-              itemID: Number(loot.itemID || 0),             // ✅ IMPORTANT pour Wowhead
-              quality: q,
-              quality_name: loot.quality_name || qualityLabel(q),
-              roll: loot.rand ?? null,
-            });
-          }
-        }
-      }
-      return rows;
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, c => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-      }[c]));
-    }
-
-    // ==========================
-    // Storage operations
-    // ==========================
-    function importPayload(rawObj, merge=true) {
-      const payload = normalizePayload(rawObj);
-
-      const id = charId(payload.realm, payload.player);
-      const existing = loadChar(id);
-
-      const record = existing && merge ? existing : {
-        id,
-        realm: payload.realm,
-        player: payload.player,
-        created_at: new Date().toISOString(),
-        history: [],
-        _seen: {}
-      };
-
-      // Signature anti-dup (best effort)
-      let sig = "";
-      if (payload._schema === "events_v1") {
-        const last = (payload.events && payload.events.length) ? payload.events[payload.events.length - 1].time : "";
-        sig = `events|${payload.exported_at}|${payload.events.length}|${last}`;
-      } else {
-        sig = `runs|${payload.date}|${payload.started_at}|${(payload.runs||[]).length}`;
-      }
-
-      if (!record._seen[sig]) {
-        record.history.push(payload);
-        record._seen[sig] = true;
-      }
-
-      record.updated_at = new Date().toISOString();
-
-      saveChar(record);
-      addCharToIndex(id);
-      return record;
-    }
-
-    function renderCharacterSelect() {
-      const sel = $("characterSelect");
-      const ids = loadIndex();
-      sel.innerHTML = "";
-
-      if (ids.length === 0) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "Aucun profil (charge / importe un JSON)";
-        sel.appendChild(opt);
-        sel.disabled = true;
-        return;
-      }
-
-      sel.disabled = false;
-      for (const id of ids) {
-        const c = loadChar(id);
-        const opt = document.createElement("option");
-        opt.value = id;
-        opt.textContent = c ? `${c.player} — ${c.realm}` : id;
-        sel.appendChild(opt);
-      }
-    }
-
-    function getSelectedChar() {
-      const id = $("characterSelect").value;
-      if (!id) return null;
-      return loadChar(id);
-    }
-
-    function flattenHistory(charObj) {
-      const respect = $("chkFilterMinQuality").checked;
-      let rows = [];
-      for (const payload of (charObj.history || [])) {
-        rows = rows.concat(extractRowsFromPayload(payload, respect));
-      }
-      return rows;
-    }
-
-    function applyFilters(rows) {
-      const inst = $("instanceFilter").value.trim().toLowerCase();
-      const item = $("itemFilter").value.trim().toLowerCase();
-
-      return rows.filter(r => {
-        const okInst = !inst || (r.instance || "").toLowerCase().includes(inst);
-        const okItem = !item || (r.item || "").toLowerCase().includes(item);
-        return okInst && okItem;
-      });
-    }
-
-    function renderTable() {
-      const tbody = $("lootTbody");
-      tbody.innerHTML = "";
-
-      const c = getSelectedChar();
-      if (!c) {
-        $("summary").textContent = "Aucun profil sélectionné.";
-        return;
-      }
-
-      let rows = flattenHistory(c);
-      rows = applyFilters(rows);
-
-      // Sort newest first (best effort)
-      rows.sort((a,b) => String(b.date).localeCompare(String(a.date)));
-
-      // Summary
-      const total = rows.length;
-      const byQ = {0:0,1:0,2:0,3:0,4:0,5:0};
-      for (const r of rows) byQ[r.quality] = (byQ[r.quality] || 0) + 1;
-
-      $("summary").innerHTML = `
-        <div class="lt-summaryGrid">
-          <div class="lt-sumCard"><div class="lt-sumNum">${total}</div><div class="lt-sumLabel">Loots (filtrés)</div></div>
-          <div class="lt-sumCard ${qualityClass(1)}"><div class="lt-sumNum">${byQ[1]||0}</div><div class="lt-sumLabel">Commun</div></div>
-          <div class="lt-sumCard ${qualityClass(2)}"><div class="lt-sumNum">${byQ[2]||0}</div><div class="lt-sumLabel">Inhabituel</div></div>
-          <div class="lt-sumCard ${qualityClass(3)}"><div class="lt-sumNum">${byQ[3]||0}</div><div class="lt-sumLabel">Rare</div></div>
-          <div class="lt-sumCard ${qualityClass(4)}"><div class="lt-sumNum">${byQ[4]||0}</div><div class="lt-sumLabel">Épique</div></div>
-          <div class="lt-sumCard ${qualityClass(5)}"><div class="lt-sumNum">${byQ[5]||0}</div><div class="lt-sumLabel">Légendaire</div></div>
-        </div>
-      `;
-
-      if (rows.length === 0) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="7" class="lt-empty">Aucun loot (ou tout filtré).</td>`;
-        tbody.appendChild(tr);
-        return;
-      }
-
-      for (const r of rows) {
-        const tr = document.createElement("tr");
-        const rollStr = (r.roll === null || r.roll === undefined) ? "—" : String(r.roll);
-
-        const itemText = escapeHtml(r.item || "");
-        const itemId = Number(r.itemID || 0);
-
-        const itemHtml = itemId > 0
-          ? `<a href="https://www.wowhead.com/classic/fr/item=${itemId}"
-                target="_blank"
-                rel="noreferrer"
-                data-wowhead="item=${itemId}">
-                ${itemText}
-             </a>`
-          : itemText;
-
-        tr.innerHTML = `
-          <td>${escapeHtml(r.date || "")}</td>
-          <td>${escapeHtml(r.instance || "")}</td>
-          <td>${escapeHtml(r.boss || "")}</td>
-          <td>${escapeHtml(r.winner || "")}</td>
-          <td class="lt-item">${itemHtml}</td>
-          <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
-          <td>${escapeHtml(rollStr)}</td>
-        `;
-        tbody.appendChild(tr);
-      }
-
-      // ✅ Wowhead: re-scan links added dynamically
-      if (window.$WowheadPower && typeof window.$WowheadPower.refreshLinks === "function") {
-        window.$WowheadPower.refreshLinks();
-      }
-    }
-
-    function downloadJson(filename, obj) {
-      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function exportSelectedCharacter() {
-      const c = getSelectedChar();
-      if (!c) return;
-
-      const payload = {
-        schema: 1,
-        exported_at: new Date().toISOString(),
-        realm: c.realm,
-        profile: c.player,
-        history: c.history || []
-      };
-
-      const safeProfile = String(c.player).replace(/[^a-z0-9_-]/gi, "_");
-      const safeRealm = String(c.realm).replace(/[^a-z0-9_-]/gi, "_");
-      downloadJson(`${safeProfile}_${safeRealm}_loot_history.json`, payload);
-    }
-
-    // ==========================
-    // Shared JSON loading (repo)
-    // ==========================
-    async function loadSharedJson() {
-      // loot_tracker.html is in /pages/ -> go up one level to /json/
-      const url = "../json/loot_thunderstrike.json";
-
-      try {
-        setSharedStatus("Chargement du JSON partagé…", "info");
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-
-        // merge = true
-        const rec = importPayload(data, true);
-
-        setSharedStatus(`OK: chargé depuis ${url}`, "ok");
-        setStatus(`Import partagé OK: ${rec.player} — ${rec.realm} (historique: ${rec.history.length})`, "ok");
-
-        renderCharacterSelect();
-        $("characterSelect").value = rec.id;
-        renderTable();
-      } catch (e) {
-        setSharedStatus("Échec chargement partagé: " + (e.message || String(e)), "warn");
-      }
-    }
-
-    // ==========================
-    // Wire UI
-    // ==========================
-    document.addEventListener("DOMContentLoaded", () => {
-      renderCharacterSelect();
-      renderTable();
-
-      // Auto-load shared JSON
-      loadSharedJson();
-
-      $("btnReloadShared").addEventListener("click", () => loadSharedJson());
-
-      $("btnClearPaste").addEventListener("click", () => {
-        $("pasteArea").value = "";
-        setStatus("Zone texte vidée.", "info");
-      });
-
-      $("btnImportFile").addEventListener("click", async () => {
-        const file = $("fileInput").files && $("fileInput").files[0];
-        if (!file) { setStatus("Sélectionne un fichier JSON.", "warn"); return; }
-
-        const text = await file.text();
-        const parsed = safeJsonParse(text);
-        if (!parsed.ok) { setStatus("JSON invalide: " + parsed.error, "error"); return; }
-
-        try {
-          const merge = $("chkMerge").checked;
-          const rec = importPayload(parsed.value, merge);
-          setStatus(`Import OK: ${rec.player} — ${rec.realm} (historique: ${rec.history.length})`, "ok");
-          renderCharacterSelect();
-          $("characterSelect").value = rec.id;
-          renderTable();
-        } catch (e) {
-          setStatus("Erreur import: " + String(e), "error");
-        }
-      });
-
-      $("btnImportPaste").addEventListener("click", () => {
-        const text = $("pasteArea").value.trim();
-        if (!text) { setStatus("Colle un JSON dans la zone texte.", "warn"); return; }
-
-        const parsed = safeJsonParse(text);
-        if (!parsed.ok) { setStatus("JSON invalide: " + parsed.error, "error"); return; }
-
-        try {
-          const merge = $("chkMerge").checked;
-          const rec = importPayload(parsed.value, merge);
-          setStatus(`Import OK: ${rec.player} — ${rec.realm} (historique: ${rec.history.length})`, "ok");
-          renderCharacterSelect();
-          $("characterSelect").value = rec.id;
-          renderTable();
-        } catch (e) {
-          setStatus("Erreur import: " + String(e), "error");
-        }
-      });
-
-      $("btnRefresh").addEventListener("click", () => renderTable());
-      $("characterSelect").addEventListener("change", () => renderTable());
-      $("instanceFilter").addEventListener("input", () => renderTable());
-      $("itemFilter").addEventListener("input", () => renderTable());
-      $("chkFilterMinQuality").addEventListener("change", () => renderTable());
-
-      $("btnExportCharacter").addEventListener("click", () => exportSelectedCharacter());
-
-      $("btnDeleteCharacter").addEventListener("click", () => {
-        const c = getSelectedChar();
-        if (!c) return;
-        if (!confirm(`Supprimer localement ${c.player} — ${c.realm} ?`)) return;
-
-        localStorage.removeItem(LT_PREFIX + c.id);
-        const ids = loadIndex().filter(x => x !== c.id);
-        saveIndex(ids);
-
-        setStatus(`Supprimé: ${c.player} — ${c.realm}`, "info");
-        renderCharacterSelect();
-        renderTable();
-      });
-
-      $("btnDeleteAll").addEventListener("click", () => {
-        if (!confirm("Tout supprimer localement ?")) return;
-        const ids = loadIndex();
-        for (const id of ids) localStorage.removeItem(LT_PREFIX + id);
-        localStorage.removeItem(LT_INDEX);
-        setStatus("Tout supprimé localement.", "info");
-        renderCharacterSelect();
-        renderTable();
-      });
-    });
-  </script>
-
+  <!-- ===================== -->
+  <!-- JS page -->
+  <!-- ===================== -->
+  <script src="../assets/js/pages/loot_tracker.js"></script>
+
+  <!-- ===================== -->
   <!-- Wowhead tooltips -->
+  <!-- ===================== -->
   <script>
-    var whTooltips = { colorLinks: true, iconizeLinks: false, renameLinks: false };
+    var whTooltips = {
+      colorLinks: true,
+      iconizeLinks: false,
+      renameLinks: false
+    };
   </script>
-  <script src="https://www.wowhead.com/classic/widgets/power.js"></script>
+  <script src="https://wowhead.com/classic/widgets/power.js"></script>
+
 </body>
 </html>
