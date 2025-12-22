@@ -194,3 +194,26 @@ select {
   cursor: not-allowed;
 }
 
+/* ==========================
+   Select Qualité (WoW colors)
+========================== */
+
+.lt-quality-select option[value="1"] {
+  color: #ffffff; /* Commun */
+}
+
+.lt-quality-select option[value="2"] {
+  color: #1eff00; /* Inhabituel (vert) */
+}
+
+.lt-quality-select option[value="3"] {
+  color: #0070dd; /* Rare (bleu) */
+}
+
+.lt-quality-select option[value="4"] {
+  color: #a335ee; /* Épique (violet) */
+}
+
+.lt-quality-select option[value="5"] {
+  color: #ff8000; /* Légendaire (orange) */
+}
