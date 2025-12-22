@@ -11,14 +11,54 @@ body.index-page .card{
   text-align: left;
 }
 
-/* =====================================================
-   NOTE:
-   Ton index actuel utilise <section class="grid"> + <article class="card">
-   PAS <div class="bubbles">. Donc la partie “bulles” ne s'applique pas.
-   Je la laisse mais elle est inoffensive tant que tu n'utilises pas .bubbles/.bubble.
-   ===================================================== */
+/* ===== Cartes homepage : mêmes hauteurs (GARANTI) ===== */
 
-/* ===== Bulles homepage (si un jour tu les utilises) ===== */
+body.index-page .grid{
+  display: grid;
+  gap: 18px;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch; /* clé : les items prennent la hauteur de la ligne */
+}
+
+@media (max-width: 920px){
+  body.index-page .grid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px){
+  body.index-page .grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* IMPORTANT :
+   - height:100% marche si la ligne est étirée (align-items:stretch)
+   - min-height garantit l’égalité même si un style externe casse l’étirement
+*/
+body.index-page .grid > .card{
+  height: 100% !important;
+  min-height: 240px;               /* ajuste si tu veux plus/moins haut */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* CTA toujours collé en bas */
+body.index-page .grid > .card > a.btn,
+body.index-page .grid > .card > a.btn-primary,
+body.index-page .grid > .card > span.btn-disabled,
+body.index-page .grid > .card > .btn,
+body.index-page .grid > .card > :last-child{
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+/* ===========================
+   OPTIONNEL : BULLLES (non utilisées sur ton HTML actuel)
+   => je les laisse mais elles ne s'appliquent pas tant que tu n'as pas .bubbles/.bubble
+   =========================== */
+
 body.index-page .bubbles{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -38,11 +78,9 @@ body.index-page .bubble{
   width: 180px;
   height: 180px;
   border-radius: 999px;
-
   display: grid;
   place-items: center;
   text-align: center;
-
   padding: 12px;
   position: relative;
   overflow: hidden;
@@ -104,76 +142,9 @@ body.index-page .bubble-label{
   line-height: 1.2;
 }
 
-body.index-page a.bubble,
-body.index-page .bubble.is-link{
-  cursor: pointer;
-  transition: transform .12s ease, background .12s ease, border-color .12s ease;
-}
-
-body.index-page a.bubble:hover,
-body.index-page .bubble.is-link:hover{
-  transform: translateY(-2px);
-  background:
-    radial-gradient(120px 120px at 30% 25%, rgba(255,255,255,0.18), transparent 60%),
-    radial-gradient(140px 120px at 70% 75%, rgba(122,162,255,0.24), transparent 60%),
-    rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.16);
-}
-
-body.index-page a.bubble:active,
-body.index-page .bubble.is-link:active{
-  transform: translateY(0);
-}
-
 @media (max-width: 520px){
   body.index-page .bubble{
     width: 150px;
     height: 150px;
   }
-}
-
-/* ===== Cartes homepage : mêmes hauteurs (TA VRAIE HOME) ===== */
-
-/* On étire les items et on force une “ligne” uniforme */
-body.index-page .grid{
-  display: grid;
-  gap: 18px;
-
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-
-  align-items: stretch;     /* étire les items */
-  grid-auto-rows: 1fr;      /* toutes les cases même hauteur */
-}
-
-@media (max-width: 920px){
-  body.index-page .grid{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 560px){
-  body.index-page .grid{
-    grid-template-columns: 1fr;
-  }
-}
-
-/* La carte remplit sa cellule + layout vertical */
-body.index-page .grid > .card{
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* IMPORTANT:
-   - a:last-child marche pour les 2 premières cartes
-   - la 3e carte a un <span class="btn-disabled">, donc on l'inclut aussi
-   - .card-cta est supporté si tu veux le rajouter plus tard
-*/
-body.index-page .grid > .card > .card-cta,
-body.index-page .grid > .card > a.btn-primary,
-body.index-page .grid > .card > span.btn-disabled,
-body.index-page .grid > .card > :last-child{
-  margin-top: auto;
-  align-self: flex-start;
 }
