@@ -217,3 +217,9 @@ select {
 .lt-quality-select option[value="5"] {
   color: #ff8000; /* Légendaire (orange) */
 }
+
+.q1 { color: #ffffff; }
+.q2 { color: #1eff00; }
+.q3 { color: #0070dd; }
+.q4 { color: #a335ee; }
+.q5 { color: #ff8000; }
