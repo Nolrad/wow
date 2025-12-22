@@ -1,32 +1,26 @@
 // assets/js/nav.js
 (function () {
-
-  // Calcule la base du site automatiquement (utile sur GitHub Pages avec /repo/)
-  function getBasePath() {
-    const parts = location.pathname.split("/").filter(Boolean);
-
-    // Cas GitHub Pages: https://username.github.io/repo/...
-    // => le 1er segment est le nom du repo
-    if (location.hostname.endsWith("github.io") && parts.length > 0) {
-      return "/" + parts[0];
-    }
-
-    // Cas domaine custom ou user page: https://username.github.io/ (pas de /repo)
-    return "";
-  }
-
-  const BASE = getBasePath();
-
-  // Définis ici toutes tes pages (liens ABSOLUS via BASE)
+  // Définis ici toutes tes pages
   const NAV_ITEMS = [
-    { label: "Accueil", href: `${BASE}/index.html`, key: "index" },
-    { label: "Joaillerie", href: `${BASE}/pages/joaillerie.html`, key: "joaillerie" },
-    { label: "Raids", href: `${BASE}/pages/raid.html`, key: "raid" },
-    { label: "Décompte", href: `${BASE}/pages/decompte.html`, key: "decompte" },
+    { label: "Accueil", href: "../index.html", key: "index" },
+    { label: "Joaillerie", href: "./joaillerie.html", key: "joaillerie" },
+    { label: "Raids", href: "./raid.html", key: "raid" },
+    { label: "Décompte", href: "./decompte.html", key: "decompte" },
+    { label: "Loot Tracker", href: "./loot_tracker.html", key: "loot_tracker" }, // ✅ AJOUT
   ];
 
-  // Brand => Accueil
-  const brandHref = `${BASE}/index.html`;
+  // Détecte si on est dans /pages/ ou à la racine
+  const isInPagesFolder = location.pathname.includes("/pages/");
+  const brandHref = isInPagesFolder ? "../index.html" : "./index.html";
+
+  // Corrige les href selon la page courante
+  const items = NAV_ITEMS.map((it) => {
+    if (isInPagesFolder) return it; // déjà bon (pages -> ../index.html et ./xxx.html)
+    // On est à la racine (index.html), donc on doit pointer vers ./pages/...
+    const href =
+      it.key === "index" ? "./index.html" : "./pages/" + it.href.replace("./", "");
+    return { ...it, href };
+  });
 
   // Construit la navbar
   const nav = document.createElement("nav");
@@ -36,7 +30,7 @@
       <a class="nav-brand" href="${brandHref}">Home</a>
       <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu">Menu</button>
       <div class="nav-links" id="nav-links">
-        ${NAV_ITEMS.map(i => `<a href="${i.href}" data-nav="${i.key}">${i.label}</a>`).join("")}
+        ${items.map(i => `<a href="${i.href}" data-nav="${i.key}">${i.label}</a>`).join("")}
       </div>
     </div>
   `;
@@ -53,22 +47,17 @@
 
   // Active link (en fonction du fichier)
   const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-
-  // Pages simples
   const map = {
     "index.html": "index",
     "joaillerie.html": "joaillerie",
     "raid.html": "raid",
     "decompte.html": "decompte",
+    "loot_tracker.html": "loot_tracker", // ✅ AJOUT
   };
-
-  // Si on est dans /pages/raids/* => onglet "Raids" actif
-  const isRaidDetail = location.pathname.includes("/pages/raids/");
-
-  const activeKey = isRaidDetail ? "raid" : map[file];
+  const activeKey = map[file];
 
   if (activeKey) {
-    document.querySelectorAll(".nav-links a").forEach(a => {
+    document.querySelectorAll(".nav-links a").forEach((a) => {
       if (a.dataset.nav === activeKey) a.classList.add("active");
     });
   }
