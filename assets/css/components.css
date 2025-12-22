@@ -8,7 +8,8 @@
   backdrop-filter: blur(10px);
 }
 
-.card + .card{ margin-top: 18px; }
+/* optionnel: éviter d’ajouter des marges en grid */
+.grid .card + .card{ margin-top: 0; }
 
 .card h2{
   margin: 0 0 10px;
