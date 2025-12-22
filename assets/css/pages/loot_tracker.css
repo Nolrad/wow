@@ -135,3 +135,62 @@
 .lt-quality.q3, .lt-sumCard.q3{ color: #0070dd; }
 .lt-quality.q4, .lt-sumCard.q4{ color: #a335ee; }
 .lt-quality.q5, .lt-sumCard.q5{ color: #ff8000; }
+
+/* ==========================
+   Select (profil / filtres)
+   ========================== */
+
+.lt-select,
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-color: #111827;        /* fond sombre */
+  color: #e5e7eb;                   /* texte clair */
+  border: 1px solid #374151;
+  border-radius: 8px;
+
+  padding: 10px 36px 10px 12px;
+  font-size: 0.95rem;
+  line-height: 1.2;
+
+  cursor: pointer;
+}
+
+/* Flèche custom */
+.lt-select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+    linear-gradient(135deg, #9ca3af 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* Hover */
+.lt-select:hover {
+  border-color: #60a5fa;
+}
+
+/* Focus */
+.lt-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+}
+
+/* Options (menu déroulant) */
+.lt-select option {
+  background-color: #111827;
+  color: #e5e7eb;
+}
+
+/* Désactivé */
+.lt-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
