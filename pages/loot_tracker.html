@@ -16,12 +16,24 @@
 
   <header class="page-header">
     <h1>Loot Tracker</h1>
-    <p>Importe l’export JSON de l’addon (format <code>events[]</code>), stocke localement par “recorder”, et consulte l’historique des loots.</p>
+    <p>Importe l’export JSON de l’addon, stocke localement par personnage, consulte l’historique, et charge un JSON partagé depuis <code>/json/</code>.</p>
   </header>
 
   <main class="container">
     <section class="card">
-      <h2>Importer un export</h2>
+      <h2>Données partagées (repo GitHub)</h2>
+      <p class="hint">
+        Ton JSON partagé est lu depuis <code>../json/loot_thunderstrike.json</code> (repo <strong>nolrad/wow</strong>).
+        Un site statique ne peut pas écrire dans ce dossier : pour mettre à jour, il faut remplacer le fichier puis commit/push.
+      </p>
+      <div class="lt-row lt-row-wrap">
+        <button id="btnReloadShared" class="btn btn-secondary" type="button">Recharger depuis le site</button>
+        <span id="sharedStatus" class="lt-status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Importer un export (local navigateur)</h2>
 
       <div class="lt-grid">
         <div class="lt-block">
@@ -32,20 +44,18 @@
             <button id="btnClearPaste" class="btn btn-secondary" type="button">Vider la zone texte</button>
           </div>
           <p class="hint">
-            Astuce : <strong>/rlt ui</strong> → Exporter JSON → copier/coller ci-dessous, ou enregistre le fichier et importe-le.
+            Astuce : tu peux aussi utiliser <strong>/rlt export</strong>, copier le JSON, puis coller ci-dessous.
           </p>
         </div>
 
         <div class="lt-block">
           <h3>Copier / Coller JSON</h3>
           <textarea id="pasteArea" class="lt-textarea" placeholder="Colle ici ton export JSON complet..."></textarea>
-          <div class="lt-row lt-row-wrap">
+          <div class="lt-row">
             <button id="btnImportPaste" class="btn btn-primary" type="button">Importer le JSON collé</button>
-            <button id="btnCopyPaste" class="btn btn-secondary" type="button">Copier la zone</button>
           </div>
           <p class="hint">
-            Le stockage est <strong>local au navigateur</strong>. Pour alimenter <code>/json/</code> (dans ton repo) :
-            exporte (download) puis dépose le fichier dans <code>/json/</code> et commit.
+            Le stockage est <strong>local au navigateur</strong> (localStorage). Tu peux ensuite exporter en download si besoin.
           </p>
         </div>
       </div>
@@ -53,7 +63,7 @@
       <div class="lt-row lt-row-wrap">
         <label class="lt-check">
           <input id="chkMerge" type="checkbox" checked />
-          <span>Fusionner avec l’historique existant du recorder (recommandé)</span>
+          <span>Fusionner avec l’historique existant du perso (recommandé)</span>
         </label>
 
         <label class="lt-check">
@@ -70,7 +80,7 @@
 
       <div class="lt-row lt-row-wrap">
         <label class="lt-label">
-          Recorder (celui qui enregistre)
+          Personnage
           <select id="characterSelect" class="lt-select"></select>
         </label>
 
@@ -81,24 +91,17 @@
 
         <label class="lt-label">
           Filtre item
-          <input id="itemFilter" class="lt-input" type="text" placeholder="ex: Chapeau, Égide..." />
+          <input id="itemFilter" class="lt-input" type="text" placeholder="ex: Cape, Épée..." />
         </label>
 
         <button id="btnRefresh" class="btn btn-secondary" type="button">Rafraîchir</button>
       </div>
 
       <div class="lt-row lt-row-wrap">
-        <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce recorder (download)</button>
-        <button id="btnCopyCharacter" class="btn btn-secondary" type="button">Copier l’export (clipboard)</button>
-        <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce recorder (local)</button>
+        <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce perso (download)</button>
+        <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce perso (local)</button>
         <button id="btnDeleteAll" class="btn btn-danger" type="button">Tout supprimer (local)</button>
       </div>
-
-      <p class="hint">
-        Tri : clique sur un en-tête (Date / Instance / Boss / Joueur / Item / Qualité / Rand). Re-clique pour inverser.
-        <br />
-        Dossier conseillé dans le repo : <code>/json/</code> à la racine.
-      </p>
 
       <div id="summary" class="lt-summary"></div>
 
@@ -109,43 +112,48 @@
               <th data-sort="date">Date</th>
               <th data-sort="instance">Instance</th>
               <th data-sort="boss">Boss</th>
-              <th data-sort="player">Joueur</th>
+              <th data-sort="winner">Vainqueur</th>
               <th data-sort="item">Item</th>
               <th data-sort="quality">Qualité</th>
-              <th data-sort="rand">Rand</th>
+              <th data-sort="roll">Rand</th>
             </tr>
           </thead>
           <tbody id="lootTbody"></tbody>
         </table>
       </div>
+
+      <p class="hint">
+        Partage guilde : tout le monde charge le JSON du repo. Pour mettre à jour, remplace <code>json/loot_thunderstrike.json</code> et commit.
+      </p>
     </section>
 
     <section class="card">
-      <h2>À propos du dossier /json</h2>
+      <h2>À propos</h2>
       <ul>
-        <li>Sur un site statique (GitHub Pages), on ne peut pas écrire automatiquement dans <code>/json/</code> depuis le navigateur.</li>
-        <li>Workflow : <strong>import → stockage local → export (download) → tu copies dans /json → commit</strong>.</li>
+        <li>Le site lit le fichier partagé via <code>fetch()</code> (lecture seule).</li>
+        <li>Le navigateur stocke aussi en local pour filtrer rapidement.</li>
+        <li>Import local = pratique pour tester / fusionner avant de committer dans <code>/json/</code>.</li>
       </ul>
     </section>
 
     <div class="footer">
-      Loot Tracker — import JSON addon → stockage local → tri → export “prêt à déposer”
+      Loot Tracker — JSON addon → lecture partagée (/json) + cache local → filtrage / consultation
     </div>
   </main>
 
   <script src="../assets/js/nav.js"></script>
   <script>
-    // =========================================================
-    // Loot Tracker (localStorage) - supporte:
-    //  - nouveau format: { schema, exported_at, realm, recorder, events:[...] }
-    //  - ancien format (fallback): { realm, player, runs:[{bosses:[{loots:[]}]}] }
-    // =========================================================
+    // ==========================
+    // Storage format (local)
+    // ==========================
+    // localStorage keys:
+    //   LT_INDEX = JSON array of character IDs
+    //   LT_CHAR_<id> = JSON of { id, realm, player, history: [payloads...] }
+    //
+    // id = realm + "|" + player
 
-    const LT_INDEX = "LT_INDEX_V1";
-    const LT_PREFIX = "LT_CHAR_V1_";
-
-    // Etat de tri (clic sur entêtes)
-    let SORT = { key: "date", dir: "desc" }; // desc = récent d'abord
+    const LT_INDEX = "LT_INDEX_V2";
+    const LT_PREFIX = "LT_CHAR_V2_";
 
     function $(id) { return document.getElementById(id); }
 
@@ -195,152 +203,157 @@
       el.textContent = msg;
     }
 
+    function setSharedStatus(msg, kind="info") {
+      const el = $("sharedStatus");
+      el.className = "lt-status " + (kind ? "is-" + kind : "");
+      el.textContent = msg;
+    }
+
+    // ==========================
+    // Support 2 schemas:
+    //   A) Old: {player, realm, runs:[{bosses:[{loots:[]}]}]}
+    //   B) New: {schema:1, realm, recorder, events:[{winner, winning_roll, item, ...}]}
+    // Normalize into a "history payload" shape for storage.
+    // ==========================
+    function normalizePayload(raw) {
+      if (!raw || typeof raw !== "object") throw new Error("JSON invalide: pas un objet");
+
+      // New schema
+      if (raw.schema === 1 && Array.isArray(raw.events)) {
+        if (!raw.realm) throw new Error("JSON invalide: 'realm' manquant");
+        const recorder = raw.recorder || "Unknown";
+        return {
+          _schema: "events_v1",
+          schema: 1,
+          realm: raw.realm,
+          player: recorder,            // on utilise recorder comme "profil" de stockage
+          recorder: recorder,
+          exported_at: raw.exported_at || "",
+          events: raw.events
+        };
+      }
+
+      // Old schema
+      if (raw.player && raw.realm && Array.isArray(raw.runs)) {
+        return {
+          _schema: "runs_v1",
+          ...raw,
+          runs: raw.runs || []
+        };
+      }
+
+      throw new Error("JSON invalide: format non reconnu (schema events ou runs attendu)");
+    }
+
+    // ==========================
+    // Extract rows for table
+    // ==========================
+    function qualityLabel(q) {
+      const map = { 0:"Médiocre", 1:"Commun", 2:"Inhabituel", 3:"Rare", 4:"Épique", 5:"Légendaire" };
+      return map[Number(q)] ?? String(q);
+    }
+
+    function qualityClass(q) {
+      return "q" + String(Number(q) ?? 0);
+    }
+
+    function extractRowsFromPayload(payload, respectMinQuality=true) {
+      const rows = [];
+
+      // New schema: events[]
+      if (payload._schema === "events_v1") {
+        // No min_quality in this schema => optional filter does nothing unless we infer (keep all)
+        for (const ev of payload.events || []) {
+          const q = Number(ev.quality ?? 0);
+          rows.push({
+            date: ev.time_human || "",
+            instance: ev.instance || "",
+            boss: ev.boss || "",
+            winner: ev.winner || "",
+            item: ev.item || "",
+            quality: q,
+            quality_name: ev.quality_name || qualityLabel(q),
+            roll: ev.winning_roll ?? null,
+          });
+        }
+        return rows;
+      }
+
+      // Old schema: runs/bosses/loots
+      const minQ = Number(payload.min_quality ?? 0);
+
+      for (const run of (payload.runs || [])) {
+        const instance = (run.instance_override && run.instance_override.trim()) ? run.instance_override : (run.instance || "");
+        const started = run.started_at_human || payload.date || "";
+
+        for (const boss of (run.bosses || [])) {
+          const bossName = boss.name || "";
+          for (const loot of (boss.loots || [])) {
+            const q = Number(loot.quality ?? 0);
+            if (respectMinQuality && q < minQ) continue;
+
+            rows.push({
+              date: loot.time_human || started,
+              instance,
+              boss: bossName,
+              winner: loot.player || payload.player,
+              item: loot.item || "",
+              quality: q,
+              quality_name: loot.quality_name || qualityLabel(q),
+              roll: loot.rand ?? null,
+            });
+          }
+        }
+      }
+      return rows;
+    }
+
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c => ({
         "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
       }[c]));
     }
 
-    function qualityLabel(q) {
-      const map = {
-        0: "Médiocre",
-        1: "Commun",
-        2: "Inhabituel",
-        3: "Rare",
-        4: "Épique",
-        5: "Légendaire",
+    // ==========================
+    // Storage operations
+    // ==========================
+    function importPayload(rawObj, merge=true) {
+      const payload = normalizePayload(rawObj);
+
+      const id = charId(payload.realm, payload.player);
+      const existing = loadChar(id);
+
+      const record = existing && merge ? existing : {
+        id,
+        realm: payload.realm,
+        player: payload.player,
+        created_at: new Date().toISOString(),
+        history: [],
+        _seen: {}
       };
-      return map[q] ?? String(q);
-    }
 
-    function qualityClass(q) {
-      return "q" + String(q);
-    }
-
-    // --------------------------
-    // Normalisation
-    // --------------------------
-    function normalizeExport(raw) {
-      if (!raw || typeof raw !== "object") throw new Error("JSON invalide: pas un objet");
-      if (!raw.realm) throw new Error("JSON invalide: champ 'realm' manquant");
-
-      // Nouveau format: schema + recorder + events[]
-      if (Array.isArray(raw.events)) {
-        raw.schema = Number(raw.schema ?? 1);
-        raw.recorder = raw.recorder || "Unknown";
-        raw.exported_at = raw.exported_at || new Date().toISOString();
-        raw.events = Array.isArray(raw.events) ? raw.events : [];
-        raw.min_quality = Number(raw.min_quality ?? 0);
-        return raw;
+      // Signature anti-dup (best effort)
+      let sig = "";
+      if (payload._schema === "events_v1") {
+        // Use exported_at + events count + last event time
+        const last = (payload.events && payload.events.length) ? payload.events[payload.events.length - 1].time : "";
+        sig = `events|${payload.exported_at}|${payload.events.length}|${last}`;
+      } else {
+        sig = `runs|${payload.date}|${payload.started_at}|${(payload.runs||[]).length}`;
       }
 
-      // Ancien format (fallback)
-      if (!raw.player) throw new Error("JSON invalide: champ 'player' manquant (ancien format)");
-      raw.runs = Array.isArray(raw.runs) ? raw.runs : [];
-      raw.min_quality = Number(raw.min_quality ?? 0);
-      return raw;
-    }
-
-    // --------------------------
-    // Extraction rows
-    // --------------------------
-    function extractLootRows(exportObj, respectMinQuality = true) {
-      const rows = [];
-
-      // Nouveau format: events[]
-      if (Array.isArray(exportObj.events)) {
-        const minQ = Number(exportObj.min_quality ?? 0);
-
-        for (const e of exportObj.events) {
-          const q = Number(e.quality ?? 0);
-          if (respectMinQuality && q < minQ) continue;
-
-          rows.push({
-            time: e.time ?? null,
-            date: e.time_human || "",
-            instance: e.instance || "",
-            boss: e.boss || "",
-            player: e.winner || "",
-            item: e.item || "",
-            quality: q,
-            quality_name: e.quality_name || "",
-            rand: e.winning_roll ?? null,
-          });
-        }
-
-        return rows;
+      if (!record._seen[sig]) {
+        record.history.push(payload);
+        record._seen[sig] = true;
       }
 
-      // Ancien format: runs/bosses/loots
-      const minQ = Number(exportObj.min_quality ?? 0);
+      record.updated_at = new Date().toISOString();
 
-      for (const run of (exportObj.runs || [])) {
-        const instance =
-          (run.instance_override && run.instance_override.trim())
-            ? run.instance_override
-            : (run.instance || "");
-
-        const started = run.started_at_human || exportObj.started_at || exportObj.date || "";
-
-        for (const boss of (run.bosses || [])) {
-          const bossName = boss.name || "";
-
-          for (const loot of (boss.loots || [])) {
-            const q = Number(loot.quality ?? 0);
-            if (respectMinQuality && q < minQ) continue;
-
-            rows.push({
-              time: loot.time ?? null,
-              date: loot.time_human || started,
-              instance,
-              boss: bossName,
-              player: loot.player || exportObj.player,
-              item: loot.item || "",
-              quality: q,
-              quality_name: loot.quality_name || "",
-              rand: loot.rand ?? null,
-            });
-          }
-        }
-      }
-
-      return rows;
+      saveChar(record);
+      addCharToIndex(id);
+      return record;
     }
 
-    // --------------------------
-    // Tri
-    // --------------------------
-    function getSortValue(row, key) {
-      switch (key) {
-        case "quality": return Number(row.quality ?? -1);
-        case "rand": return (row.rand === null || row.rand === undefined) ? -1 : Number(row.rand);
-        case "date":
-          return (row.time !== null && row.time !== undefined) ? Number(row.time) : String(row.date ?? "");
-        default:
-          return String(row[key] ?? "").toLowerCase();
-      }
-    }
-
-    function sortRows(rows) {
-      const { key, dir } = SORT;
-      const mul = dir === "asc" ? 1 : -1;
-
-      rows.sort((a, b) => {
-        const va = getSortValue(a, key);
-        const vb = getSortValue(b, key);
-
-        if (typeof va === "number" && typeof vb === "number") {
-          return (va - vb) * mul;
-        }
-        return String(va).localeCompare(String(vb), "fr", { sensitivity: "base" }) * mul;
-      });
-
-      return rows;
-    }
-
-    // --------------------------
-    // UI Helpers
-    // --------------------------
     function renderCharacterSelect() {
       const sel = $("characterSelect");
       const ids = loadIndex();
@@ -349,14 +362,13 @@
       if (ids.length === 0) {
         const opt = document.createElement("option");
         opt.value = "";
-        opt.textContent = "Aucun recorder (importe un JSON)";
+        opt.textContent = "Aucun profil (charge / importe un JSON)";
         sel.appendChild(opt);
         sel.disabled = true;
         return;
       }
 
       sel.disabled = false;
-
       for (const id of ids) {
         const c = loadChar(id);
         const opt = document.createElement("option");
@@ -375,8 +387,8 @@
     function flattenHistory(charObj) {
       const respect = $("chkFilterMinQuality").checked;
       let rows = [];
-      for (const exp of (charObj.history || [])) {
-        rows = rows.concat(extractLootRows(exp, respect));
+      for (const payload of (charObj.history || [])) {
+        rows = rows.concat(extractRowsFromPayload(payload, respect));
       }
       return rows;
     }
@@ -398,15 +410,17 @@
 
       const c = getSelectedChar();
       if (!c) {
-        $("summary").textContent = "Aucun recorder sélectionné.";
+        $("summary").textContent = "Aucun profil sélectionné.";
         return;
       }
 
       let rows = flattenHistory(c);
       rows = applyFilters(rows);
-      sortRows(rows);
 
-      // summary
+      // Sort newest first (best effort)
+      rows.sort((a,b) => String(b.date).localeCompare(String(a.date)));
+
+      // Summary
       const total = rows.length;
       const byQ = {0:0,1:0,2:0,3:0,4:0,5:0};
       for (const r of rows) byQ[r.quality] = (byQ[r.quality] || 0) + 1;
@@ -431,71 +445,18 @@
 
       for (const r of rows) {
         const tr = document.createElement("tr");
-        const randStr = (r.rand === null || r.rand === undefined) ? "—" : String(r.rand);
-        const qName = r.quality_name || qualityLabel(r.quality);
-
+        const rollStr = (r.roll === null || r.roll === undefined) ? "—" : String(r.roll);
         tr.innerHTML = `
           <td>${escapeHtml(r.date || "")}</td>
           <td>${escapeHtml(r.instance || "")}</td>
           <td>${escapeHtml(r.boss || "")}</td>
-          <td>${escapeHtml(r.player || "")}</td>
+          <td>${escapeHtml(r.winner || "")}</td>
           <td class="lt-item">${escapeHtml(r.item || "")}</td>
-          <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(qName)}</td>
-          <td>${escapeHtml(randStr)}</td>
+          <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
+          <td>${escapeHtml(rollStr)}</td>
         `;
         tbody.appendChild(tr);
       }
-    }
-
-    // --------------------------
-    // Import / Merge
-    // --------------------------
-    function importExportObject(exportObj, merge = true) {
-      exportObj = normalizeExport(exportObj);
-
-      // Nouveau format: stocké par recorder
-      const recorderName = exportObj.recorder || exportObj.player || "Unknown";
-      const id = charId(exportObj.realm, recorderName);
-
-      const existing = loadChar(id);
-
-      const record = existing && merge ? existing : {
-        id,
-        realm: exportObj.realm,
-        player: recorderName, // "player" = recorder, côté UI
-        created_at: new Date().toISOString(),
-        history: [],
-        _seen: {}
-      };
-
-      // Anti doublon
-      const count = Array.isArray(exportObj.events) ? exportObj.events.length : (exportObj.runs || []).length;
-      const sig = `${exportObj.exported_at || exportObj.started_at || exportObj.date || ""}|${count}`;
-      record._seen = record._seen || {};
-
-      if (!record._seen[sig]) {
-        record.history.push(exportObj);
-        record._seen[sig] = true;
-      }
-
-      record.updated_at = new Date().toISOString();
-
-      saveChar(record);
-      addCharToIndex(id);
-      return record;
-    }
-
-    // --------------------------
-    // Export
-    // --------------------------
-    function buildRecorderExport(c) {
-      return {
-        schema: 1,
-        exported_at: new Date().toISOString(),
-        realm: c.realm,
-        recorder: c.player,
-        history: c.history || []
-      };
     }
 
     function downloadJson(filename, obj) {
@@ -510,85 +471,78 @@
       URL.revokeObjectURL(url);
     }
 
-    function exportSelectedRecorderDownload() {
+    function exportSelectedCharacter() {
       const c = getSelectedChar();
       if (!c) return;
 
-      const payload = buildRecorderExport(c);
-      const safeRecorder = String(c.player).replace(/[^a-z0-9_-]/gi, "_");
+      const payload = {
+        schema: 1,
+        exported_at: new Date().toISOString(),
+        realm: c.realm,
+        profile: c.player,
+        history: c.history || []
+      };
+
+      const safeProfile = String(c.player).replace(/[^a-z0-9_-]/gi, "_");
       const safeRealm = String(c.realm).replace(/[^a-z0-9_-]/gi, "_");
-      downloadJson(`${safeRecorder}_${safeRealm}_loot_history.json`, payload);
+      downloadJson(`${safeProfile}_${safeRealm}_loot_history.json`, payload);
     }
 
-    async function exportSelectedRecorderClipboard() {
-      const c = getSelectedChar();
-      if (!c) return;
-
-      const payload = buildRecorderExport(c);
-      const text = JSON.stringify(payload, null, 2);
+    // ==========================
+    // Shared JSON loading (repo)
+    // ==========================
+    async function loadSharedJson() {
+      // loot_tracker.html is in /pages/ -> go up one level to /json/
+      const url = "../json/loot_thunderstrike.json";
 
       try {
-        await navigator.clipboard.writeText(text);
-        setStatus("Export copié dans le presse-papier.", "ok");
-      } catch {
-        setStatus("Impossible de copier (permission navigateur). Utilise l’export download.", "warn");
+        setSharedStatus("Chargement du JSON partagé…", "info");
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        // merge = true
+        const rec = importPayload(data, true);
+
+        setSharedStatus(`OK: chargé depuis ${url}`, "ok");
+        setStatus(`Import partagé OK: ${rec.player} — ${rec.realm} (historique: ${rec.history.length})`, "ok");
+
+        renderCharacterSelect();
+        $("characterSelect").value = rec.id;
+        renderTable();
+      } catch (e) {
+        setSharedStatus("Échec chargement partagé: " + (e.message || String(e)), "warn");
       }
     }
 
-    async function copyPasteArea() {
-      const t = $("pasteArea").value || "";
-      try {
-        await navigator.clipboard.writeText(t);
-        setStatus("Zone texte copiée.", "ok");
-      } catch {
-        setStatus("Impossible de copier (permission navigateur).", "warn");
-      }
-    }
-
-    // --------------------------
+    // ==========================
     // Wire UI
-    // --------------------------
+    // ==========================
     document.addEventListener("DOMContentLoaded", () => {
       renderCharacterSelect();
       renderTable();
 
-      // Tri via clic sur en-têtes
-      document.querySelectorAll(".lt-table thead th[data-sort]").forEach(th => {
-        th.style.cursor = "pointer";
-        th.addEventListener("click", () => {
-          const key = th.dataset.sort;
-          if (SORT.key === key) {
-            SORT.dir = (SORT.dir === "asc") ? "desc" : "asc";
-          } else {
-            SORT.key = key;
-            SORT.dir = (key === "date") ? "desc" : "asc";
-          }
-          renderTable();
-        });
-      });
+      // Auto-load shared JSON
+      loadSharedJson();
+
+      $("btnReloadShared").addEventListener("click", () => loadSharedJson());
 
       $("btnClearPaste").addEventListener("click", () => {
         $("pasteArea").value = "";
         setStatus("Zone texte vidée.", "info");
       });
 
-      $("btnCopyPaste").addEventListener("click", () => copyPasteArea());
-
       $("btnImportFile").addEventListener("click", async () => {
         const file = $("fileInput").files && $("fileInput").files[0];
-        if (!file) {
-          setStatus("Sélectionne un fichier JSON.", "warn");
-          return;
-        }
+        if (!file) { setStatus("Sélectionne un fichier JSON.", "warn"); return; }
+
         const text = await file.text();
         const parsed = safeJsonParse(text);
-        if (!parsed.ok) {
-          setStatus("JSON invalide: " + parsed.error, "error");
-          return;
-        }
+        if (!parsed.ok) { setStatus("JSON invalide: " + parsed.error, "error"); return; }
+
         try {
           const merge = $("chkMerge").checked;
-          const rec = importExportObject(parsed.value, merge);
+          const rec = importPayload(parsed.value, merge);
           setStatus(`Import OK: ${rec.player} — ${rec.realm} (historique: ${rec.history.length})`, "ok");
           renderCharacterSelect();
           $("characterSelect").value = rec.id;
@@ -600,18 +554,14 @@
 
       $("btnImportPaste").addEventListener("click", () => {
         const text = $("pasteArea").value.trim();
-        if (!text) {
-          setStatus("Colle un JSON dans la zone texte.", "warn");
-          return;
-        }
+        if (!text) { setStatus("Colle un JSON dans la zone texte.", "warn"); return; }
+
         const parsed = safeJsonParse(text);
-        if (!parsed.ok) {
-          setStatus("JSON invalide: " + parsed.error, "error");
-          return;
-        }
+        if (!parsed.ok) { setStatus("JSON invalide: " + parsed.error, "error"); return; }
+
         try {
           const merge = $("chkMerge").checked;
-          const rec = importExportObject(parsed.value, merge);
+          const rec = importPayload(parsed.value, merge);
           setStatus(`Import OK: ${rec.player} — ${rec.realm} (historique: ${rec.history.length})`, "ok");
           renderCharacterSelect();
           $("characterSelect").value = rec.id;
@@ -627,8 +577,7 @@
       $("itemFilter").addEventListener("input", () => renderTable());
       $("chkFilterMinQuality").addEventListener("change", () => renderTable());
 
-      $("btnExportCharacter").addEventListener("click", () => exportSelectedRecorderDownload());
-      $("btnCopyCharacter").addEventListener("click", () => exportSelectedRecorderClipboard());
+      $("btnExportCharacter").addEventListener("click", () => exportSelectedCharacter());
 
       $("btnDeleteCharacter").addEventListener("click", () => {
         const c = getSelectedChar();
