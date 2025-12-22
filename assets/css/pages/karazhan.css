@@ -1,0 +1,105 @@
+/* =========================
+   PAGE KARAZHAN (karazhan.html)
+   ========================= */
+
+.kara-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.kara-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.kara-pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.95em;
+  opacity: 0.9;
+}
+
+/* Grille de tuiles boss */
+.boss-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 960px) {
+  .boss-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .boss-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tuile cliquable */
+.boss-tile {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.04);
+
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.boss-tile:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.boss-tile:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  outline-offset: 3px;
+}
+
+.boss-index {
+  display: inline-block;
+  font-weight: 800;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.boss-tile h3 {
+  margin: 0 0 6px 0;
+}
+
+.boss-note {
+  margin: 0 0 10px 0;
+  opacity: 0.75;
+  font-size: 0.95em;
+}
+
+.boss-cta {
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* Optionnel (Nightbane) */
+.boss-optional {
+  border-style: dashed;
+  opacity: 0.95;
+}
+
+/* Sections détails */
+.boss-section h2 {
+  margin-top: 0;
+}
