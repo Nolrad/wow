@@ -18,6 +18,35 @@
 </header>
 
 <main class="container">
+
+    <!-- ✅ Nouveau : pseudo + import/export JSON -->
+    <section class="card">
+        <h2>Mon stock (local PC)</h2>
+
+        <div class="row" style="gap: 12px; align-items: end;">
+            <div style="flex:1; min-width: 220px;">
+                <label for="pseudo"><strong>Pseudo</strong></label>
+                <input id="pseudo" type="text" placeholder="ex: Zaizai" />
+                <p class="hint">
+                    Le fichier exporté s'appellera : <strong><span id="file-preview">pseudo</span>_joa.json</strong>
+                </p>
+            </div>
+
+            <button id="export-json" class="btn-primary">Exporter JSON</button>
+
+            <label class="import-label btn-secondary" style="cursor:pointer;">
+                Importer JSON
+                <input id="import-file" type="file" accept=".json" style="display:none;">
+            </label>
+
+            <button id="reset-stock" class="btn-danger">Reset stock</button>
+        </div>
+
+        <p id="status" class="hint" style="margin-top: 10px;">
+            Stock sauvegardé automatiquement sur ce PC (localStorage) pour le pseudo.
+        </p>
+    </section>
+
     <section class="card">
         <h2>Vue d'ensemble</h2>
         <p>
@@ -41,150 +70,51 @@
         <h3>Matériaux issus du minage / prospection</h3>
         <table>
             <thead>
-                <tr>
-                    <th>Ressource</th>
-                    <th>Quantité</th>
-                    <th>Origine</th>
-                </tr>
+            <tr>
+                <th>Ressource</th>
+                <th>Quantité</th>
+                <th>Origine</th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Barre de cuivre</td>
-                    <td>40</td>
-                    <td class="origin-mining">Minerai de cuivre → fonderie</td>
-                </tr>
-                <tr>
-                    <td>Pierre brute</td>
-                    <td>80</td>
-                    <td class="origin-mining">Sous-produit du cuivre / étain</td>
-                </tr>
-                <tr>
-                    <td>Barre de bronze</td>
-                    <td>80</td>
-                    <td class="origin-mining">Barre de cuivre + barre d'étain</td>
-                </tr>
-                <tr>
-                    <td>Barre d'argent</td>
-                    <td>50</td>
-                    <td class="origin-mining">Minerai d'argent → fonderie</td>
-                </tr>
-                <tr>
-                    <td>Pierre lourde</td>
-                    <td>80</td>
-                    <td class="origin-mining">Sous-produit du fer</td>
-                </tr>
-                <tr>
-                    <td>Barre de mithril</td>
-                    <td>100</td>
-                    <td class="origin-mining">Minerai de mithril → fonderie</td>
-                </tr>
-                <tr>
-                    <td>Barre de vrai-argent</td>
-                    <td>60</td>
-                    <td class="origin-mining">Minerai de vrai-argent → fonderie</td>
-                </tr>
-                <tr>
-                    <td>Barre de thorium</td>
-                    <td>50</td>
-                    <td class="origin-mining">Minerai de thorium → fonderie</td>
-                </tr>
-                <tr>
-                    <td>Oeil de tigre</td>
-                    <td>20</td>
-                    <td class="origin-mining">Prospection cuivre</td>
-                </tr>
-                <tr>
-                    <td>Agate mousse</td>
-                    <td>30</td>
-                    <td class="origin-mining">Prospection étain / fer (ou drops)</td>
-                </tr>
-                <tr>
-                    <td>Citrine</td>
-                    <td>10</td>
-                    <td class="origin-mining">Prospection fer / mithril</td>
-                </tr>
-                <tr>
-                    <td>Aigue-marine</td>
-                    <td>45</td>
-                    <td class="origin-mining">Prospection fer / mithril</td>
-                </tr>
-                <tr>
-                    <td>Rubis étoilé</td>
-                    <td>5</td>
-                    <td class="origin-mining">Prospection thorium</td>
-                </tr>
-                <tr>
-                    <td>Grande opale</td>
-                    <td>10</td>
-                    <td class="origin-mining">Prospection thorium</td>
-                </tr>
-                <tr>
-                    <td>Saphir bleu</td>
-                    <td>40</td>
-                    <td class="origin-mining">Prospection thorium</td>
-                </tr>
-                <tr>
-                    <td>Diamant d'Azeroth</td>
-                    <td>5</td>
-                    <td class="origin-mining">Prospection thorium</td>
-                </tr>
-                <tr>
-                    <td>Énorme émeraude</td>
-                    <td>20</td>
-                    <td class="origin-mining">Prospection thorium</td>
-                </tr>
+            <tr><td>Barre de cuivre</td><td>40</td><td class="origin-mining">Minerai de cuivre → fonderie</td></tr>
+            <tr><td>Pierre brute</td><td>80</td><td class="origin-mining">Sous-produit du cuivre / étain</td></tr>
+            <tr><td>Barre de bronze</td><td>80</td><td class="origin-mining">Barre de cuivre + barre d'étain</td></tr>
+            <tr><td>Barre d'argent</td><td>50</td><td class="origin-mining">Minerai d'argent → fonderie</td></tr>
+            <tr><td>Pierre lourde</td><td>80</td><td class="origin-mining">Sous-produit du fer</td></tr>
+            <tr><td>Barre de mithril</td><td>100</td><td class="origin-mining">Minerai de mithril → fonderie</td></tr>
+            <tr><td>Barre de vrai-argent</td><td>60</td><td class="origin-mining">Minerai de vrai-argent → fonderie</td></tr>
+            <tr><td>Barre de thorium</td><td>50</td><td class="origin-mining">Minerai de thorium → fonderie</td></tr>
+            <tr><td>Oeil de tigre</td><td>20</td><td class="origin-mining">Prospection cuivre</td></tr>
+            <tr><td>Agate mousse</td><td>30</td><td class="origin-mining">Prospection étain / fer (ou drops)</td></tr>
+            <tr><td>Citrine</td><td>10</td><td class="origin-mining">Prospection fer / mithril</td></tr>
+            <tr><td>Aigue-marine</td><td>45</td><td class="origin-mining">Prospection fer / mithril</td></tr>
+            <tr><td>Rubis étoilé</td><td>5</td><td class="origin-mining">Prospection thorium</td></tr>
+            <tr><td>Grande opale</td><td>10</td><td class="origin-mining">Prospection thorium</td></tr>
+            <tr><td>Saphir bleu</td><td>40</td><td class="origin-mining">Prospection thorium</td></tr>
+            <tr><td>Diamant d'Azeroth</td><td>5</td><td class="origin-mining">Prospection thorium</td></tr>
+            <tr><td>Énorme émeraude</td><td>20</td><td class="origin-mining">Prospection thorium</td></tr>
             </tbody>
         </table>
 
         <h3>Matériaux à looter (pas d'achat HV)</h3>
         <table>
             <thead>
-                <tr>
-                    <th>Ressource</th>
-                    <th>Quantité</th>
-                    <th>Origine suggérée</th>
-                </tr>
+            <tr>
+                <th>Ressource</th>
+                <th>Quantité</th>
+                <th>Origine suggérée</th>
+            </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Eau élémentaire</td>
-                    <td>20</td>
-                    <td class="origin-drop">Élémentaires d'eau (Marais, Tanaris, etc.)</td>
-                </tr>
-                <tr>
-                    <td>Flacon de mojo</td>
-                    <td>60</td>
-                    <td class="origin-drop">Trolls, humanoïdes haut niveau</td>
-                </tr>
-                <tr>
-                    <td>Coeur de fauve</td>
-                    <td>20</td>
-                    <td class="origin-drop">Bêtes haut niveau (Gangrebois, Winterspring...)</td>
-                </tr>
+            <tr><td>Eau élémentaire</td><td>20</td><td class="origin-drop">Élémentaires d'eau (Marais, Tanaris, etc.)</td></tr>
+            <tr><td>Flacon de mojo</td><td>60</td><td class="origin-drop">Trolls, humanoïdes haut niveau</td></tr>
+            <tr><td>Coeur de fauve</td><td>20</td><td class="origin-drop">Bêtes haut niveau (Gangrebois, Winterspring...)</td></tr>
             </tbody>
         </table>
 
-        <div class="row" style="margin-top: 12px;">
-            <button id="save-stock" class="btn-primary">Enregistrer mon stock (TXT)</button>
-            <button id="export-json" class="btn-secondary">Exporter JSON</button>
-            <button id="export-csv" class="btn-secondary">Exporter CSV</button>
-
-            <label class="import-label">
-                Importer stock (JSON/TXT)
-                <input id="import-file" type="file" accept=".json,.txt" style="display:none;">
-            </label>
-
-            <button id="reset-stock" class="btn-danger">Reset stock</button>
-        </div>
-
         <p class="hint">
-            Le stock est mémorisé dans le navigateur (localStorage). Tu peux exporter en TXT/JSON/CSV et réimporter.
-        </p>
-
-        <p>
-            <strong>Important :</strong> si tu veux vraiment ne rien acheter, prévois de
-            <strong>garder tous tes minerais / pierres</strong> et de farmer ces composants en même temps
-            que ton leveling 40+.
+            Le stock est mémorisé sur ce PC (localStorage) par pseudo. Tu peux exporter/importer en JSON.
         </p>
     </section>
 
@@ -343,7 +273,26 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const STORAGE_KEY = 'joaillerie_stock';
+    const STORAGE_KEY_PREFIX = 'joaillerie_stock_';
+
+    function $(sel) { return document.querySelector(sel); }
+
+    function sanitizePseudo(raw) {
+        const p = String(raw || '').trim();
+        return p.replace(/[^a-zA-Z0-9_-]/g, '');
+    }
+
+    function setStatus(msg) {
+        const el = $('#status');
+        if (el) el.textContent = msg;
+    }
+
+    function updateFilePreview() {
+        const pseudo = sanitizePseudo($('#pseudo')?.value);
+        const preview = pseudo ? pseudo : 'pseudo';
+        const el = $('#file-preview');
+        if (el) el.textContent = preview;
+    }
 
     function downloadFile(filename, content, mime) {
         const blob = new Blob([content], { type: mime });
@@ -365,8 +314,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!table.tHead || !table.tBodies.length) return;
 
             const headerRow = table.tHead.rows[0];
-
-            // Evite double ajout si reload/SPA
             const headers = Array.from(headerRow.cells).map(th => th.textContent.trim().toLowerCase());
             if (headers.includes('tu as') || headers.includes('manque')) return;
 
@@ -382,7 +329,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const resName = row.cells[0].textContent.trim();
                 const required = parseInt(row.cells[1].textContent.trim(), 10) || 0;
 
-                // Colonne "Tu as"
                 const tdOwned = document.createElement('td');
                 const input = document.createElement('input');
                 input.type = 'number';
@@ -393,7 +339,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 tdOwned.appendChild(input);
                 row.appendChild(tdOwned);
 
-                // Colonne "Manque"
                 const tdMissing = document.createElement('td');
                 const span = document.createElement('span');
                 span.className = 'missing';
@@ -428,190 +373,150 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('input.input-owned').forEach(updateMissingForInput);
     }
 
-    function loadStock() {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) { updateAllMissing(); return; }
+    function storageKeyForPseudo(pseudo) {
+        return STORAGE_KEY_PREFIX + pseudo;
+    }
 
-        let data;
-        try { data = JSON.parse(raw); } catch { updateAllMissing(); return; }
-        if (!data || typeof data !== 'object') { updateAllMissing(); return; }
+    function loadStockForPseudo(pseudo) {
+        const raw = localStorage.getItem(storageKeyForPseudo(pseudo));
+        if (!raw) return null;
+        try { return JSON.parse(raw); } catch { return null; }
+    }
 
+    function saveStockForPseudo(pseudo, ownedMap) {
+        localStorage.setItem(storageKeyForPseudo(pseudo), JSON.stringify(ownedMap));
+    }
+
+    function applyOwnedMap(ownedMap) {
         document.querySelectorAll('input.input-owned').forEach(function (input) {
             const name = input.dataset.ressource;
-            if (Object.prototype.hasOwnProperty.call(data, name)) {
-                input.value = data[name];
+            if (Object.prototype.hasOwnProperty.call(ownedMap, name)) {
+                input.value = ownedMap[name];
+            } else {
+                input.value = "";
             }
         });
-
         updateAllMissing();
     }
 
-    function collectItems() {
-        const items = [];
-        document.querySelectorAll('input.input-owned').forEach(function (input) {
-            const name = input.dataset.ressource;
-            const required = parseInt(input.dataset.required, 10) || 0;
-            const owned = parseInt(input.value, 10) || 0;
-            const missing = Math.max(required - owned, 0);
-            items.push({ name, required, owned, missing });
-        });
-        return items;
-    }
-
-    function saveStockToLocalStorage() {
+    function collectOwnedMap() {
         const data = {};
         document.querySelectorAll('input.input-owned').forEach(function (input) {
             const name = input.dataset.ressource;
             const owned = parseInt(input.value, 10) || 0;
             data[name] = owned;
         });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return data;
     }
 
-    // === Exports ===
-    function exportTXT() {
-        const items = collectItems();
-        saveStockToLocalStorage();
-        const lines = items.map(it => `${it.name} ; requis=${it.required} ; possédé=${it.owned} ; manque=${it.missing}`);
-        downloadFile('stock_joaillerie.txt', lines.join("\n"), 'text/plain;charset=utf-8');
+    function tryAutoLoad() {
+        const pseudo = sanitizePseudo($('#pseudo')?.value);
+        if (!pseudo) return;
+
+        const saved = loadStockForPseudo(pseudo);
+        if (saved && typeof saved === 'object') {
+            applyOwnedMap(saved);
+            setStatus(`Stock chargé automatiquement pour "${pseudo}" depuis ce PC.`);
+        } else {
+            applyOwnedMap({});
+            setStatus(`Aucun stock local trouvé pour "${pseudo}".`);
+        }
     }
+
+    // ===== Import / Export JSON =====
 
     function exportJSON() {
+        const pseudo = sanitizePseudo($('#pseudo')?.value);
+        if (!pseudo) {
+            alert("Entre un pseudo avant d'exporter.");
+            return;
+        }
+
+        const owned = collectOwnedMap();
         const payload = {
             version: 1,
+            pseudo,
             exported_at: new Date().toISOString(),
-            items: collectItems()
+            owned
         };
-        saveStockToLocalStorage();
-        downloadFile('stock_joaillerie.json', JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
-    }
 
-    function exportCSV() {
-        const items = collectItems();
-        saveStockToLocalStorage();
-        const header = "ressource;requis;possede;manque\n";
-        const rows = items.map(it => `${it.name};${it.required};${it.owned};${it.missing}`).join("\n");
-        downloadFile('stock_joaillerie.csv', header + rows, 'text/csv;charset=utf-8');
-    }
+        saveStockForPseudo(pseudo, owned);
 
-    // === Import ===
-    function applyOwnedMap(ownedMap) {
-        document.querySelectorAll('input.input-owned').forEach(function (input) {
-            const name = input.dataset.ressource;
-            if (Object.prototype.hasOwnProperty.call(ownedMap, name)) {
-                input.value = ownedMap[name];
-            }
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(ownedMap));
-        updateAllMissing();
+        const filename = `${pseudo}_joa.json`;
+        downloadFile(filename, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
+        setStatus(`Export JSON OK : ${filename}`);
     }
 
     function importFromJSONText(text) {
         const data = JSON.parse(text);
 
-        // Format payload {items:[{name, owned,...}]}
-        if (data && Array.isArray(data.items)) {
-            const ownedMap = {};
-            data.items.forEach(function (it) {
-                if (it && typeof it.name === 'string') {
-                    ownedMap[it.name] = parseInt(it.owned, 10) || 0;
-                }
-            });
-            applyOwnedMap(ownedMap);
-            return;
-        }
+        // Format attendu : { pseudo, owned: {...} }
+        if (!data || typeof data !== 'object') throw new Error("JSON invalide.");
+        if (!data.owned || typeof data.owned !== 'object') throw new Error("JSON invalide : champ 'owned' manquant.");
 
-        // Format simple {"Barre de cuivre": 12, ...}
-        if (data && typeof data === 'object') {
-            const ownedMap = {};
-            Object.keys(data).forEach(k => ownedMap[k] = parseInt(data[k], 10) || 0);
-            applyOwnedMap(ownedMap);
-            return;
-        }
+        // Si un pseudo est présent dans le fichier, on l'utilise (sinon, on garde l'entrée)
+        const filePseudo = sanitizePseudo(data.pseudo || "");
+        const inputPseudo = sanitizePseudo($('#pseudo')?.value);
 
-        alert("JSON non reconnu.");
+        const pseudo = filePseudo || inputPseudo;
+        if (!pseudo) throw new Error("Aucun pseudo : mets un pseudo ou utilise un JSON contenant 'pseudo'.");
+
+        $('#pseudo').value = pseudo;
+        updateFilePreview();
+
+        applyOwnedMap(data.owned);
+        saveStockForPseudo(pseudo, data.owned);
+
+        setStatus(`Import JSON OK pour "${pseudo}" (sauvegardé sur ce PC).`);
     }
 
-    function importFromTxt(text) {
-        // Supporte ton format TXT :
-        // "Ressource ; requis=40 ; possédé=12 ; manque=28"
-        const ownedMap = {};
-        const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-
-        lines.forEach(function (line) {
-            const parts = line.split(";");
-            if (!parts.length) return;
-
-            const name = (parts[0] || "").trim();
-            let owned = null;
-
-            parts.slice(1).forEach(function (p) {
-                const chunk = (p || "").trim();
-                if (chunk.startsWith("possédé=") || chunk.startsWith("possede=")) {
-                    const v = chunk.split("=")[1];
-                    const n = parseInt(v, 10);
-                    if (!Number.isNaN(n)) owned = n;
-                }
-            });
-
-            if (name && owned !== null) ownedMap[name] = Math.max(owned, 0);
-        });
-
-        applyOwnedMap(ownedMap);
-    }
-
-    // === Reset ===
     function resetStock() {
-        if (!confirm("Reset du stock ? (efface la sauvegarde navigateur)")) return;
-        localStorage.removeItem(STORAGE_KEY);
-        document.querySelectorAll('input.input-owned').forEach(input => input.value = "");
-        updateAllMissing();
+        const pseudo = sanitizePseudo($('#pseudo')?.value);
+        if (!confirm("Reset du stock affiché ?")) return;
+
+        applyOwnedMap({});
+        if (pseudo) saveStockForPseudo(pseudo, {});
+        setStatus("Stock remis à zéro (local).");
     }
 
-    // Init
+    // ===== Init =====
     enhanceTables();
-    loadStock();
+    updateAllMissing();
+    updateFilePreview();
 
-    // Live update
+    // Auto-load quand pseudo change (debounce light)
+    let pseudoTimer = null;
+    $('#pseudo')?.addEventListener('input', function () {
+        updateFilePreview();
+        clearTimeout(pseudoTimer);
+        pseudoTimer = setTimeout(tryAutoLoad, 350);
+    });
+
+    // Live update: sauvegarde auto pour le pseudo
     document.addEventListener('input', function (e) {
         if (e.target && e.target.matches('input.input-owned')) {
             updateMissingForInput(e.target);
-            saveStockToLocalStorage();
+            const pseudo = sanitizePseudo($('#pseudo')?.value);
+            if (pseudo) saveStockForPseudo(pseudo, collectOwnedMap());
         }
     });
 
-    // Buttons
-    const saveBtn = document.getElementById('save-stock');
-    if (saveBtn) saveBtn.addEventListener('click', exportTXT);
+    // Boutons
+    $('#export-json')?.addEventListener('click', exportJSON);
+    $('#reset-stock')?.addEventListener('click', resetStock);
 
-    const exportJsonBtn = document.getElementById('export-json');
-    if (exportJsonBtn) exportJsonBtn.addEventListener('click', exportJSON);
-
-    const exportCsvBtn = document.getElementById('export-csv');
-    if (exportCsvBtn) exportCsvBtn.addEventListener('click', exportCSV);
-
-    const resetBtn = document.getElementById('reset-stock');
-    if (resetBtn) resetBtn.addEventListener('click', resetStock);
-
-    const importInput = document.getElementById('import-file');
+    const importInput = $('#import-file');
     if (importInput) {
         importInput.addEventListener('change', function () {
             const file = importInput.files && importInput.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function () {
-                const text = String(reader.result || "");
-                const name = file.name.toLowerCase();
-
                 try {
-                    if (name.endsWith('.json')) importFromJSONText(text);
-                    else if (name.endsWith('.txt')) importFromTxt(text);
-                    else alert("Format non supporté (utilise .json ou .txt).");
+                    importFromJSONText(String(reader.result || ""));
                 } catch (e) {
-                    alert("Erreur import : " + e);
+                    alert("Erreur import : " + e.message);
                 }
-
                 importInput.value = "";
             };
             reader.readAsText(file, 'utf-8');
