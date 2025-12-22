@@ -228,15 +228,209 @@
 </section>
 
 
-  <section class="card boss-section" id="maiden">
-    <h2>Demoiselle de Vertu</h2>
-    <p class="hint">À remplir.</p>
-  </section>
+  <<section class="card boss-section" id="maiden">
+  <h2>Demoiselle de Vertu</h2>
+
+  <p>
+    La Demoiselle de Vertu est un des boss de <strong>Karazhan</strong>.
+    C’est un combat surtout basé sur le <strong>positionnement</strong> :
+    si tout le monde respecte l’espacement et gère correctement <em>Repentir</em>,
+    le fight devient très simple.
+  </p>
+
+  <div class="boss-two-cols">
+    <div>
+      <h3>Objectif principal</h3>
+      <ul>
+        <li><strong>Se dépacker</strong> pour limiter les rebonds de <em>Colère divine</em>.</li>
+        <li><strong>Gérer Repentir</strong> : casser l’étourdissement dès que possible.</li>
+        <li><strong>Dispel magie</strong> sur <em>Flammes sacrées</em> (ou gros soin si pas de dispel).</li>
+      </ul>
+
+      <h3>Placement recommandé</h3>
+      <ul>
+        <li><strong>Tanks</strong> : au boss, face au raid (boss stable au centre de la pièce).</li>
+        <li><strong>Mêlées</strong> : derrière le boss, mais espacés.</li>
+        <li><strong>Distance + Heals</strong> : en arc de cercle, bien espacés (éviter les “paquets”).</li>
+      </ul>
+
+      <p class="hint">
+        Astuce “safe” : attribue des emplacements fixes (ex : 1–2–3–4 autour de la salle) pour éviter que
+        les distances se regroupent sans s’en rendre compte.
+      </p>
+    </div>
+
+    <div>
+      <h3>Capacités</h3>
+      <ul>
+        <li><strong>Terre sacrée</strong> : AoE autour du boss, dégâts sacrés + <strong>silence</strong>.</li>
+        <li><strong>Repentir</strong> : étourdit tout le raid ~12s (les dégâts cassent l’effet).</li>
+        <li><strong>Colère divine</strong> : dégâts sacrés sur une cible, <strong>rebond</strong> sur les proches, +40% dégâts par rebond.</li>
+        <li><strong>Flammes sacrées</strong> : DoT feu qui monte, <strong>effet de magie à dissiper</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Stratégie (pas à pas)</h3>
+
+  <h4>1) Début du combat</h4>
+  <ul>
+    <li>Tout le monde se place et <strong>reste espacé</strong> (c’est 80% de la réussite).</li>
+    <li>Les soigneurs surveillent les cibles de <em>Flammes sacrées</em>.</li>
+  </ul>
+
+  <h4>2) Gestion de Repentir</h4>
+  <ul>
+    <li>Quand <em>Repentir</em> est imminent, l’objectif est de <strong>casser l’étourdissement</strong> rapidement.</li>
+    <li>Selon l’approche choisie par ton raid :
+      <ul>
+        <li><strong>Approche “Terre sacrée”</strong> : certains joueurs entrent volontairement dans <em>Terre sacrée</em> pour prendre un tick et casser <em>Repentir</em>
+
 
   <section class="card boss-section" id="opera">
-    <h2>Opéra</h2>
-    <p class="hint">À remplir : indiquer les variantes (ex : Romulo & Julianne / Grand méchant loup / Oz).</p>
-  </section>
+  <h2>Opéra</h2>
+
+  <p>
+    L’Opéra de Karazhan propose <strong>1 événement sur 3</strong>.
+    Choisis celui que tu as ce soir pour afficher la stratégie correspondante.
+  </p>
+
+  <div class="opera-picker" role="group" aria-label="Choix de l'événement Opéra">
+    <button class="opera-btn" type="button" data-opera="wolf" aria-pressed="true">
+      Grand Méchant Loup
+    </button>
+    <button class="opera-btn" type="button" data-opera="romeo" aria-pressed="false">
+      Romulo &amp; Julianne
+    </button>
+    <button class="opera-btn" type="button" data-opera="crone" aria-pressed="false">
+      La Mégère
+    </button>
+  </div>
+
+  <!-- ============ GRAND MÉCHANT LOUP ============ -->
+  <div class="opera-panel is-active" data-opera-panel="wolf">
+    <h3>Le Grand Méchant Loup</h3>
+
+    <p>
+      Combat en <strong>1 phase</strong>. Un joueur est ciblé par <em>Petit Chaperon Rouge</em> et doit
+      <strong>kite</strong> le boss, pendant que le tank continue de monter sa menace.
+    </p>
+
+    <h4>À prévoir</h4>
+    <ul>
+      <li><strong>Anti-fear</strong> : Totem de séisme (Chaman) / Gardien de la peur (Prêtre).</li>
+      <li>Un plan de kite simple (tour de salle) + joueurs espacés pour éviter le chaos.</li>
+    </ul>
+
+    <h4>Capacités</h4>
+    <ul>
+      <li><strong>Petit Chaperon Rouge</strong> : la cible ne peut plus lancer de sorts/compétences, armure à 0, vitesse augmentée → <strong>kite</strong>.</li>
+      <li><strong>Hurlement terrifiant</strong> : fear AoE ~3s autour du boss → utilisez vos anti-fear.</li>
+      <li><strong>Grand balayage</strong> : stun frontal ~4s (peut toucher la cible du chaperon).</li>
+    </ul>
+
+    <h4>Stratégie</h4>
+    <ul>
+      <li><strong>Placement</strong> : gardez le boss plutôt <strong>au centre</strong> pour laisser de la place au kite.</li>
+      <li>Quand tu es <strong>Chaperon</strong> : pars immédiatement en kite (si tu te fais toucher, ça peut être létal sans immunité).</li>
+      <li>Le <strong>tank</strong> doit continuer à jouer la menace pendant le kite pour éviter que les distances reprennent l’aggro.</li>
+      <li>Le boss continue de fear/stun pendant le kite : soyez prêts à réagir (anti-fear / dispels si besoin).</li>
+    </ul>
+
+    <p class="hint">
+      Immunités utiles contre une situation critique : Bouclier divin / Bénédiction de protection / Bloc de glace.
+    </p>
+  </div>
+
+  <!-- ============ ROMULO & JULIANNE ============ -->
+  <div class="opera-panel" data-opera-panel="romeo">
+    <h3>Romulo &amp; Julianne</h3>
+
+    <p>
+      Combat en <strong>3 phases</strong> : Julianne seule, puis Romulo seul, puis les deux ensemble.
+      Objectif : <strong>interrompre</strong>, <strong>purge</strong> et gérer les <strong>poisons</strong>.
+    </p>
+
+    <h4>À prévoir</h4>
+    <ul>
+      <li><strong>Purge</strong> : Prêtre / Chaman.</li>
+      <li><strong>Interrupts</strong> solides (surtout sur Julianne).</li>
+      <li><strong>Dispel poison</strong> pour le tank sur Romulo.</li>
+      <li>Option très pratique : <strong>Guerrier protection</strong> sur Romulo (désarmement + contrôle du rythme).</li>
+    </ul>
+
+    <h4>Phase 1 — Julianne</h4>
+    <ul>
+      <li>Elle lance des sorts de <strong>soin</strong>, dégâts et contrôle → <strong>interrupt</strong> dès que possible.</li>
+      <li>Elle se <strong>buff</strong> → <strong>purge</strong> rapidement.</li>
+      <li>Sorts clés à gérer :
+        <ul>
+          <li><strong>Amour éternel</strong> : gros heal (à kick).</li>
+          <li><strong>Dévotion</strong> : buff (à purge).</li>
+          <li><strong>Attraction puissante</strong> : stun (kickable).</li>
+          <li><strong>Passion aveuglante</strong> : dégâts + DoT (kickable).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h4>Phase 2 — Romulo</h4>
+    <ul>
+      <li>Tout le raid se place <strong>derrière</strong> (cleave frontal).</li>
+      <li>Il applique un poison cumulable sur le tank → <strong>dispel poison</strong>.</li>
+      <li>Il se buff → <strong>purge</strong> rapidement.</li>
+      <li>Capacités clés :
+        <ul>
+          <li><strong>Coup empoisonné</strong> : -stats, cumulable → dispel.</li>
+          <li><strong>Hardiesse</strong> : buff dégâts/vitesse → purge.</li>
+          <li><strong>Fente arrière</strong> : frappe derrière + repousse.</li>
+          <li><strong>Sillon mortel</strong> : cleave frontal puissant.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h4>Phase 3 — Ensemble</h4>
+    <ul>
+      <li>Ils reviennent avec les mêmes capacités que leurs phases respectives.</li>
+      <li>Ils doivent être tués <strong>quasi simultanément</strong> : si l’un meurt, l’autre tente de le ressusciter (cast ~10s).</li>
+      <li>Strat simple : <strong>HP égaux</strong> → call d’execute sur les deux.</li>
+    </ul>
+  </div>
+
+  <!-- ============ LA MÉGÈRE ============ -->
+  <div class="opera-panel" data-opera-panel="crone">
+    <h3>La Mégère</h3>
+
+    <p>
+      Combat en <strong>1 phase</strong> avec une séquence de “mini-boss” (type Oz) puis la Mégère.
+      La difficulté vient du contrôle des cibles et du placement.
+    </p>
+
+    <h4>À prévoir</h4>
+    <ul>
+      <li><strong>Feu</strong> sur l’Homme de paille : Mage ou Démoniste (un chasseur peut aider selon votre compo).</li>
+      <li><strong>Fear</strong> sur Graou : Démoniste (<em>Peur</em>) ou Chasseur (<em>Apeurer la bête</em>).</li>
+      <li>Un tank solide pour Tête de fer-blanc (cleave frontal).</li>
+    </ul>
+
+    <h4>Ordre de priorité</h4>
+    <ol class="prio-list">
+      <li><strong>Dorothée</strong> (non tankable, pas de table d’aggro, traits d’eau) → à tomber vite</li>
+      <li><strong>Tito</strong> (après Dorothée)</li>
+      <li><strong>Graou</strong> (à fear pendant le kill)</li>
+      <li><strong>Homme de paille</strong> (désorientable avec sorts de feu)</li>
+      <li><strong>Tête de fer-blanc</strong> (tank dos au raid, puis kite quand la rouille stack)</li>
+      <li><strong>La Mégère</strong> (cyclones + chaînes d’éclairs)</li>
+    </ol>
+
+    <h4>Mécaniques importantes</h4>
+    <ul>
+      <li><strong>Homme de paille</strong> : privilégier les dégâts de feu pour provoquer la désorientation.</li>
+      <li><strong>Tête de fer-blanc</strong> : cleave frontal → tank dos au raid. Après ~30s la rouille le ralentit : possible kite.</li>
+      <li><strong>La Mégère</strong> : cyclones + dégâts de chute, et <strong>dépack</strong> pour limiter les rebonds de <em>Chaînes d’éclairs</em>.</li>
+    </ul>
+  </div>
+</section>
+
 
   <section class="card boss-section" id="curator">
     <h2>Le Conservateur</h2>
@@ -280,5 +474,46 @@
 </main>
 
 <script src="../../assets/js/nav.js"></script>
+        <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const STORAGE_KEY = 'kara_opera_choice';
+
+  const buttons = Array.from(document.querySelectorAll('.opera-btn'));
+  const panels  = Array.from(document.querySelectorAll('.opera-panel'));
+
+  if (!buttons.length || !panels.length) return;
+
+  function setOpera(choice) {
+    // boutons
+    buttons.forEach(btn => {
+      const isActive = btn.dataset.opera === choice;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    // panels
+    panels.forEach(p => {
+      const isActive = p.dataset.operaPanel === choice;
+      p.classList.toggle('is-active', isActive);
+    });
+
+    // save
+    try { localStorage.setItem(STORAGE_KEY, choice); } catch {}
+  }
+
+  // click
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => setOpera(btn.dataset.opera));
+  });
+
+  // load stored choice (default wolf)
+  let saved = 'wolf';
+  try { saved = localStorage.getItem(STORAGE_KEY) || 'wolf'; } catch {}
+  if (!buttons.some(b => b.dataset.opera === saved)) saved = 'wolf';
+
+  setOpera(saved);
+});
+</script>
+
 </body>
 </html>
