@@ -16,14 +16,14 @@
 
   <header class="page-header">
     <h1>Loot Tracker</h1>
-    <p>Importe l’export JSON de l’addon, stocke localement par personnage, consulte l’historique, et charge un JSON partagé depuis <code>/json/</code>.</p>
+    <p>Importe l’export JSON de l’addon, stocke localement par profil, consulte l’historique, et charge un JSON partagé depuis <code>/json/</code>.</p>
   </header>
 
   <main class="container">
     <section class="card">
       <h2>Données partagées (repo GitHub)</h2>
       <p class="hint">
-        Ton JSON partagé est lu depuis <code>../json/loot_thunderstrike.json</code> (repo <strong>nolrad/wow</strong>).
+        Ton JSON partagé est lu depuis <code>../json/loot_thunderstrike.json</code>.
         Un site statique ne peut pas écrire dans ce dossier : pour mettre à jour, il faut remplacer le fichier puis commit/push.
       </p>
       <div class="lt-row lt-row-wrap">
@@ -63,7 +63,7 @@
       <div class="lt-row lt-row-wrap">
         <label class="lt-check">
           <input id="chkMerge" type="checkbox" checked />
-          <span>Fusionner avec l’historique existant du perso (recommandé)</span>
+          <span>Fusionner avec l’historique existant du profil (recommandé)</span>
         </label>
 
         <label class="lt-check">
@@ -80,7 +80,7 @@
 
       <div class="lt-row lt-row-wrap">
         <label class="lt-label">
-          Personnage
+          Profil (Recorder)
           <select id="characterSelect" class="lt-select"></select>
         </label>
 
@@ -98,8 +98,8 @@
       </div>
 
       <div class="lt-row lt-row-wrap">
-        <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce perso (download)</button>
-        <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce perso (local)</button>
+        <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce profil (download)</button>
+        <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce profil (local)</button>
         <button id="btnDeleteAll" class="btn btn-danger" type="button">Tout supprimer (local)</button>
       </div>
 
@@ -109,13 +109,13 @@
         <table class="lt-table">
           <thead>
             <tr>
-              <th data-sort="date">Date</th>
-              <th data-sort="instance">Instance</th>
-              <th data-sort="boss">Boss</th>
-              <th data-sort="winner">Vainqueur</th>
-              <th data-sort="item">Item</th>
-              <th data-sort="quality">Qualité</th>
-              <th data-sort="roll">Rand</th>
+              <th>Date</th>
+              <th>Instance</th>
+              <th>Boss</th>
+              <th>Vainqueur</th>
+              <th>Item</th>
+              <th>Qualité</th>
+              <th>Rand</th>
             </tr>
           </thead>
           <tbody id="lootTbody"></tbody>
@@ -142,18 +142,19 @@
   </main>
 
   <script src="../assets/js/nav.js"></script>
+
   <script>
     // ==========================
     // Storage format (local)
     // ==========================
     // localStorage keys:
-    //   LT_INDEX = JSON array of character IDs
-    //   LT_CHAR_<id> = JSON of { id, realm, player, history: [payloads...] }
+    //   LT_INDEX = JSON array of profile IDs
+    //   LT_CHAR_<id> = JSON of { id, realm, player(profile), history: [payloads...] }
     //
-    // id = realm + "|" + player
+    // id = realm + "|" + player(profile)
 
-    const LT_INDEX = "LT_INDEX_V2";
-    const LT_PREFIX = "LT_CHAR_V2_";
+    const LT_INDEX = "LT_INDEX_V3";
+    const LT_PREFIX = "LT_CHAR_V3_";
 
     function $(id) { return document.getElementById(id); }
 
@@ -212,7 +213,7 @@
     // ==========================
     // Support 2 schemas:
     //   A) Old: {player, realm, runs:[{bosses:[{loots:[]}]}]}
-    //   B) New: {schema:1, realm, recorder, events:[{winner, winning_roll, item, ...}]}
+    //   B) New: {schema:1, realm, recorder, events:[{winner, winning_roll, item, itemID, quality, ...}]}
     // Normalize into a "history payload" shape for storage.
     // ==========================
     function normalizePayload(raw) {
@@ -221,12 +222,12 @@
       // New schema
       if (raw.schema === 1 && Array.isArray(raw.events)) {
         if (!raw.realm) throw new Error("JSON invalide: 'realm' manquant");
-        const recorder = raw.recorder || "Unknown";
+        const recorder = raw.recorder || raw.profile || "Unknown";
         return {
           _schema: "events_v1",
           schema: 1,
           realm: raw.realm,
-          player: recorder,            // on utilise recorder comme "profil" de stockage
+          player: recorder, // profil
           recorder: recorder,
           exported_at: raw.exported_at || "",
           events: raw.events
@@ -262,7 +263,6 @@
 
       // New schema: events[]
       if (payload._schema === "events_v1") {
-        // No min_quality in this schema => optional filter does nothing unless we infer (keep all)
         for (const ev of payload.events || []) {
           const q = Number(ev.quality ?? 0);
           rows.push({
@@ -271,6 +271,7 @@
             boss: ev.boss || "",
             winner: ev.winner || "",
             item: ev.item || "",
+            itemID: Number(ev.itemID || 0),                 // ✅ IMPORTANT pour Wowhead
             quality: q,
             quality_name: ev.quality_name || qualityLabel(q),
             roll: ev.winning_roll ?? null,
@@ -298,6 +299,7 @@
               boss: bossName,
               winner: loot.player || payload.player,
               item: loot.item || "",
+              itemID: Number(loot.itemID || 0),             // ✅ IMPORTANT pour Wowhead
               quality: q,
               quality_name: loot.quality_name || qualityLabel(q),
               roll: loot.rand ?? null,
@@ -335,7 +337,6 @@
       // Signature anti-dup (best effort)
       let sig = "";
       if (payload._schema === "events_v1") {
-        // Use exported_at + events count + last event time
         const last = (payload.events && payload.events.length) ? payload.events[payload.events.length - 1].time : "";
         sig = `events|${payload.exported_at}|${payload.events.length}|${last}`;
       } else {
@@ -446,22 +447,34 @@
       for (const r of rows) {
         const tr = document.createElement("tr");
         const rollStr = (r.roll === null || r.roll === undefined) ? "—" : String(r.roll);
+
+        const itemText = escapeHtml(r.item || "");
+        const itemId = Number(r.itemID || 0);
+
+        const itemHtml = itemId > 0
+          ? `<a href="https://www.wowhead.com/classic/fr/item=${itemId}"
+                target="_blank"
+                rel="noreferrer"
+                data-wowhead="item=${itemId}">
+                ${itemText}
+             </a>`
+          : itemText;
+
         tr.innerHTML = `
           <td>${escapeHtml(r.date || "")}</td>
           <td>${escapeHtml(r.instance || "")}</td>
           <td>${escapeHtml(r.boss || "")}</td>
           <td>${escapeHtml(r.winner || "")}</td>
-          <td class="lt-item">
-  <a href="https://www.wowhead.com/classic/fr/item=${r.itemID}"
-     target="_blank"
-     data-wowhead="item=${r.itemID}">
-    ${escapeHtml(r.item || "")}
-  </a>
-</td>
+          <td class="lt-item">${itemHtml}</td>
           <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
           <td>${escapeHtml(rollStr)}</td>
         `;
         tbody.appendChild(tr);
+      }
+
+      // ✅ Wowhead: re-scan links added dynamically
+      if (window.$WowheadPower && typeof window.$WowheadPower.refreshLinks === "function") {
+        window.$WowheadPower.refreshLinks();
       }
     }
 
@@ -610,14 +623,11 @@
       });
     });
   </script>
-  
+
+  <!-- Wowhead tooltips -->
   <script>
-  var whTooltips = {
-    colorLinks: true,
-    iconizeLinks: false,
-    renameLinks: false
-  };
-</script>
-<script src="https://wowhead.com/classic/widgets/power.js"></script>
+    var whTooltips = { colorLinks: true, iconizeLinks: false, renameLinks: false };
+  </script>
+  <script src="https://www.wowhead.com/classic/widgets/power.js"></script>
 </body>
 </html>
