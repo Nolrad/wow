@@ -1,69 +1,61 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>OaSiS – Guides WoW Classic</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OaSiS – Guides WoW Classic</title>
 
-    <!-- CSS global -->
-    <link rel="stylesheet" href="./assets/css/site.css">
+  <!-- CSS global -->
+  <link rel="stylesheet" href="./assets/css/site.css" />
 </head>
 
 <body class="index-page">
-<!-- Navbar injectée par assets/js/nav.js -->
+  <!-- Navbar injectée par assets/js/nav.js -->
 
-<header class="site-header">
+  <header class="site-header" role="banner">
     <h1>OaSiS</h1>
     <p>Guides World of Warcraft Classic – farm intelligent, autonomie totale</p>
-</header>
+  </header>
 
-<main class="container">
+  <main class="container" role="main">
+    <section class="grid" aria-label="Sections du site">
+      <article class="card">
+        <h2>Joaillerie 1–300</h2>
+        <p>
+          Guide complet basé sur WowIsClassic, pensé pour tout farmer soi-même :
+          minage, prospection, drops, suivi de stock, import et export.
+        </p>
+        <a href="./pages/joaillerie.html" class="btn btn-primary">
+          Ouvrir le guide
+        </a>
+      </article>
 
-    <section class="grid">
+      <article class="card">
+        <h2>Décompte</h2>
+        <p>Décompte avant la sortie de pré-patch.</p>
+        <a href="./pages/decompte.html" class="btn btn-primary">
+          Voir le décompte
+        </a>
+      </article>
 
-        <article class="card">
-            <h2>Joaillerie 1–300</h2>
-            <p>
-                Guide complet basé sur WowIsClassic, pensé pour tout farmer soi-même :
-                minage, prospection, drops, suivi de stock, import et export.
-            </p>
-            <a href="./pages/joaillerie.html" class="btn-primary">
-                Ouvrir le guide
-            </a>
-        </article>
-
-        <article class="card">
-            <h2>Décompte</h2>
-            <p>
-                Décompte avant la sortie de pré-patch.
-            </p>
-            <a href="./pages/decompte.html" class="btn-primary">
-                Voir le décompte
-            </a>
-        </article>
-
-        <article class="card">
-            <h2>À venir</h2>
-            <p>
-                Autres métiers, routes de leveling, checklists TBC
-                et outils orientés joueurs autonomes.
-            </p>
-            <span class="btn-disabled">
-                Bientôt
-            </span>
-        </article>
-
+      <article class="card">
+        <h2>À venir</h2>
+        <p>
+          Autres métiers, routes de leveling, checklists TBC
+          et outils orientés joueurs autonomes.
+        </p>
+        <span class="btn btn-disabled" aria-disabled="true">
+          Bientôt
+        </span>
+      </article>
     </section>
 
-    <footer class="footer">
-        © OaSiS – WoW Classic / TBC • Site statique GitHub Pages
+    <footer class="footer" role="contentinfo">
+      © OaSiS – WoW Classic / TBC • Site statique GitHub Pages
     </footer>
+  </main>
 
-</main>
-
-<!-- JS -->
-<script src="./assets/js/nav.js"></script>
+  <!-- JS -->
+  <script src="./assets/js/nav.js"></script>
 </body>
 </html>
-
-
