@@ -16,7 +16,7 @@
 
   <header class="page-header">
     <h1>Loot Tracker</h1>
-    <p>Importe l’export JSON de l’addon, stocke localement par personnage, et consulte l’historique des loots.</p>
+    <p>Importe l’export JSON de l’addon (format <code>events[]</code>), stocke localement par “recorder”, et consulte l’historique des loots.</p>
   </header>
 
   <main class="container">
@@ -32,8 +32,7 @@
             <button id="btnClearPaste" class="btn btn-secondary" type="button">Vider la zone texte</button>
           </div>
           <p class="hint">
-            Astuce : tu peux aussi utiliser <strong>/rlt ui</strong> puis <strong>Exporter JSON</strong>,
-            copier, puis coller ci-dessous.
+            Astuce : <strong>/rlt ui</strong> → Exporter JSON → copier/coller ci-dessous, ou enregistre le fichier et importe-le.
           </p>
         </div>
 
@@ -45,8 +44,8 @@
             <button id="btnCopyPaste" class="btn btn-secondary" type="button">Copier la zone</button>
           </div>
           <p class="hint">
-            Le stockage est <strong>local au navigateur</strong>. Pour alimenter un dossier <code>/json/</code> dans ton repo :
-            exporte (download), puis dépose manuellement le fichier dans <code>/json/</code> et commit.
+            Le stockage est <strong>local au navigateur</strong>. Pour alimenter <code>/json/</code> (dans ton repo) :
+            exporte (download) puis dépose le fichier dans <code>/json/</code> et commit.
           </p>
         </div>
       </div>
@@ -54,12 +53,12 @@
       <div class="lt-row lt-row-wrap">
         <label class="lt-check">
           <input id="chkMerge" type="checkbox" checked />
-          <span>Fusionner avec l’historique existant du perso (recommandé)</span>
+          <span>Fusionner avec l’historique existant du recorder (recommandé)</span>
         </label>
 
         <label class="lt-check">
           <input id="chkFilterMinQuality" type="checkbox" checked />
-          <span>Respecter <code>min_quality</code> lors de l’affichage</span>
+          <span>Respecter <code>min_quality</code> lors de l’affichage (si présent)</span>
         </label>
       </div>
 
@@ -71,27 +70,27 @@
 
       <div class="lt-row lt-row-wrap">
         <label class="lt-label">
-          Personnage
+          Recorder (celui qui enregistre)
           <select id="characterSelect" class="lt-select"></select>
         </label>
 
         <label class="lt-label">
           Filtre instance
-          <input id="instanceFilter" class="lt-input" type="text" placeholder="ex: Karazhan, Gouffre..." />
+          <input id="instanceFilter" class="lt-input" type="text" placeholder="ex: Karazhan, Monastère..." />
         </label>
 
         <label class="lt-label">
           Filtre item
-          <input id="itemFilter" class="lt-input" type="text" placeholder="ex: Cape, Épée..." />
+          <input id="itemFilter" class="lt-input" type="text" placeholder="ex: Chapeau, Égide..." />
         </label>
 
         <button id="btnRefresh" class="btn btn-secondary" type="button">Rafraîchir</button>
       </div>
 
       <div class="lt-row lt-row-wrap">
-        <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce perso (download)</button>
+        <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce recorder (download)</button>
         <button id="btnCopyCharacter" class="btn btn-secondary" type="button">Copier l’export (clipboard)</button>
-        <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce perso (local)</button>
+        <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce recorder (local)</button>
         <button id="btnDeleteAll" class="btn btn-danger" type="button">Tout supprimer (local)</button>
       </div>
 
@@ -124,9 +123,8 @@
     <section class="card">
       <h2>À propos du dossier /json</h2>
       <ul>
-        <li>Un site statique (GitHub Pages) ne permet pas d’écrire automatiquement dans <code>/json/</code> depuis le navigateur.</li>
+        <li>Sur un site statique (GitHub Pages), on ne peut pas écrire automatiquement dans <code>/json/</code> depuis le navigateur.</li>
         <li>Workflow : <strong>import → stockage local → export (download) → tu copies dans /json → commit</strong>.</li>
-        <li>Si un jour tu veux une écriture automatique côté serveur, il faudra un backend (API).</li>
       </ul>
     </section>
 
@@ -138,27 +136,22 @@
   <script src="../assets/js/nav.js"></script>
   <script>
     // =========================================================
-    // Loot Tracker (localStorage) + tri + export download/clipboard
+    // Loot Tracker (localStorage) - supporte:
+    //  - nouveau format: { schema, exported_at, realm, recorder, events:[...] }
+    //  - ancien format (fallback): { realm, player, runs:[{bosses:[{loots:[]}]}] }
     // =========================================================
 
     const LT_INDEX = "LT_INDEX_V1";
     const LT_PREFIX = "LT_CHAR_V1_";
 
     // Etat de tri (clic sur entêtes)
-    let SORT = { key: "date", dir: "desc" }; // desc: récent d'abord
+    let SORT = { key: "date", dir: "desc" }; // desc = récent d'abord
 
     function $(id) { return document.getElementById(id); }
 
     function safeJsonParse(text) {
       try { return { ok: true, value: JSON.parse(text) }; }
       catch (e) { return { ok: false, error: String(e) }; }
-    }
-
-    function normalizeExport(raw) {
-      if (!raw || typeof raw !== "object") throw new Error("JSON invalide: pas un objet");
-      if (!raw.player || !raw.realm) throw new Error("JSON invalide: champs 'player' ou 'realm' manquants");
-      raw.runs = Array.isArray(raw.runs) ? raw.runs : [];
-      return raw;
     }
 
     function charId(realm, player) {
@@ -224,9 +217,61 @@
       return "q" + String(q);
     }
 
-    // ------- Extraction des loots depuis l'export addon -------
-    function extractLootRows(exportObj, respectMinQuality=true) {
+    // --------------------------
+    // Normalisation
+    // --------------------------
+    function normalizeExport(raw) {
+      if (!raw || typeof raw !== "object") throw new Error("JSON invalide: pas un objet");
+      if (!raw.realm) throw new Error("JSON invalide: champ 'realm' manquant");
+
+      // Nouveau format: schema + recorder + events[]
+      if (Array.isArray(raw.events)) {
+        raw.schema = Number(raw.schema ?? 1);
+        raw.recorder = raw.recorder || "Unknown";
+        raw.exported_at = raw.exported_at || new Date().toISOString();
+        raw.events = Array.isArray(raw.events) ? raw.events : [];
+        raw.min_quality = Number(raw.min_quality ?? 0);
+        return raw;
+      }
+
+      // Ancien format (fallback)
+      if (!raw.player) throw new Error("JSON invalide: champ 'player' manquant (ancien format)");
+      raw.runs = Array.isArray(raw.runs) ? raw.runs : [];
+      raw.min_quality = Number(raw.min_quality ?? 0);
+      return raw;
+    }
+
+    // --------------------------
+    // Extraction rows
+    // --------------------------
+    function extractLootRows(exportObj, respectMinQuality = true) {
       const rows = [];
+
+      // Nouveau format: events[]
+      if (Array.isArray(exportObj.events)) {
+        const minQ = Number(exportObj.min_quality ?? 0);
+
+        for (const e of exportObj.events) {
+          const q = Number(e.quality ?? 0);
+          if (respectMinQuality && q < minQ) continue;
+
+          rows.push({
+            time: e.time ?? null,
+            date: e.time_human || "",
+            instance: e.instance || "",
+            boss: e.boss || "",
+            player: e.winner || "",
+            item: e.item || "",
+            quality: q,
+            quality_name: e.quality_name || "",
+            rand: e.winning_roll ?? null,
+          });
+        }
+
+        return rows;
+      }
+
+      // Ancien format: runs/bosses/loots
       const minQ = Number(exportObj.min_quality ?? 0);
 
       for (const run of (exportObj.runs || [])) {
@@ -245,7 +290,7 @@
             if (respectMinQuality && q < minQ) continue;
 
             rows.push({
-              time: loot.time ?? null, // timestamp (tri date fiable)
+              time: loot.time ?? null,
               date: loot.time_human || started,
               instance,
               boss: bossName,
@@ -258,10 +303,13 @@
           }
         }
       }
+
       return rows;
     }
 
-    // ------- Tri -------
+    // --------------------------
+    // Tri
+    // --------------------------
     function getSortValue(row, key) {
       switch (key) {
         case "quality": return Number(row.quality ?? -1);
@@ -290,7 +338,9 @@
       return rows;
     }
 
-    // ------- UI / Select perso -------
+    // --------------------------
+    // UI Helpers
+    // --------------------------
     function renderCharacterSelect() {
       const sel = $("characterSelect");
       const ids = loadIndex();
@@ -299,11 +349,12 @@
       if (ids.length === 0) {
         const opt = document.createElement("option");
         opt.value = "";
-        opt.textContent = "Aucun perso (importe un JSON)";
+        opt.textContent = "Aucun recorder (importe un JSON)";
         sel.appendChild(opt);
         sel.disabled = true;
         return;
       }
+
       sel.disabled = false;
 
       for (const id of ids) {
@@ -341,23 +392,21 @@
       });
     }
 
-    // ------- Render table + summary -------
     function renderTable() {
       const tbody = $("lootTbody");
       tbody.innerHTML = "";
 
       const c = getSelectedChar();
       if (!c) {
-        $("summary").textContent = "Aucun perso sélectionné.";
+        $("summary").textContent = "Aucun recorder sélectionné.";
         return;
       }
 
       let rows = flattenHistory(c);
       rows = applyFilters(rows);
-
-      // Tri
       sortRows(rows);
 
+      // summary
       const total = rows.length;
       const byQ = {0:0,1:0,2:0,3:0,4:0,5:0};
       for (const r of rows) byQ[r.quality] = (byQ[r.quality] || 0) + 1;
@@ -398,25 +447,32 @@
       }
     }
 
-    // ------- Import / Merge -------
-    function importExportObject(exportObj, merge=true) {
+    // --------------------------
+    // Import / Merge
+    // --------------------------
+    function importExportObject(exportObj, merge = true) {
       exportObj = normalizeExport(exportObj);
 
-      const id = charId(exportObj.realm, exportObj.player);
+      // Nouveau format: stocké par recorder
+      const recorderName = exportObj.recorder || exportObj.player || "Unknown";
+      const id = charId(exportObj.realm, recorderName);
+
       const existing = loadChar(id);
 
       const record = existing && merge ? existing : {
         id,
         realm: exportObj.realm,
-        player: exportObj.player,
+        player: recorderName, // "player" = recorder, côté UI
         created_at: new Date().toISOString(),
         history: [],
         _seen: {}
       };
 
-      // Anti doublon (heuristique)
-      const sig = `${exportObj.date}|${exportObj.started_at}|${(exportObj.runs||[]).length}`;
+      // Anti doublon
+      const count = Array.isArray(exportObj.events) ? exportObj.events.length : (exportObj.runs || []).length;
+      const sig = `${exportObj.exported_at || exportObj.started_at || exportObj.date || ""}|${count}`;
       record._seen = record._seen || {};
+
       if (!record._seen[sig]) {
         record.history.push(exportObj);
         record._seen[sig] = true;
@@ -429,13 +485,15 @@
       return record;
     }
 
-    // ------- Export (download / clipboard) -------
-    function buildCharacterExport(c) {
+    // --------------------------
+    // Export
+    // --------------------------
+    function buildRecorderExport(c) {
       return {
         schema: 1,
         exported_at: new Date().toISOString(),
         realm: c.realm,
-        player: c.player,
+        recorder: c.player,
         history: c.history || []
       };
     }
@@ -452,27 +510,27 @@
       URL.revokeObjectURL(url);
     }
 
-    function exportSelectedCharacterDownload() {
+    function exportSelectedRecorderDownload() {
       const c = getSelectedChar();
       if (!c) return;
 
-      const payload = buildCharacterExport(c);
-      const safePlayer = String(c.player).replace(/[^a-z0-9_-]/gi, "_");
+      const payload = buildRecorderExport(c);
+      const safeRecorder = String(c.player).replace(/[^a-z0-9_-]/gi, "_");
       const safeRealm = String(c.realm).replace(/[^a-z0-9_-]/gi, "_");
-      downloadJson(`${safePlayer}_${safeRealm}_loot_history.json`, payload);
+      downloadJson(`${safeRecorder}_${safeRealm}_loot_history.json`, payload);
     }
 
-    async function exportSelectedCharacterClipboard() {
+    async function exportSelectedRecorderClipboard() {
       const c = getSelectedChar();
       if (!c) return;
 
-      const payload = buildCharacterExport(c);
+      const payload = buildRecorderExport(c);
       const text = JSON.stringify(payload, null, 2);
 
       try {
         await navigator.clipboard.writeText(text);
         setStatus("Export copié dans le presse-papier.", "ok");
-      } catch (e) {
+      } catch {
         setStatus("Impossible de copier (permission navigateur). Utilise l’export download.", "warn");
       }
     }
@@ -487,12 +545,14 @@
       }
     }
 
-    // ------- Init -------
+    // --------------------------
+    // Wire UI
+    // --------------------------
     document.addEventListener("DOMContentLoaded", () => {
       renderCharacterSelect();
       renderTable();
 
-      // Tri : clic sur entêtes
+      // Tri via clic sur en-têtes
       document.querySelectorAll(".lt-table thead th[data-sort]").forEach(th => {
         th.style.cursor = "pointer";
         th.addEventListener("click", () => {
@@ -567,8 +627,8 @@
       $("itemFilter").addEventListener("input", () => renderTable());
       $("chkFilterMinQuality").addEventListener("change", () => renderTable());
 
-      $("btnExportCharacter").addEventListener("click", () => exportSelectedCharacterDownload());
-      $("btnCopyCharacter").addEventListener("click", () => exportSelectedCharacterClipboard());
+      $("btnExportCharacter").addEventListener("click", () => exportSelectedRecorderDownload());
+      $("btnCopyCharacter").addEventListener("click", () => exportSelectedRecorderClipboard());
 
       $("btnDeleteCharacter").addEventListener("click", () => {
         const c = getSelectedChar();
