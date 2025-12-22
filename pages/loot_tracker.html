@@ -32,18 +32,21 @@
             <button id="btnClearPaste" class="btn btn-secondary" type="button">Vider la zone texte</button>
           </div>
           <p class="hint">
-            Astuce : tu peux aussi utiliser <strong>/rlt export</strong>, copier le JSON, puis coller ci-dessous.
+            Astuce : tu peux aussi utiliser <strong>/rlt ui</strong> puis <strong>Exporter JSON</strong>,
+            copier, puis coller ci-dessous.
           </p>
         </div>
 
         <div class="lt-block">
           <h3>Copier / Coller JSON</h3>
           <textarea id="pasteArea" class="lt-textarea" placeholder="Colle ici ton export JSON complet..."></textarea>
-          <div class="lt-row">
+          <div class="lt-row lt-row-wrap">
             <button id="btnImportPaste" class="btn btn-primary" type="button">Importer le JSON collé</button>
+            <button id="btnCopyPaste" class="btn btn-secondary" type="button">Copier la zone</button>
           </div>
           <p class="hint">
-            Le stockage est <strong>local au navigateur</strong> (pas dans le dossier /json automatiquement).
+            Le stockage est <strong>local au navigateur</strong>. Pour alimenter un dossier <code>/json/</code> dans ton repo :
+            exporte (download), puis dépose manuellement le fichier dans <code>/json/</code> et commit.
           </p>
         </div>
       </div>
@@ -87,12 +90,15 @@
 
       <div class="lt-row lt-row-wrap">
         <button id="btnExportCharacter" class="btn btn-primary" type="button">Exporter ce perso (download)</button>
+        <button id="btnCopyCharacter" class="btn btn-secondary" type="button">Copier l’export (clipboard)</button>
         <button id="btnDeleteCharacter" class="btn btn-danger" type="button">Supprimer ce perso (local)</button>
         <button id="btnDeleteAll" class="btn btn-danger" type="button">Tout supprimer (local)</button>
       </div>
 
       <p class="hint">
-        Pour créer un dossier <code>/json/</code> dans ton repo : exporte ici, puis place le fichier téléchargé dans <code>json/</code> et commit.
+        Tri : clique sur un en-tête (Date / Instance / Boss / Joueur / Item / Qualité / Rand). Re-clique pour inverser.
+        <br />
+        Dossier conseillé dans le repo : <code>/json/</code> à la racine.
       </p>
 
       <div id="summary" class="lt-summary"></div>
@@ -101,13 +107,13 @@
         <table class="lt-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Instance</th>
-              <th>Boss</th>
-              <th>Joueur</th>
-              <th>Item</th>
-              <th>Qualité</th>
-              <th>Rand</th>
+              <th data-sort="date">Date</th>
+              <th data-sort="instance">Instance</th>
+              <th data-sort="boss">Boss</th>
+              <th data-sort="player">Joueur</th>
+              <th data-sort="item">Item</th>
+              <th data-sort="quality">Qualité</th>
+              <th data-sort="rand">Rand</th>
             </tr>
           </thead>
           <tbody id="lootTbody"></tbody>
@@ -118,30 +124,28 @@
     <section class="card">
       <h2>À propos du dossier /json</h2>
       <ul>
-        <li>Un site statique (GitHub Pages) ne permet pas d’écrire dans <code>/json/</code> depuis le navigateur.</li>
-        <li>Le workflow simple : <strong>import → stockage local → export download → tu copies dans /json → commit</strong>.</li>
+        <li>Un site statique (GitHub Pages) ne permet pas d’écrire automatiquement dans <code>/json/</code> depuis le navigateur.</li>
+        <li>Workflow : <strong>import → stockage local → export (download) → tu copies dans /json → commit</strong>.</li>
         <li>Si un jour tu veux une écriture automatique côté serveur, il faudra un backend (API).</li>
       </ul>
     </section>
 
     <div class="footer">
-      Loot Tracker — import JSON addon → stockage local → export “prêt à déposer”
+      Loot Tracker — import JSON addon → stockage local → tri → export “prêt à déposer”
     </div>
   </main>
 
   <script src="../assets/js/nav.js"></script>
   <script>
-    // ==========================
-    // Storage format (local)
-    // ==========================
-    // localStorage keys:
-    //   LT_INDEX = JSON array of character IDs
-    //   LT_CHAR_<id> = JSON of { id, realm, player, history: [exports...] }
-    //
-    // id = realm + "|" + player (unique enough for your use)
+    // =========================================================
+    // Loot Tracker (localStorage) + tri + export download/clipboard
+    // =========================================================
 
     const LT_INDEX = "LT_INDEX_V1";
     const LT_PREFIX = "LT_CHAR_V1_";
+
+    // Etat de tri (clic sur entêtes)
+    let SORT = { key: "date", dir: "desc" }; // desc: récent d'abord
 
     function $(id) { return document.getElementById(id); }
 
@@ -151,7 +155,6 @@
     }
 
     function normalizeExport(raw) {
-      // Basic shape validation + normalize minimal
       if (!raw || typeof raw !== "object") throw new Error("JSON invalide: pas un objet");
       if (!raw.player || !raw.realm) throw new Error("JSON invalide: champs 'player' ou 'realm' manquants");
       raw.runs = Array.isArray(raw.runs) ? raw.runs : [];
@@ -199,38 +202,13 @@
       el.textContent = msg;
     }
 
-    function extractLootRows(exportObj, respectMinQuality=true) {
-      const rows = [];
-      const minQ = Number(exportObj.min_quality ?? 0);
-
-      for (const run of (exportObj.runs || [])) {
-        const instance = (run.instance_override && run.instance_override.trim()) ? run.instance_override : (run.instance || "");
-        const started = run.started_at_human || exportObj.date || "";
-
-        for (const boss of (run.bosses || [])) {
-          const bossName = boss.name || "";
-          for (const loot of (boss.loots || [])) {
-            const q = Number(loot.quality ?? 0);
-            if (respectMinQuality && q < minQ) continue;
-
-            rows.push({
-              date: loot.time_human || started,
-              instance,
-              boss: bossName,
-              player: loot.player || exportObj.player,
-              item: loot.item || "",
-              quality: q,
-              quality_name: loot.quality_name || "",
-              rand: loot.rand ?? null,
-            });
-          }
-        }
-      }
-      return rows;
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[c]));
     }
 
     function qualityLabel(q) {
-      // Keep consistent with addon
       const map = {
         0: "Médiocre",
         1: "Commun",
@@ -246,10 +224,78 @@
       return "q" + String(q);
     }
 
+    // ------- Extraction des loots depuis l'export addon -------
+    function extractLootRows(exportObj, respectMinQuality=true) {
+      const rows = [];
+      const minQ = Number(exportObj.min_quality ?? 0);
+
+      for (const run of (exportObj.runs || [])) {
+        const instance =
+          (run.instance_override && run.instance_override.trim())
+            ? run.instance_override
+            : (run.instance || "");
+
+        const started = run.started_at_human || exportObj.started_at || exportObj.date || "";
+
+        for (const boss of (run.bosses || [])) {
+          const bossName = boss.name || "";
+
+          for (const loot of (boss.loots || [])) {
+            const q = Number(loot.quality ?? 0);
+            if (respectMinQuality && q < minQ) continue;
+
+            rows.push({
+              time: loot.time ?? null, // timestamp (tri date fiable)
+              date: loot.time_human || started,
+              instance,
+              boss: bossName,
+              player: loot.player || exportObj.player,
+              item: loot.item || "",
+              quality: q,
+              quality_name: loot.quality_name || "",
+              rand: loot.rand ?? null,
+            });
+          }
+        }
+      }
+      return rows;
+    }
+
+    // ------- Tri -------
+    function getSortValue(row, key) {
+      switch (key) {
+        case "quality": return Number(row.quality ?? -1);
+        case "rand": return (row.rand === null || row.rand === undefined) ? -1 : Number(row.rand);
+        case "date":
+          return (row.time !== null && row.time !== undefined) ? Number(row.time) : String(row.date ?? "");
+        default:
+          return String(row[key] ?? "").toLowerCase();
+      }
+    }
+
+    function sortRows(rows) {
+      const { key, dir } = SORT;
+      const mul = dir === "asc" ? 1 : -1;
+
+      rows.sort((a, b) => {
+        const va = getSortValue(a, key);
+        const vb = getSortValue(b, key);
+
+        if (typeof va === "number" && typeof vb === "number") {
+          return (va - vb) * mul;
+        }
+        return String(va).localeCompare(String(vb), "fr", { sensitivity: "base" }) * mul;
+      });
+
+      return rows;
+    }
+
+    // ------- UI / Select perso -------
     function renderCharacterSelect() {
       const sel = $("characterSelect");
       const ids = loadIndex();
       sel.innerHTML = "";
+
       if (ids.length === 0) {
         const opt = document.createElement("option");
         opt.value = "";
@@ -276,7 +322,6 @@
     }
 
     function flattenHistory(charObj) {
-      // history = array of exports; merge all rows
       const respect = $("chkFilterMinQuality").checked;
       let rows = [];
       for (const exp of (charObj.history || [])) {
@@ -296,6 +341,7 @@
       });
     }
 
+    // ------- Render table + summary -------
     function renderTable() {
       const tbody = $("lootTbody");
       tbody.innerHTML = "";
@@ -309,10 +355,9 @@
       let rows = flattenHistory(c);
       rows = applyFilters(rows);
 
-      // sort newest first (best effort)
-      rows.sort((a,b) => String(b.date).localeCompare(String(a.date)));
+      // Tri
+      sortRows(rows);
 
-      // summary
       const total = rows.length;
       const byQ = {0:0,1:0,2:0,3:0,4:0,5:0};
       for (const r of rows) byQ[r.quality] = (byQ[r.quality] || 0) + 1;
@@ -339,6 +384,7 @@
         const tr = document.createElement("tr");
         const randStr = (r.rand === null || r.rand === undefined) ? "—" : String(r.rand);
         const qName = r.quality_name || qualityLabel(r.quality);
+
         tr.innerHTML = `
           <td>${escapeHtml(r.date || "")}</td>
           <td>${escapeHtml(r.instance || "")}</td>
@@ -352,12 +398,7 @@
       }
     }
 
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, c => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-      }[c]));
-    }
-
+    // ------- Import / Merge -------
     function importExportObject(exportObj, merge=true) {
       exportObj = normalizeExport(exportObj);
 
@@ -369,10 +410,11 @@
         realm: exportObj.realm,
         player: exportObj.player,
         created_at: new Date().toISOString(),
-        history: []
+        history: [],
+        _seen: {}
       };
 
-      // Avoid duplicates (simple heuristic)
+      // Anti doublon (heuristique)
       const sig = `${exportObj.date}|${exportObj.started_at}|${(exportObj.runs||[]).length}`;
       record._seen = record._seen || {};
       if (!record._seen[sig]) {
@@ -387,6 +429,17 @@
       return record;
     }
 
+    // ------- Export (download / clipboard) -------
+    function buildCharacterExport(c) {
+      return {
+        schema: 1,
+        exported_at: new Date().toISOString(),
+        realm: c.realm,
+        player: c.player,
+        history: c.history || []
+      };
+    }
+
     function downloadJson(filename, obj) {
       const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -399,36 +452,67 @@
       URL.revokeObjectURL(url);
     }
 
-    function exportSelectedCharacter() {
+    function exportSelectedCharacterDownload() {
       const c = getSelectedChar();
       if (!c) return;
 
-      // Export "perso-historique" (tout ce que tu as importé localement)
-      const payload = {
-        schema: 1,
-        exported_at: new Date().toISOString(),
-        realm: c.realm,
-        player: c.player,
-        history: c.history || []
-      };
-
-      // file name: player_realm_loot_history.json
+      const payload = buildCharacterExport(c);
       const safePlayer = String(c.player).replace(/[^a-z0-9_-]/gi, "_");
       const safeRealm = String(c.realm).replace(/[^a-z0-9_-]/gi, "_");
       downloadJson(`${safePlayer}_${safeRealm}_loot_history.json`, payload);
     }
 
-    // ==========================
-    // Wire UI
-    // ==========================
+    async function exportSelectedCharacterClipboard() {
+      const c = getSelectedChar();
+      if (!c) return;
+
+      const payload = buildCharacterExport(c);
+      const text = JSON.stringify(payload, null, 2);
+
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus("Export copié dans le presse-papier.", "ok");
+      } catch (e) {
+        setStatus("Impossible de copier (permission navigateur). Utilise l’export download.", "warn");
+      }
+    }
+
+    async function copyPasteArea() {
+      const t = $("pasteArea").value || "";
+      try {
+        await navigator.clipboard.writeText(t);
+        setStatus("Zone texte copiée.", "ok");
+      } catch {
+        setStatus("Impossible de copier (permission navigateur).", "warn");
+      }
+    }
+
+    // ------- Init -------
     document.addEventListener("DOMContentLoaded", () => {
       renderCharacterSelect();
       renderTable();
+
+      // Tri : clic sur entêtes
+      document.querySelectorAll(".lt-table thead th[data-sort]").forEach(th => {
+        th.style.cursor = "pointer";
+        th.addEventListener("click", () => {
+          const key = th.dataset.sort;
+          if (SORT.key === key) {
+            SORT.dir = (SORT.dir === "asc") ? "desc" : "asc";
+          } else {
+            SORT.key = key;
+            SORT.dir = (key === "date") ? "desc" : "asc";
+          }
+          renderTable();
+        });
+      });
 
       $("btnClearPaste").addEventListener("click", () => {
         $("pasteArea").value = "";
         setStatus("Zone texte vidée.", "info");
       });
+
+      $("btnCopyPaste").addEventListener("click", () => copyPasteArea());
 
       $("btnImportFile").addEventListener("click", async () => {
         const file = $("fileInput").files && $("fileInput").files[0];
@@ -483,7 +567,8 @@
       $("itemFilter").addEventListener("input", () => renderTable());
       $("chkFilterMinQuality").addEventListener("change", () => renderTable());
 
-      $("btnExportCharacter").addEventListener("click", () => exportSelectedCharacter());
+      $("btnExportCharacter").addEventListener("click", () => exportSelectedCharacterDownload());
+      $("btnCopyCharacter").addEventListener("click", () => exportSelectedCharacterClipboard());
 
       $("btnDeleteCharacter").addEventListener("click", () => {
         const c = getSelectedChar();
