@@ -59,9 +59,12 @@
     const sig = payloadSig(payload);
     const exists = payloads.some(p => payloadSig(p) === sig);
 
-    if (!exists) payloads.push(payload);
-    // merge==false => on remplace tout par ce payload
-    const finalPayloads = merge ? payloads : [payload];
+    let finalPayloads;
+    if (!merge) {
+      finalPayloads = [payload];
+    } else {
+      finalPayloads = exists ? payloads : payloads.concat([payload]);
+    }
 
     savePayloads(finalPayloads);
     return finalPayloads;
@@ -191,7 +194,7 @@
   }
 
   // ==========================
-  // Build ALL_ROWS + winner select
+  // Build ALL_ROWS + populate selects
   // ==========================
   function rebuildAllRows() {
     const payloads = loadPayloads();
@@ -203,52 +206,81 @@
     }
 
     ALL_ROWS = rows;
-    renderWinnerSelect(ALL_ROWS);
+
+    populateWinnerSelect(ALL_ROWS);
+    populateInstanceSelect(ALL_ROWS);
+    // qualitySelect: pas besoin de populate (options statiques)
   }
 
-  function renderWinnerSelect(rows) {
+  function populateWinnerSelect(rows) {
     const sel = $("winnerSelect");
     if (!sel) return;
 
     const current = sel.value || "";
     sel.innerHTML = "";
 
-    const optAll = document.createElement("option");
-    optAll.value = "";
-    optAll.textContent = "Tous";
-    sel.appendChild(optAll);
+    sel.appendChild(new Option("Tous", ""));
 
     const set = new Set();
-    for (const r of rows) {
-      if (r.winner) set.add(r.winner);
-    }
+    for (const r of rows) if (r.winner) set.add(r.winner);
 
     const winners = Array.from(set).sort((a, b) => a.localeCompare(b, "fr"));
-    for (const w of winners) {
-      const opt = document.createElement("option");
-      opt.value = w;
-      opt.textContent = w;
-      sel.appendChild(opt);
-    }
+    for (const w of winners) sel.appendChild(new Option(w, w));
 
-    // restore selection if possible
-    if (current && winners.includes(current)) sel.value = current;
-    else sel.value = "";
+    sel.value = winners.includes(current) ? current : "";
+  }
+
+  function populateInstanceSelect(rows) {
+    const sel = $("instanceSelect");
+    if (!sel) return;
+
+    const current = sel.value || "";
+    sel.innerHTML = "";
+
+    sel.appendChild(new Option("Toutes les instances", ""));
+
+    const set = new Set();
+    for (const r of rows) if (r.instance) set.add(r.instance);
+
+    const instances = Array.from(set).sort((a, b) => a.localeCompare(b, "fr"));
+    for (const inst of instances) sel.appendChild(new Option(inst, inst));
+
+    sel.value = instances.includes(current) ? current : "";
   }
 
   // ==========================
   // Filtering + render table
   // ==========================
   function applyFilters(rows) {
-    const instFilter = ($("instanceFilter")?.value || "").trim().toLowerCase();
-    const itemFilter = ($("itemFilter")?.value || "").trim().toLowerCase();
+    // 1) winner select
     const winner = $("winnerSelect")?.value || "";
 
+    // 2) instance select
+    const instSel = $("instanceSelect")?.value || "";
+
+    // 3) optional old text instance filter (si tu le gardes)
+    const instText = ($("instanceFilter")?.value || "").trim().toLowerCase();
+
+    // 4) quality select (min quality)
+    const qSelRaw = $("qualitySelect")?.value;
+    const minQuality = (qSelRaw === "" || qSelRaw == null) ? null : Number(qSelRaw);
+
+    // 5) item search text
+    const itemFilter = ($("itemFilter")?.value || "").trim().toLowerCase();
+
     return rows.filter(r => {
-      const okInst = !instFilter || (r.instance || "").toLowerCase().includes(instFilter);
-      const okItem = !itemFilter || (r.item || "").toLowerCase().includes(itemFilter);
       const okWinner = !winner || r.winner === winner;
-      return okInst && okItem && okWinner;
+
+      // priorité au select instance
+      const okInstSel = !instSel || r.instance === instSel;
+      const okInstText = !instText || (r.instance || "").toLowerCase().includes(instText);
+
+      const okItem = !itemFilter || (r.item || "").toLowerCase().includes(itemFilter);
+
+      // qualité = minQuality (>=)
+      const okQuality = (minQuality === null) || Number(r.quality || 0) >= minQuality;
+
+      return okWinner && okInstSel && okInstText && okItem && okQuality;
     });
   }
 
@@ -268,6 +300,8 @@
     }
 
     for (const r of rows) {
+      const rollStr = (r.roll === null || r.roll === undefined) ? "—" : String(r.roll);
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${escapeHtml(r.date || "")}</td>
@@ -287,7 +321,7 @@
           }
         </td>
         <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
-        <td>${escapeHtml(r.roll ?? "—")}</td>
+        <td>${escapeHtml(rollStr)}</td>
       `;
       tbody.appendChild(tr);
     }
@@ -302,10 +336,15 @@
   // Shared JSON (repo)
   // ==========================
   async function loadSharedJson() {
+    const url = "../json/loot_thunderstrike.json";
+
     try {
       setSharedStatus("Chargement…", "info");
-      const res = await fetch("../json/loot_thunderstrike.json", { cache: "no-store" });
-      if (!res.ok) throw new Error(String(res.status));
+      const res = await fetch(url, { cache: "no-store" });
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} (${url})`);
+      }
 
       const json = await res.json();
       addPayload(json, true);
@@ -316,7 +355,8 @@
       rebuildAllRows();
       renderTable();
     } catch (e) {
-      setSharedStatus("Erreur chargement JSON partagé", "warn");
+      // message utile
+      setSharedStatus(`Erreur chargement: ${e.message || e}`, "warn");
     }
   }
 
@@ -364,11 +404,10 @@
   // Init
   // ==========================
   document.addEventListener("DOMContentLoaded", () => {
-    // Rebuild from local cache
     rebuildAllRows();
     renderTable();
 
-    // Auto-load shared JSON
+    // auto load shared
     loadSharedJson();
 
     $("btnReloadShared")?.addEventListener("click", loadSharedJson);
@@ -384,14 +423,17 @@
     $("btnRefresh")?.addEventListener("click", renderTable);
 
     $("winnerSelect")?.addEventListener("change", renderTable);
-    $("instanceFilter")?.addEventListener("input", renderTable);
+    $("instanceSelect")?.addEventListener("change", renderTable);
+    $("qualitySelect")?.addEventListener("change", renderTable);
+
+    $("instanceFilter")?.addEventListener("input", renderTable); // si tu gardes ce champ
     $("itemFilter")?.addEventListener("input", renderTable);
+
     $("chkFilterMinQuality")?.addEventListener("change", () => {
       rebuildAllRows();
       renderTable();
     });
 
-    // Boutons de purge locale (si présents)
     $("btnDeleteAll")?.addEventListener("click", () => {
       if (!confirm("Tout supprimer localement ?")) return;
       localStorage.removeItem(LT_PAYLOADS_KEY);
