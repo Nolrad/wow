@@ -16,7 +16,7 @@
 
 <header class="page-header">
   <h1>Karazhan</h1>
-  <p>Boss par boss, en tuiles, dans l’ordre de progression. (Strats à venir dans chaque section.)</p>
+  <p>Boss par boss, en tuiles, dans l’ordre de progression. (Strats dans chaque section.)</p>
 </header>
 
 <main class="container">
@@ -32,7 +32,7 @@
 
     <h2>Boss (ordre chrono)</h2>
     <p class="hint">
-      Clique une tuile pour aller à la section correspondante (tu rempliras ensuite la stratégie).
+      Clique une tuile pour aller à la section correspondante.
     </p>
 
     <div class="boss-grid" aria-label="Boss de Karazhan">
@@ -53,7 +53,7 @@
       <a class="boss-tile" href="#maiden">
         <span class="boss-index">3</span>
         <h3>Demoiselle de Vertu</h3>
-        <p class="boss-note">Chapelle • dispels</p>
+        <p class="boss-note">Chapelle • placement/dispels</p>
         <span class="boss-cta">Voir la strat →</span>
       </a>
 
@@ -67,7 +67,7 @@
       <a class="boss-tile" href="#curator">
         <span class="boss-index">5</span>
         <h3>Le Conservateur</h3>
-        <p class="boss-note">Menagerie • gestion mana</p>
+        <p class="boss-note">Menagerie • adds/évocation/enrage</p>
         <span class="boss-cta">Voir la strat →</span>
       </a>
 
@@ -115,328 +115,368 @@
     </div>
   </section>
 
-  <!-- Sections "détails" (placeholders) -->
+  <!-- ====================== ATTUMEN ====================== -->
   <section class="card boss-section" id="attumen">
-  <h2>Attumen le Veneur</h2>
+    <h2>Attumen le Veneur</h2>
 
-  <div class="boss-two-cols">
-    <div>
-      <h3>Résumé</h3>
-      <ul>
-        <li><strong>2 tanks</strong> (Minuit puis Attumen / boss monté)</li>
-        <li><strong>Dispels malédiction</strong> : Mage + Druide</li>
-        <li><strong>Shadow Cleave</strong> : boss dos au raid</li>
-        <li><strong>À 25%</strong> : fusion + <strong>reset menace</strong></li>
-        <li><strong>P3</strong> : stack derrière à <strong>&lt; 8 yards</strong> pour éviter la charge</li>
-      </ul>
+    <div class="boss-two-cols">
+      <div>
+        <h3>Résumé</h3>
+        <ul>
+          <li><strong>2 tanks</strong> (Minuit puis Attumen / boss monté)</li>
+          <li><strong>Dispels malédiction</strong> : Mage + Druide</li>
+          <li><strong>Shadow Cleave</strong> : boss dos au raid</li>
+          <li><strong>À 25%</strong> : fusion + <strong>reset menace</strong></li>
+          <li><strong>P3</strong> : stack derrière à <strong>&lt; 8 yards</strong> pour éviter la charge</li>
+        </ul>
+      </div>
+
+      <figure class="boss-figure">
+        <img
+          src="../../assets/images/raids/karazhan/attumen-position.png"
+          alt="Schéma de placement Attumen : tanks, raid, et rappel du stack derrière en phase 3."
+          loading="lazy"
+        />
+        <figcaption>Placement conseillé (tanks / dps / heals) + rappel du stack P3.</figcaption>
+      </figure>
     </div>
 
-    <figure class="boss-figure">
-      <img
-        src="../../assets/images/raids/karazhan/attumen-position.png"
-        alt="Schéma de placement Attumen : tanks à gauche, raid (heals + distance) à droite, stack derrière en phase 3."
-        loading="lazy"
-      />
-      <figcaption>Placement conseillé (tanks / dps / heals) + rappel du stack P3.</figcaption>
-    </figure>
-  </div>
+    <h3>Phases</h3>
 
-  <h3>Phases</h3>
+    <h4>Phase 1 — Minuit (100% → 95%)</h4>
+    <ul>
+      <li>Tank 1 sur Minuit, raid derrière, laisse la menace monter.</li>
+    </ul>
 
-  <h4>Phase 1 — Minuit (100% → 95%)</h4>
-  <ul>
-    <li>Tank 1 sur Minuit, raid derrière, laisse la menace monter.</li>
-  </ul>
+    <h4>Phase 2 — Arrivée d’Attumen</h4>
+    <ul>
+      <li>Tank 2 récupère Attumen, boss dos au raid (cleave).</li>
+      <li>Dispell <em>Intangible Presence</em> dès que possible (prio tanks).</li>
+    </ul>
 
-  <h4>Phase 2 — Arrivée d’Attumen</h4>
-  <ul>
-    <li>Tank 2 récupère Attumen immédiatement, boss dos au raid (cleave).</li>
-    <li>Dispell <em>Intangible Presence</em> dès que possible (prio tanks).</li>
-  </ul>
+    <h4>Phase 3 — Fusion à 25%</h4>
+    <ul>
+      <li>Reset menace : stop DPS/heal 1–2 sec, le tank reprend.</li>
+      <li>Tout le raid stack derrière le boss à &lt; 8 yards pour éviter <em>Berserker Charge</em>.</li>
+    </ul>
+  </section>
 
-  <h4>Phase 3 — Fusion à 25%</h4>
-  <ul>
-    <li>Reset menace : stop DPS/heal 1–2 sec, le tank reprend.</li>
-    <li>Tout le raid stack derrière le boss à &lt; 8 yards pour éviter <em>Berserker Charge</em>.</li>
-  </ul>
-</section>
-
-
+  <!-- ====================== MOROES ====================== -->
   <section class="card boss-section" id="moroes">
-  <h2>Moroes</h2>
+    <h2>Moroes</h2>
 
-  <p>
-    Moroes est un des boss de <strong>Karazhan</strong>. Le combat se joue en une seule phase, avec
-    <strong>4 invités</strong> choisis parmi 6 possibles : chacun a ses compétences et change la priorité de kill.
-  </p>
+    <p>
+      Moroes est un boss de <strong>Karazhan</strong>. Le combat se joue en une seule phase, avec
+      <strong>4 invités</strong> choisis parmi 6 possibles : chacun a ses compétences et change la priorité de kill.
+    </p>
 
-  <div class="boss-two-cols">
-    <div>
-      <h3>Résumé du combat</h3>
-      <ul>
-        <li><strong>1 phase</strong> : Moroes + 4 adds.</li>
-        <li><strong>Contrôle</strong> : prévoir de contrôler <strong>2 adds</strong> pendant que vous tuez les 2 autres.</li>
-        <li><strong>Contrôles recommandés</strong> : <strong>Prêtre</strong> (Entrave des morts-vivants) et <strong>Chasseur</strong> (Piège givrant).</li>
-        <li><strong>Dispel poison</strong> requis : Druide / Chaman / Paladin (pour <em>Cécité</em>).</li>
-        <li><strong>Offtank</strong> : doit rester <strong>2e à l’aggro</strong> pour reprendre quand Moroes lance <em>Suriner</em>.</li>
-      </ul>
+    <div class="boss-two-cols">
+      <div>
+        <h3>Résumé du combat</h3>
+        <ul>
+          <li><strong>1 phase</strong> : Moroes + 4 adds.</li>
+          <li><strong>Contrôle</strong> : contrôler <strong>2 adds</strong> pendant que vous tuez les 2 autres.</li>
+          <li><strong>Contrôles recommandés</strong> : <strong>Prêtre</strong> (Entrave des morts-vivants) + <strong>Chasseur</strong> (Piège givrant).</li>
+          <li><strong>Dispel poison</strong> requis : Druide / Chaman / Paladin (pour <em>Cécité</em>).</li>
+          <li><strong>Offtank</strong> : doit rester <strong>2e menace</strong> pour reprendre quand Moroes lance <em>Suriner</em>.</li>
+        </ul>
 
-      <h3>Plan simple</h3>
-      <ol>
-        <li>Au pull : contrôlez <strong>2 adds</strong>, tuez <strong>2 adds</strong> (burst + CD dès le début).</li>
-        <li>Ensuite :
-          <ul>
-            <li>Option A : tuez <strong>Moroes</strong> en gardant les contrôles actifs, puis terminez les adds.</li>
-            <li>Option B : finissez tous les adds, puis Moroes (plus long, souvent plus safe si contrôle instable).</li>
-          </ul>
-        </li>
-      </ol>
+        <h3>Plan simple</h3>
+        <ol>
+          <li>Au pull : contrôlez <strong>2 adds</strong>, tuez <strong>2 adds</strong> (burst + CD dès le début).</li>
+          <li>Ensuite :
+            <ul>
+              <li>Option A : tuez <strong>Moroes</strong> en gardant les contrôles actifs, puis terminez les adds.</li>
+              <li>Option B : finissez tous les adds, puis Moroes (plus long, souvent plus safe).</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+
+      <div>
+        <h3>Priorité de kill (adds)</h3>
+        <ol class="prio-list">
+          <li><strong>Baronne Dorothea Millstipe</strong> — <em>Brûlure de mana</em> : à tomber très vite.</li>
+          <li><strong>Dame Catriona Von’Indi</strong> — <em>Soins supérieurs</em> (kick) + <em>Mot de pouvoir : bouclier</em> (dispel).</li>
+          <li><strong>Dame Keira Berrybuck</strong> — <em>Bouclier divin</em> + <em>Lumière sacrée</em> (kick).</li>
+          <li><strong>Baron Rafe Dreuger</strong> — stuns + boost dégâts : souvent à contrôler si besoin.</li>
+          <li><strong>Seigneur Robin Daris</strong> — <em>Frappe mortelle</em> + <em>Tourbillon</em> : souvent à contrôler.</li>
+          <li><strong>Seigneur Crispin Ference</strong> — désarme + interrupts + mur : généralement <strong>à contrôler jusqu’à la fin</strong>.</li>
+        </ol>
+      </div>
     </div>
 
-    <div>
-      <h3>Priorité de kill (adds)</h3>
-      <ol class="prio-list">
-        <li><strong>Baronne Dorothea Millstipe</strong> — <em>Brûlure de mana</em> : à tomber très vite.</li>
-        <li><strong>Dame Catriona Von’Indi</strong> — <em>Soins supérieurs</em> (à kick) + <em>Mot de pouvoir : bouclier</em> (à dispel).</li>
-        <li><strong>Dame Keira Berrybuck</strong> — <em>Bouclier divin</em> + <em>Lumière sacrée</em> (à kick).</li>
-        <li><strong>Baron Rafe Dreuger</strong> — stuns + boost dégâts : souvent à contrôler si besoin.</li>
-        <li><strong>Seigneur Robin Daris</strong> — <em>Frappe mortelle</em> (-50% soins reçus) + <em>Tourbillon</em> : souvent à contrôler.</li>
-        <li><strong>Seigneur Crispin Ference</strong> — désarme + interruptions + gros mur défensif : généralement <strong>à contrôler jusqu’à la fin</strong> (souvent après Moroes).</li>
-      </ol>
+    <h3>Compétences de Moroes</h3>
+    <ul>
+      <li><strong>Disparition → Garrot</strong> : saignement très violent (~5 minutes).</li>
+      <li><strong>Cécité</strong> : désoriente — <strong>poison</strong> (à dispel).</li>
+      <li><strong>Suriner</strong> : désoriente le tank et le boss passe sur la 2e menace.</li>
+    </ul>
+
+    <h3>Gestion de Garrot</h3>
+    <ul>
+      <li>CD défensifs + soins dédiés sur la cible.</li>
+      <li>Peut être retiré par : <strong>Bloc de glace</strong>, <strong>Bouclier divin</strong>, <strong>Bénédiction de protection</strong>, <strong>Forme de pierre (nain)</strong>.</li>
+    </ul>
+
+    <h3>Conseils rapides</h3>
+    <ul>
+      <li><strong>Burst au pull</strong> : la partie la plus dure = les 20–30 premières secondes.</li>
+      <li><strong>Contrôle propre</strong> : annonce les refresh Entrave/Piège et évite les AoE sur les adds contrôlés.</li>
+      <li><strong>Placement</strong> : pack Moroes + adds “à tuer” pour cleave, gardez les adds contrôlés loin.</li>
+    </ul>
+  </section>
+
+  <!-- ====================== MAIDEN ====================== -->
+  <section class="card boss-section" id="maiden">
+    <h2>Demoiselle de Vertu</h2>
+
+    <p>
+      La Demoiselle de Vertu est un boss de <strong>Karazhan</strong>. Combat très axé
+      <strong>positionnement</strong> : si l’espacement et la gestion de <em>Repentir</em> sont propres,
+      le fight est simple.
+    </p>
+
+    <div class="boss-two-cols">
+      <div>
+        <h3>Objectifs</h3>
+        <ul>
+          <li><strong>Dépack</strong> : limiter les rebonds de <em>Colère divine</em>.</li>
+          <li><strong>Repentir</strong> : casser l’étourdissement dès que possible.</li>
+          <li><strong>Dispel magie</strong> : <em>Flammes sacrées</em> (sinon gros heal).</li>
+        </ul>
+
+        <h3>Placement</h3>
+        <ul>
+          <li><strong>Tanks</strong> : boss stable, raid derrière.</li>
+          <li><strong>Mêlées</strong> : derrière le boss, espacés.</li>
+          <li><strong>Distances + heals</strong> : répartis, pas de paquets.</li>
+        </ul>
+
+        <p class="hint">
+          Astuce : donne des emplacements fixes (4 coins / 4 repères) pour que les distances ne se regroupent pas.
+        </p>
+      </div>
+
+      <div>
+        <h3>Capacités</h3>
+        <ul>
+          <li><strong>Terre sacrée</strong> : AoE autour du boss + silence.</li>
+          <li><strong>Repentir</strong> : stun raid ~12s (les dégâts cassent l’effet).</li>
+          <li><strong>Colère divine</strong> : rebonds si trop proches (+40% dégâts par rebond).</li>
+          <li><strong>Flammes sacrées</strong> : DoT feu qui monte — <strong>magie à dissiper</strong>.</li>
+        </ul>
+      </div>
     </div>
-  </div>
 
-  <h3>Compétences de Moroes</h3>
-  <ul>
-    <li><strong>Disparition → Garrot</strong> : saignement très violent pendant ~5 minutes sur une cible aléatoire.</li>
-    <li><strong>Cécité</strong> : désoriente une cible — <strong>poison</strong> (à dispel).</li>
-    <li><strong>Suriner</strong> : désoriente le tank et le boss passe sur la 2e menace → l’offtank doit reprendre.</li>
-  </ul>
+    <h3>Stratégie</h3>
 
-  <h3>Gestion de Garrot</h3>
-  <ul>
-    <li>Prévoir des CD défensifs + soins dédiés sur la cible.</li>
-    <li>Certains immunes/cleanse peuvent retirer Garrot : <strong>Bloc de glace</strong>, <strong>Bouclier divin</strong>, <strong>Bénédiction de protection</strong>, <strong>Forme de pierre (nain)</strong>.</li>
-  </ul>
+    <h4>1) Début du combat</h4>
+    <ul>
+      <li>Tout le monde se place et <strong>reste espacé</strong>.</li>
+      <li>Heals : surveillez et dispel/heal rapidement <em>Flammes sacrées</em>.</li>
+    </ul>
 
-  <h3>Conseils rapides (exécution)</h3>
-  <ul>
-    <li><strong>Burst au pull</strong> : la partie la plus dure = les 20–30 premières secondes. Utilise les CD pour tomber les 2 premiers adds vite.</li>
-    <li><strong>Contrôle propre</strong> : annonce un timer de refresh (Entrave / Piège) et évite les cleaves/AoE sur les adds contrôlés.</li>
-    <li><strong>Placement</strong> : pack Moroes + adds “à tuer” pour cleave, mais gardez les adds contrôlés loin du splash.</li>
-  </ul>
-</section>
+    <h4>2) Gestion de Repentir</h4>
+    <ul>
+      <li>Objectif : casser le stun rapidement sans re-pack le raid.</li>
+      <li>Approche simple : certains joueurs prennent volontairement un tick de <em>Terre sacrée</em> pour casser <em>Repentir</em> (attention au silence).</li>
+      <li>Une fois libérés, les heals stabilisent le raid pendant que les autres sortent du stun.</li>
+    </ul>
 
+    <h4>3) Points d’attention</h4>
+    <ul>
+      <li>Ne restez pas dans <em>Terre sacrée</em> : un tick suffit, pas plus.</li>
+      <li>Si vous êtes bien dépack, <em>Colère divine</em> ne fera quasiment jamais de chaînes.</li>
+    </ul>
+  </section>
 
-  <<section class="card boss-section" id="maiden">
-  <h2>Demoiselle de Vertu</h2>
+  <!-- ====================== OPERA ====================== -->
+  <section class="card boss-section" id="opera">
+    <h2>Opéra</h2>
 
-  <p>
-    La Demoiselle de Vertu est un des boss de <strong>Karazhan</strong>.
-    C’est un combat surtout basé sur le <strong>positionnement</strong> :
-    si tout le monde respecte l’espacement et gère correctement <em>Repentir</em>,
-    le fight devient très simple.
-  </p>
+    <p>
+      L’Opéra de Karazhan propose <strong>1 événement sur 3</strong>. Choisis celui que tu as ce soir pour afficher la stratégie.
+    </p>
 
-  <div class="boss-two-cols">
-    <div>
-      <h3>Objectif principal</h3>
+    <div class="opera-picker" role="group" aria-label="Choix de l'événement Opéra">
+      <button class="opera-btn" type="button" data-opera="wolf" aria-pressed="true">Grand Méchant Loup</button>
+      <button class="opera-btn" type="button" data-opera="romeo" aria-pressed="false">Romulo &amp; Julianne</button>
+      <button class="opera-btn" type="button" data-opera="crone" aria-pressed="false">La Mégère</button>
+    </div>
+
+    <!-- GRAND MÉCHANT LOUP -->
+    <div class="opera-panel is-active" data-opera-panel="wolf">
+      <h3>Le Grand Méchant Loup</h3>
+      <p>
+        Combat en <strong>1 phase</strong>. La cible de <em>Petit Chaperon Rouge</em> doit <strong>kite</strong> le boss,
+        pendant que le tank continue de monter sa menace.
+      </p>
+
+      <h4>À prévoir</h4>
       <ul>
-        <li><strong>Se dépacker</strong> pour limiter les rebonds de <em>Colère divine</em>.</li>
-        <li><strong>Gérer Repentir</strong> : casser l’étourdissement dès que possible.</li>
-        <li><strong>Dispel magie</strong> sur <em>Flammes sacrées</em> (ou gros soin si pas de dispel).</li>
+        <li><strong>Anti-fear</strong> : Totem de séisme (Chaman) / Gardien de la peur (Prêtre).</li>
+        <li>Un plan de kite simple (tour de salle) et des joueurs espacés.</li>
       </ul>
 
-      <h3>Placement recommandé</h3>
+      <h4>Capacités</h4>
       <ul>
-        <li><strong>Tanks</strong> : au boss, face au raid (boss stable au centre de la pièce).</li>
-        <li><strong>Mêlées</strong> : derrière le boss, mais espacés.</li>
-        <li><strong>Distance + Heals</strong> : en arc de cercle, bien espacés (éviter les “paquets”).</li>
+        <li><strong>Petit Chaperon Rouge</strong> : armure à 0, vitesse augmentée, pas de sorts/skills → kite immédiat.</li>
+        <li><strong>Hurlement terrifiant</strong> : fear AoE ~3s.</li>
+        <li><strong>Grand balayage</strong> : stun frontal ~4s (peut toucher le chaperon).</li>
+      </ul>
+
+      <h4>Stratégie</h4>
+      <ul>
+        <li>Boss plutôt <strong>au centre</strong> pour laisser de la place au kite.</li>
+        <li>Si tu es chaperon : pars immédiatement, pas d’hésitation.</li>
+        <li>Le tank maintient la menace pendant le kite pour éviter des reprises d’aggro par les distances.</li>
       </ul>
 
       <p class="hint">
-        Astuce “safe” : attribue des emplacements fixes (ex : 1–2–3–4 autour de la salle) pour éviter que
-        les distances se regroupent sans s’en rendre compte.
+        Immunités utiles : Bouclier divin / Bénédiction de protection / Bloc de glace.
       </p>
     </div>
 
-    <div>
-      <h3>Capacités</h3>
+    <!-- ROMULO & JULIANNE -->
+    <div class="opera-panel" data-opera-panel="romeo">
+      <h3>Romulo &amp; Julianne</h3>
+
+      <p>
+        Combat en <strong>3 phases</strong> : Julianne seule, Romulo seul, puis les deux.
+        Objectif : <strong>interrupt</strong>, <strong>purge</strong> et dispel poison.
+      </p>
+
+      <h4>À prévoir</h4>
       <ul>
-        <li><strong>Terre sacrée</strong> : AoE autour du boss, dégâts sacrés + <strong>silence</strong>.</li>
-        <li><strong>Repentir</strong> : étourdit tout le raid ~12s (les dégâts cassent l’effet).</li>
-        <li><strong>Colère divine</strong> : dégâts sacrés sur une cible, <strong>rebond</strong> sur les proches, +40% dégâts par rebond.</li>
-        <li><strong>Flammes sacrées</strong> : DoT feu qui monte, <strong>effet de magie à dissiper</strong>.</li>
+        <li><strong>Purge</strong> : Prêtre / Chaman.</li>
+        <li><strong>Interrupts</strong> fiables (Julianne).</li>
+        <li><strong>Dispel poison</strong> sur le tank (Romulo).</li>
+      </ul>
+
+      <h4>Phase 1 — Julianne</h4>
+      <ul>
+        <li>Kick ses casts, purge ses buffs (priorité).</li>
+        <li>Sorts clés : <strong>Amour éternel</strong> (heal), <strong>Dévotion</strong> (buff), <strong>Attraction puissante</strong> (stun), <strong>Passion aveuglante</strong> (dégâts + DoT).</li>
+      </ul>
+
+      <h4>Phase 2 — Romulo</h4>
+      <ul>
+        <li>Raid <strong>derrière</strong> (cleave frontal).</li>
+        <li>Dispel poison sur tank (cumulable), purge ses buffs.</li>
+      </ul>
+
+      <h4>Phase 3 — Ensemble</h4>
+      <ul>
+        <li>Garder les HP proches, finir <strong>quasi simultanément</strong>.</li>
+        <li>Si l’un meurt, l’autre tente de ressusciter (cast ~10s) → interrompre/finir vite.</li>
       </ul>
     </div>
-  </div>
 
-  <h3>Stratégie (pas à pas)</h3>
+    <!-- LA MÉGÈRE -->
+    <div class="opera-panel" data-opera-panel="crone">
+      <h3>La Mégère</h3>
 
-  <h4>1) Début du combat</h4>
-  <ul>
-    <li>Tout le monde se place et <strong>reste espacé</strong> (c’est 80% de la réussite).</li>
-    <li>Les soigneurs surveillent les cibles de <em>Flammes sacrées</em>.</li>
-  </ul>
+      <p>
+        Combat en <strong>1 phase</strong> avec une séquence de mini-boss, puis la Mégère.
+        Contrôles + placement font la diff.
+      </p>
 
-  <h4>2) Gestion de Repentir</h4>
-  <ul>
-    <li>Quand <em>Repentir</em> est imminent, l’objectif est de <strong>casser l’étourdissement</strong> rapidement.</li>
-    <li>Selon l’approche choisie par ton raid :
+      <h4>À prévoir</h4>
       <ul>
-        <li><strong>Approche “Terre sacrée”</strong> : certains joueurs entrent volontairement dans <em>Terre sacrée</em> pour prendre un tick et casser <em>Repentir</em>
+        <li><strong>Feu</strong> sur l’Homme de paille : Mage / Démoniste.</li>
+        <li><strong>Fear</strong> sur Graou : Démoniste (Peur) / Chasseur (Apeurer la bête).</li>
+        <li>Un tank solide pour Tête de fer-blanc (cleave frontal).</li>
+      </ul>
 
-
-  <section class="card boss-section" id="opera">
-  <h2>Opéra</h2>
-
-  <p>
-    L’Opéra de Karazhan propose <strong>1 événement sur 3</strong>.
-    Choisis celui que tu as ce soir pour afficher la stratégie correspondante.
-  </p>
-
-  <div class="opera-picker" role="group" aria-label="Choix de l'événement Opéra">
-    <button class="opera-btn" type="button" data-opera="wolf" aria-pressed="true">
-      Grand Méchant Loup
-    </button>
-    <button class="opera-btn" type="button" data-opera="romeo" aria-pressed="false">
-      Romulo &amp; Julianne
-    </button>
-    <button class="opera-btn" type="button" data-opera="crone" aria-pressed="false">
-      La Mégère
-    </button>
-  </div>
-
-  <!-- ============ GRAND MÉCHANT LOUP ============ -->
-  <div class="opera-panel is-active" data-opera-panel="wolf">
-    <h3>Le Grand Méchant Loup</h3>
-
-    <p>
-      Combat en <strong>1 phase</strong>. Un joueur est ciblé par <em>Petit Chaperon Rouge</em> et doit
-      <strong>kite</strong> le boss, pendant que le tank continue de monter sa menace.
-    </p>
-
-    <h4>À prévoir</h4>
-    <ul>
-      <li><strong>Anti-fear</strong> : Totem de séisme (Chaman) / Gardien de la peur (Prêtre).</li>
-      <li>Un plan de kite simple (tour de salle) + joueurs espacés pour éviter le chaos.</li>
-    </ul>
-
-    <h4>Capacités</h4>
-    <ul>
-      <li><strong>Petit Chaperon Rouge</strong> : la cible ne peut plus lancer de sorts/compétences, armure à 0, vitesse augmentée → <strong>kite</strong>.</li>
-      <li><strong>Hurlement terrifiant</strong> : fear AoE ~3s autour du boss → utilisez vos anti-fear.</li>
-      <li><strong>Grand balayage</strong> : stun frontal ~4s (peut toucher la cible du chaperon).</li>
-    </ul>
-
-    <h4>Stratégie</h4>
-    <ul>
-      <li><strong>Placement</strong> : gardez le boss plutôt <strong>au centre</strong> pour laisser de la place au kite.</li>
-      <li>Quand tu es <strong>Chaperon</strong> : pars immédiatement en kite (si tu te fais toucher, ça peut être létal sans immunité).</li>
-      <li>Le <strong>tank</strong> doit continuer à jouer la menace pendant le kite pour éviter que les distances reprennent l’aggro.</li>
-      <li>Le boss continue de fear/stun pendant le kite : soyez prêts à réagir (anti-fear / dispels si besoin).</li>
-    </ul>
-
-    <p class="hint">
-      Immunités utiles contre une situation critique : Bouclier divin / Bénédiction de protection / Bloc de glace.
-    </p>
-  </div>
-
-  <!-- ============ ROMULO & JULIANNE ============ -->
-  <div class="opera-panel" data-opera-panel="romeo">
-    <h3>Romulo &amp; Julianne</h3>
-
-    <p>
-      Combat en <strong>3 phases</strong> : Julianne seule, puis Romulo seul, puis les deux ensemble.
-      Objectif : <strong>interrompre</strong>, <strong>purge</strong> et gérer les <strong>poisons</strong>.
-    </p>
-
-    <h4>À prévoir</h4>
-    <ul>
-      <li><strong>Purge</strong> : Prêtre / Chaman.</li>
-      <li><strong>Interrupts</strong> solides (surtout sur Julianne).</li>
-      <li><strong>Dispel poison</strong> pour le tank sur Romulo.</li>
-      <li>Option très pratique : <strong>Guerrier protection</strong> sur Romulo (désarmement + contrôle du rythme).</li>
-    </ul>
-
-    <h4>Phase 1 — Julianne</h4>
-    <ul>
-      <li>Elle lance des sorts de <strong>soin</strong>, dégâts et contrôle → <strong>interrupt</strong> dès que possible.</li>
-      <li>Elle se <strong>buff</strong> → <strong>purge</strong> rapidement.</li>
-      <li>Sorts clés à gérer :
-        <ul>
-          <li><strong>Amour éternel</strong> : gros heal (à kick).</li>
-          <li><strong>Dévotion</strong> : buff (à purge).</li>
-          <li><strong>Attraction puissante</strong> : stun (kickable).</li>
-          <li><strong>Passion aveuglante</strong> : dégâts + DoT (kickable).</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h4>Phase 2 — Romulo</h4>
-    <ul>
-      <li>Tout le raid se place <strong>derrière</strong> (cleave frontal).</li>
-      <li>Il applique un poison cumulable sur le tank → <strong>dispel poison</strong>.</li>
-      <li>Il se buff → <strong>purge</strong> rapidement.</li>
-      <li>Capacités clés :
-        <ul>
-          <li><strong>Coup empoisonné</strong> : -stats, cumulable → dispel.</li>
-          <li><strong>Hardiesse</strong> : buff dégâts/vitesse → purge.</li>
-          <li><strong>Fente arrière</strong> : frappe derrière + repousse.</li>
-          <li><strong>Sillon mortel</strong> : cleave frontal puissant.</li>
-        </ul>
-      </li>
-    </ul>
-
-    <h4>Phase 3 — Ensemble</h4>
-    <ul>
-      <li>Ils reviennent avec les mêmes capacités que leurs phases respectives.</li>
-      <li>Ils doivent être tués <strong>quasi simultanément</strong> : si l’un meurt, l’autre tente de le ressusciter (cast ~10s).</li>
-      <li>Strat simple : <strong>HP égaux</strong> → call d’execute sur les deux.</li>
-    </ul>
-  </div>
-
-  <!-- ============ LA MÉGÈRE ============ -->
-  <div class="opera-panel" data-opera-panel="crone">
-    <h3>La Mégère</h3>
-
-    <p>
-      Combat en <strong>1 phase</strong> avec une séquence de “mini-boss” (type Oz) puis la Mégère.
-      La difficulté vient du contrôle des cibles et du placement.
-    </p>
-
-    <h4>À prévoir</h4>
-    <ul>
-      <li><strong>Feu</strong> sur l’Homme de paille : Mage ou Démoniste (un chasseur peut aider selon votre compo).</li>
-      <li><strong>Fear</strong> sur Graou : Démoniste (<em>Peur</em>) ou Chasseur (<em>Apeurer la bête</em>).</li>
-      <li>Un tank solide pour Tête de fer-blanc (cleave frontal).</li>
-    </ul>
-
-    <h4>Ordre de priorité</h4>
-    <ol class="prio-list">
-      <li><strong>Dorothée</strong> (non tankable, pas de table d’aggro, traits d’eau) → à tomber vite</li>
-      <li><strong>Tito</strong> (après Dorothée)</li>
-      <li><strong>Graou</strong> (à fear pendant le kill)</li>
-      <li><strong>Homme de paille</strong> (désorientable avec sorts de feu)</li>
-      <li><strong>Tête de fer-blanc</strong> (tank dos au raid, puis kite quand la rouille stack)</li>
-      <li><strong>La Mégère</strong> (cyclones + chaînes d’éclairs)</li>
-    </ol>
-
-    <h4>Mécaniques importantes</h4>
-    <ul>
-      <li><strong>Homme de paille</strong> : privilégier les dégâts de feu pour provoquer la désorientation.</li>
-      <li><strong>Tête de fer-blanc</strong> : cleave frontal → tank dos au raid. Après ~30s la rouille le ralentit : possible kite.</li>
-      <li><strong>La Mégère</strong> : cyclones + dégâts de chute, et <strong>dépack</strong> pour limiter les rebonds de <em>Chaînes d’éclairs</em>.</li>
-    </ul>
-  </div>
-</section>
-
-
-  <section class="card boss-section" id="curator">
-    <h2>Le Conservateur</h2>
-    <p class="hint">À remplir.</p>
+      <h4>Ordre de priorité</h4>
+      <ol class="prio-list">
+        <li><strong>Dorothée</strong> (non tankable) → à tomber vite.</li>
+        <li><strong>Tito</strong> (après Dorothée).</li>
+        <li><strong>Graou</strong> (fear pendant le kill).</li>
+        <li><strong>Homme de paille</strong> (sorts de feu → désorientation).</li>
+        <li><strong>Tête de fer-blanc</strong> (tank dos au raid, puis kite quand rouille stack).</li>
+        <li><strong>La Mégère</strong> (cyclones + dépack pour limiter chaînes d’éclairs).</li>
+      </ol>
+    </div>
   </section>
 
+  <!-- ====================== CURATOR ====================== -->
+  <section class="card boss-section" id="curator">
+    <h2>Le Conservateur</h2>
+
+    <p>
+      Le Conservateur est un combat en <strong>3 phases</strong> (boucle P1→P2→P1… puis P3).
+      C’est un <strong>gear check</strong> : pression sur les heals et nécessité de tuer les adds très vite.
+      Le boss et ses adds sont <strong>immunisés aux dégâts des Arcanes</strong> et aux <strong>drains de mana</strong>.
+    </p>
+
+    <div class="boss-two-cols">
+      <div>
+        <h3>À prévoir</h3>
+        <ul>
+          <li><strong>Max DPS distance</strong> pour tomber les <em>Embrasements astraux</em> rapidement.</li>
+          <li><strong>Offtank “Hateful Bolt”</strong> : rester <strong>2e menace</strong> sans dépasser le MT.</li>
+          <li><strong>Résistance Arcane</strong> sur l’offtank : ~<strong>200</strong> conseillé.</li>
+          <li><strong>Raid espacé</strong> dans la salle (réduit les dégâts des adds).</li>
+        </ul>
+
+        <h3>Rôles</h3>
+        <ul>
+          <li><strong>Main tank</strong> : boss au centre.</li>
+          <li><strong>Offtank</strong> : 2e menace pour encaisser <em>Trait haineux</em>.</li>
+          <li><strong>DPS</strong> : priorité absolue sur chaque add.</li>
+          <li><strong>Heals</strong> : attention aux pics si des joueurs se retrouvent groupés près d’un add.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Résumé rapide</h3>
+        <ol>
+          <li><strong>P1</strong> : adds toutes ~10s → kill immédiat + offtank 2e menace.</li>
+          <li><strong>P2</strong> : <em>Évocation</em> ~20s → boss prend <strong>+200% dégâts</strong>, burst.</li>
+          <li><strong>P3</strong> : à 15% <em>Enrager</em> → plus d’adds/évocation, plus de dégâts, hateful plus fréquent.</li>
+        </ol>
+
+        <p class="hint">
+          Si un nouvel add spawn alors que l’ancien est encore en vie, le fight devient vite ingérable pour les heals.
+        </p>
+      </div>
+    </div>
+
+    <h3>Phase 1 — Adds + Trait haineux</h3>
+    <ul>
+      <li>Tankez le boss <strong>au milieu</strong> de la salle.</li>
+      <li>Raid <strong>réparti</strong> et espacé.</li>
+      <li>Environ toutes les ~10 secondes : un <strong>Embrasement astral</strong> apparaît (à tuer avant le suivant).</li>
+      <li>L’add inflige des dégâts réguliers à <strong>3 cibles proches</strong> → rester espacé limite les dégâts.</li>
+      <li><strong>Trait haineux</strong> : cible la <strong>2e menace</strong> → l’offtank encaisse (idéalement avec RA).</li>
+    </ul>
+
+    <h3>Phase 2 — Évocation (burst)</h3>
+    <ul>
+      <li>À 0 mana (souvent après ~10 adds), le boss lance <strong>Évocation</strong> ~20 secondes.</li>
+      <li>Pendant l’évocation : boss prend <strong>+200% dégâts</strong> puis revient à 100% mana → retour P1.</li>
+      <li>Objectif : <strong>burst maximum</strong> pendant la fenêtre.</li>
+    </ul>
+
+    <h4>Tips</h4>
+    <ul>
+      <li><strong>Héro/Furie</strong> peut être très rentable ici si vous ne la gardez pas pour la fin.</li>
+      <li>Prêtres : <strong>Ombrefiel</strong> ici = gros regain de mana.</li>
+      <li>Démonistes : timer un gros DoT si possible pour qu’il tick pendant l’évocation.</li>
+    </ul>
+
+    <h3>Phase 3 — Enrager (15%)</h3>
+    <ul>
+      <li>À <strong>15%</strong> : <strong>Enrager</strong>, +20% dégâts physiques, hateful plus fréquent.</li>
+      <li>Il <strong>n’invoque plus</strong> d’adds et n’évoque plus : c’est un burn + survie tanks.</li>
+      <li>Claquez les <strong>CD défensifs tanks</strong> (Mur protecteur, Suppression de la douleur, etc.).</li>
+      <li>Si Héro/Furie est dispo : bon moment aussi.</li>
+    </ul>
+  </section>
+
+  <!-- Placeholders restants -->
   <section class="card boss-section" id="illhoof">
     <h2>Terestian Malsabot</h2>
     <p class="hint">À remplir.</p>
@@ -468,13 +508,15 @@
   </section>
 
   <div class="footer">
-    Karazhan — page détail • tuiles dans l’ordre de progression • stockage 100% local si tu ajoutes un tracker plus tard.
+    Karazhan — page détail • tuiles dans l’ordre de progression.
   </div>
 
 </main>
 
+<!-- JS -->
 <script src="../../assets/js/nav.js"></script>
-        <script>
+
+<script>
 document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY = 'kara_opera_choice';
 
@@ -484,32 +526,25 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!buttons.length || !panels.length) return;
 
   function setOpera(choice) {
-    // boutons
     buttons.forEach(btn => {
       const isActive = btn.dataset.opera === choice;
       btn.classList.toggle('is-active', isActive);
       btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
 
-    // panels
     panels.forEach(p => {
       const isActive = p.dataset.operaPanel === choice;
       p.classList.toggle('is-active', isActive);
     });
 
-    // save
     try { localStorage.setItem(STORAGE_KEY, choice); } catch {}
   }
 
-  // click
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => setOpera(btn.dataset.opera));
-  });
-
-  // load stored choice (default wolf)
   let saved = 'wolf';
   try { saved = localStorage.getItem(STORAGE_KEY) || 'wolf'; } catch {}
   if (!buttons.some(b => b.dataset.opera === saved)) saved = 'wolf';
+
+  buttons.forEach(btn => btn.addEventListener('click', () => setOpera(btn.dataset.opera)));
 
   setOpera(saved);
 });
