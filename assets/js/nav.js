@@ -4,6 +4,7 @@
   const NAV_ITEMS = [
     { label: "Accueil", href: "../index.html", key: "index" },
     { label: "Joaillerie", href: "./joaillerie.html", key: "joaillerie" },
+    { label: "Raids", href: "./raid.html", key: "raid" },          // ✅ AJOUT
     { label: "Décompte", href: "./decompte.html", key: "decompte" },
   ];
 
@@ -17,7 +18,10 @@
   const items = NAV_ITEMS.map(it => {
     if (isInPagesFolder) return it; // déjà bon
     // On est à la racine (index.html), donc on doit pointer vers ./pages/...
-    const href = (it.key === "index") ? "./index.html" : "./pages/" + it.href.replace("./", "");
+    const href =
+      it.key === "index"
+        ? "./index.html"
+        : "./pages/" + it.href.replace("./", "");
     return { ...it, href };
   });
 
@@ -49,6 +53,7 @@
   const map = {
     "index.html": "index",
     "joaillerie.html": "joaillerie",
+    "raid.html": "raid",            // ✅ AJOUT
     "decompte.html": "decompte",
   };
   const activeKey = map[file];
