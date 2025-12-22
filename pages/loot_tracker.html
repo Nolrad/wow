@@ -451,7 +451,13 @@
           <td>${escapeHtml(r.instance || "")}</td>
           <td>${escapeHtml(r.boss || "")}</td>
           <td>${escapeHtml(r.winner || "")}</td>
-          <td class="lt-item">${escapeHtml(r.item || "")}</td>
+          <td class="lt-item">
+  <a href="https://www.wowhead.com/classic/fr/item=${r.itemID}"
+     target="_blank"
+     data-wowhead="item=${r.itemID}">
+    ${escapeHtml(r.item || "")}
+  </a>
+</td>
           <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
           <td>${escapeHtml(rollStr)}</td>
         `;
@@ -604,5 +610,14 @@
       });
     });
   </script>
+  
+  <script>
+  var whTooltips = {
+    colorLinks: true,
+    iconizeLinks: false,
+    renameLinks: false
+  };
+</script>
+<script src="https://wowhead.com/classic/widgets/power.js"></script>
 </body>
 </html>
