@@ -2,14 +2,12 @@
   "use strict";
 
   // ==========================
-  // Constants & helpers
+  // Constants & state
   // ==========================
-  const LT_INDEX = "LT_INDEX_V2";
-  const LT_PREFIX = "LT_CHAR_V2_";
+  const LT_PAYLOADS_KEY = "LT_PAYLOADS_V3"; // payloads normalisés (shared + imports)
+  let ALL_ROWS = []; // rows aplaties affichables
 
-  function $(id) {
-    return document.getElementById(id);
-  }
+  function $(id) { return document.getElementById(id); }
 
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({
@@ -22,56 +20,51 @@
   }
 
   function safeJsonParse(text) {
-    try {
-      return { ok: true, value: JSON.parse(text) };
-    } catch (e) {
-      return { ok: false, error: String(e) };
-    }
-  }
-
-  function charId(realm, player) {
-    return `${realm}|${player}`;
+    try { return { ok: true, value: JSON.parse(text) }; }
+    catch (e) { return { ok: false, error: String(e) }; }
   }
 
   // ==========================
-  // LocalStorage
+  // LocalStorage (payloads)
   // ==========================
-  function loadIndex() {
-    const raw = localStorage.getItem(LT_INDEX);
+  function loadPayloads() {
+    const raw = localStorage.getItem(LT_PAYLOADS_KEY);
     if (!raw) return [];
     try {
-      const arr = JSON.parse(raw);
-      return Array.isArray(arr) ? arr : [];
+      const v = JSON.parse(raw);
+      return Array.isArray(v) ? v : [];
     } catch {
       return [];
     }
   }
 
-  function saveIndex(ids) {
-    localStorage.setItem(LT_INDEX, JSON.stringify(ids));
+  function savePayloads(payloads) {
+    localStorage.setItem(LT_PAYLOADS_KEY, JSON.stringify(payloads));
   }
 
-  function loadChar(id) {
-    const raw = localStorage.getItem(LT_PREFIX + id);
-    if (!raw) return null;
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return null;
+  function payloadSig(payload) {
+    if (payload._schema === "events_v1") {
+      const last = (payload.events && payload.events.length)
+        ? payload.events[payload.events.length - 1].time
+        : "";
+      return `events|${payload.exported_at || ""}|${payload.events?.length || 0}|${last}`;
     }
+    return `runs|${payload.date || ""}|${payload.started_at || ""}|${payload.runs?.length || 0}`;
   }
 
-  function saveChar(obj) {
-    localStorage.setItem(LT_PREFIX + obj.id, JSON.stringify(obj));
-  }
+  function addPayload(rawObj, merge = true) {
+    const payload = normalizePayload(rawObj);
+    const payloads = loadPayloads();
 
-  function addCharToIndex(id) {
-    const ids = loadIndex();
-    if (!ids.includes(id)) {
-      ids.push(id);
-      ids.sort();
-      saveIndex(ids);
-    }
+    const sig = payloadSig(payload);
+    const exists = payloads.some(p => payloadSig(p) === sig);
+
+    if (!exists) payloads.push(payload);
+    // merge==false => on remplace tout par ce payload
+    const finalPayloads = merge ? payloads : [payload];
+
+    savePayloads(finalPayloads);
+    return finalPayloads;
   }
 
   // ==========================
@@ -106,7 +99,7 @@
       return {
         _schema: "events_v1",
         realm: raw.realm,
-        player: raw.recorder || "Recorder",
+        recorder: raw.recorder || "Recorder",
         exported_at: raw.exported_at || "",
         events: raw.events
       };
@@ -134,7 +127,7 @@
       3: "Rare",
       4: "Épique",
       5: "Légendaire"
-    })[Number(q)] || q;
+    })[Number(q)] || String(q);
   }
 
   function qualityClass(q) {
@@ -142,13 +135,15 @@
   }
 
   // ==========================
-  // Extract rows
+  // Extract rows (payload -> rows)
   // ==========================
   function extractRows(payload, respectMinQuality) {
     const rows = [];
 
+    // events_v1
     if (payload._schema === "events_v1") {
-      for (const ev of payload.events) {
+      for (const ev of (payload.events || [])) {
+        const q = Number(ev.quality ?? 0);
         rows.push({
           date: ev.time_human || "",
           instance: ev.instance || "",
@@ -156,145 +151,143 @@
           winner: ev.winner || "",
           item: ev.item || "",
           itemID: ev.itemID || null,
-          quality: Number(ev.quality || 0),
-          quality_name: ev.quality_name || qualityLabel(ev.quality),
-          roll: ev.winning_roll
+          quality: q,
+          quality_name: ev.quality_name || qualityLabel(q),
+          roll: ev.winning_roll ?? null
         });
       }
       return rows;
     }
 
+    // runs_v1
     const minQ = Number(payload.min_quality || 0);
 
-    for (const run of payload.runs) {
-      const instance = run.instance_override || run.instance || "";
-      for (const boss of run.bosses || []) {
-        for (const loot of boss.loots || []) {
+    for (const run of (payload.runs || [])) {
+      const instance = (run.instance_override && run.instance_override.trim())
+        ? run.instance_override
+        : (run.instance || "");
+
+      for (const boss of (run.bosses || [])) {
+        for (const loot of (boss.loots || [])) {
           const q = Number(loot.quality || 0);
           if (respectMinQuality && q < minQ) continue;
 
           rows.push({
-            date: loot.time_human || "",
+            date: loot.time_human || run.started_at_human || payload.date || "",
             instance,
             boss: boss.name || "",
-            winner: loot.player || payload.player,
+            winner: loot.player || payload.player || "",
             item: loot.item || "",
             itemID: loot.itemID || null,
             quality: q,
             quality_name: loot.quality_name || qualityLabel(q),
-            roll: loot.rand
+            roll: loot.rand ?? null
           });
         }
       }
     }
+
     return rows;
   }
 
   // ==========================
-  // Import payload
+  // Build ALL_ROWS + winner select
   // ==========================
-  function importPayload(raw, merge) {
-    const payload = normalizePayload(raw);
-    const id = charId(payload.realm, payload.player);
+  function rebuildAllRows() {
+    const payloads = loadPayloads();
+    const respectMin = $("chkFilterMinQuality")?.checked ?? false;
 
-    let record = loadChar(id);
-    if (!record || !merge) {
-      record = {
-        id,
-        realm: payload.realm,
-        player: payload.player,
-        history: [],
-        _seen: {}
-      };
+    let rows = [];
+    for (const p of payloads) {
+      rows = rows.concat(extractRows(p, respectMin));
     }
 
-    const sig =
-      payload._schema === "events_v1"
-        ? `events|${payload.exported_at}|${payload.events.length}`
-        : `runs|${payload.date}|${payload.started_at}`;
+    ALL_ROWS = rows;
+    renderWinnerSelect(ALL_ROWS);
+  }
 
-    if (!record._seen[sig]) {
-      record.history.push(payload);
-      record._seen[sig] = true;
+  function renderWinnerSelect(rows) {
+    const sel = $("winnerSelect");
+    if (!sel) return;
+
+    const current = sel.value || "";
+    sel.innerHTML = "";
+
+    const optAll = document.createElement("option");
+    optAll.value = "";
+    optAll.textContent = "Tous";
+    sel.appendChild(optAll);
+
+    const set = new Set();
+    for (const r of rows) {
+      if (r.winner) set.add(r.winner);
     }
 
-    saveChar(record);
-    addCharToIndex(id);
-    return record;
+    const winners = Array.from(set).sort((a, b) => a.localeCompare(b, "fr"));
+    for (const w of winners) {
+      const opt = document.createElement("option");
+      opt.value = w;
+      opt.textContent = w;
+      sel.appendChild(opt);
+    }
+
+    // restore selection if possible
+    if (current && winners.includes(current)) sel.value = current;
+    else sel.value = "";
   }
 
   // ==========================
-  // Rendering
+  // Filtering + render table
   // ==========================
-  function renderCharacterSelect() {
-    const sel = $("characterSelect");
-    if (!sel) return;
+  function applyFilters(rows) {
+    const instFilter = ($("instanceFilter")?.value || "").trim().toLowerCase();
+    const itemFilter = ($("itemFilter")?.value || "").trim().toLowerCase();
+    const winner = $("winnerSelect")?.value || "";
 
-    sel.innerHTML = "";
-    const ids = loadIndex();
-
-    if (!ids.length) {
-      sel.innerHTML = `<option>Aucun profil</option>`;
-      sel.disabled = true;
-      return;
-    }
-
-    sel.disabled = false;
-    for (const id of ids) {
-      const c = loadChar(id);
-      const opt = document.createElement("option");
-      opt.value = id;
-      opt.textContent = `${c.player} — ${c.realm}`;
-      sel.appendChild(opt);
-    }
+    return rows.filter(r => {
+      const okInst = !instFilter || (r.instance || "").toLowerCase().includes(instFilter);
+      const okItem = !itemFilter || (r.item || "").toLowerCase().includes(itemFilter);
+      const okWinner = !winner || r.winner === winner;
+      return okInst && okItem && okWinner;
+    });
   }
 
   function renderTable() {
     const tbody = $("lootTbody");
     if (!tbody) return;
-
     tbody.innerHTML = "";
-    const sel = $("characterSelect");
-    if (!sel || !sel.value) return;
 
-    const c = loadChar(sel.value);
-    if (!c) return;
-
-    let rows = [];
-    const respectMin = $("chkFilterMinQuality")?.checked;
-
-    for (const p of c.history) {
-      rows = rows.concat(extractRows(p, respectMin));
-    }
-
-    const instFilter = $("instanceFilter")?.value.toLowerCase() || "";
-    const itemFilter = $("itemFilter")?.value.toLowerCase() || "";
-
-    rows = rows.filter(r =>
-      (!instFilter || r.instance.toLowerCase().includes(instFilter)) &&
-      (!itemFilter || r.item.toLowerCase().includes(itemFilter))
-    );
-
+    let rows = applyFilters(ALL_ROWS);
     rows.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+    if (!rows.length) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="7" class="lt-empty">Aucun loot.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
 
     for (const r of rows) {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${escapeHtml(r.date)}</td>
-        <td>${escapeHtml(r.instance)}</td>
-        <td>${escapeHtml(r.boss)}</td>
-        <td>${escapeHtml(r.winner)}</td>
+        <td>${escapeHtml(r.date || "")}</td>
+        <td>${escapeHtml(r.instance || "")}</td>
+        <td>${escapeHtml(r.boss || "")}</td>
+        <td>${escapeHtml(r.winner || "")}</td>
         <td class="lt-item">
-          ${r.itemID
-            ? `<a href="https://www.wowhead.com/classic/fr/item=${r.itemID}"
-                 target="_blank"
-                 data-wowhead="item=${r.itemID}">
-                 ${escapeHtml(r.item)}
-               </a>`
-            : escapeHtml(r.item)}
+          ${
+            r.itemID
+              ? `<a href="https://www.wowhead.com/classic/fr/item=${r.itemID}"
+                   target="_blank"
+                   rel="noopener"
+                   data-wowhead="item=${r.itemID}">
+                   ${escapeHtml(r.item || "")}
+                 </a>`
+              : escapeHtml(r.item || "")
+          }
         </td>
-        <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name)}</td>
-        <td>${r.roll ?? "—"}</td>
+        <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
+        <td>${escapeHtml(r.roll ?? "—")}</td>
       `;
       tbody.appendChild(tr);
     }
@@ -306,21 +299,21 @@
   }
 
   // ==========================
-  // Shared JSON
+  // Shared JSON (repo)
   // ==========================
   async function loadSharedJson() {
     try {
       setSharedStatus("Chargement…", "info");
       const res = await fetch("../json/loot_thunderstrike.json", { cache: "no-store" });
-      if (!res.ok) throw new Error(res.status);
+      if (!res.ok) throw new Error(String(res.status));
+
       const json = await res.json();
+      addPayload(json, true);
 
-      const rec = importPayload(json, true);
       setSharedStatus("JSON partagé chargé", "ok");
-      setStatus(`Import partagé : ${rec.player}`, "ok");
+      setStatus("Dataset mis à jour (partagé).", "ok");
 
-      renderCharacterSelect();
-      $("characterSelect").value = rec.id;
+      rebuildAllRows();
       renderTable();
     } catch (e) {
       setSharedStatus("Erreur chargement JSON partagé", "warn");
@@ -328,19 +321,85 @@
   }
 
   // ==========================
+  // Import buttons (file + paste)
+  // ==========================
+  async function importFromFile() {
+    const file = $("fileInput")?.files?.[0];
+    if (!file) { setStatus("Sélectionne un fichier JSON.", "warn"); return; }
+
+    const text = await file.text();
+    const parsed = safeJsonParse(text);
+    if (!parsed.ok) { setStatus("JSON invalide: " + parsed.error, "error"); return; }
+
+    try {
+      const merge = $("chkMerge")?.checked ?? true;
+      addPayload(parsed.value, merge);
+      setStatus("Import OK (dataset mis à jour).", "ok");
+      rebuildAllRows();
+      renderTable();
+    } catch (e) {
+      setStatus("Erreur import: " + String(e), "error");
+    }
+  }
+
+  function importFromPaste() {
+    const text = ($("pasteArea")?.value || "").trim();
+    if (!text) { setStatus("Colle un JSON dans la zone texte.", "warn"); return; }
+
+    const parsed = safeJsonParse(text);
+    if (!parsed.ok) { setStatus("JSON invalide: " + parsed.error, "error"); return; }
+
+    try {
+      const merge = $("chkMerge")?.checked ?? true;
+      addPayload(parsed.value, merge);
+      setStatus("Import OK (dataset mis à jour).", "ok");
+      rebuildAllRows();
+      renderTable();
+    } catch (e) {
+      setStatus("Erreur import: " + String(e), "error");
+    }
+  }
+
+  // ==========================
   // Init
   // ==========================
   document.addEventListener("DOMContentLoaded", () => {
-    renderCharacterSelect();
+    // Rebuild from local cache
+    rebuildAllRows();
     renderTable();
+
+    // Auto-load shared JSON
     loadSharedJson();
 
     $("btnReloadShared")?.addEventListener("click", loadSharedJson);
+
+    $("btnImportFile")?.addEventListener("click", importFromFile);
+    $("btnImportPaste")?.addEventListener("click", importFromPaste);
+
+    $("btnClearPaste")?.addEventListener("click", () => {
+      if ($("pasteArea")) $("pasteArea").value = "";
+      setStatus("Zone texte vidée.", "info");
+    });
+
     $("btnRefresh")?.addEventListener("click", renderTable);
-    $("characterSelect")?.addEventListener("change", renderTable);
+
+    $("winnerSelect")?.addEventListener("change", renderTable);
     $("instanceFilter")?.addEventListener("input", renderTable);
     $("itemFilter")?.addEventListener("input", renderTable);
-    $("chkFilterMinQuality")?.addEventListener("change", renderTable);
+    $("chkFilterMinQuality")?.addEventListener("change", () => {
+      rebuildAllRows();
+      renderTable();
+    });
+
+    // Boutons de purge locale (si présents)
+    $("btnDeleteAll")?.addEventListener("click", () => {
+      if (!confirm("Tout supprimer localement ?")) return;
+      localStorage.removeItem(LT_PAYLOADS_KEY);
+      ALL_ROWS = [];
+      rebuildAllRows();
+      renderTable();
+      setStatus("Tout supprimé localement.", "info");
+    });
   });
 
 })();
