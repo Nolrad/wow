@@ -1,165 +1,23 @@
-.lt-grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-@media (max-width: 900px){
-  .lt-grid{ grid-template-columns: 1fr; }
-}
-
-.lt-block{ display:flex; flex-direction:column; gap:10px; }
-
-.lt-row{
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-
-.lt-row-wrap{ flex-wrap:wrap; }
-
-.lt-file{ width:100%; }
-
-.lt-textarea{
-  width:100%;
-  min-height:180px;
-  resize:vertical;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 12px;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.18);
-  color: inherit;
-}
-
-.lt-select, .lt-input{
-  min-width: 220px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.18);
-  color: inherit;
-}
-
-.lt-label{ display:flex; flex-direction:column; gap:6px; }
-
-.lt-check{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  user-select:none;
-}
-
-.lt-status{
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.18);
-}
-
-.lt-status.is-ok{ border-color: rgba(30,255,0,.35); }
-.lt-status.is-warn{ border-color: rgba(255,200,0,.35); }
-.lt-status.is-error{ border-color: rgba(255,0,0,.35); }
-
-.lt-tableWrap{
-  overflow:auto;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.12);
-}
-
-.lt-table{
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 880px;
-}
-
-.lt-table th, .lt-table td{
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  vertical-align: top;
-}
-
-.lt-table th{
-  position: sticky;
-  top: 0;
-  background: rgba(0,0,0,.35);
-  backdrop-filter: blur(6px);
-  text-align: left;
-}
-
-.lt-item{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 12px;
-}
-
-.lt-empty{
-  text-align:center;
-  opacity: .8;
-}
-
-.lt-summary{ margin: 12px 0 14px; }
-
-.lt-summaryGrid{
-  display:grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-}
-
-@media (max-width: 900px){
-  .lt-summaryGrid{ grid-template-columns: repeat(2, 1fr); }
-}
-
-.lt-sumCard{
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.18);
-}
-
-.lt-sumNum{
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.lt-sumLabel{
-  font-size: 12px;
-  opacity: .8;
-}
-
-/* Quality coloring */
-.lt-quality.q0, .lt-sumCard.q0{ color: #9d9d9d; }
-.lt-quality.q1, .lt-sumCard.q1{ color: #ffffff; }
-.lt-quality.q2, .lt-sumCard.q2{ color: #1eff00; }
-.lt-quality.q3, .lt-sumCard.q3{ color: #0070dd; }
-.lt-quality.q4, .lt-sumCard.q4{ color: #a335ee; }
-.lt-quality.q5, .lt-sumCard.q5{ color: #ff8000; }
-
 /* ==========================
-   Select (profil / filtres)
+   Select (filtres loot tracker)
    ========================== */
 
-.lt-select,
-select {
+.lt-select{
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 
-  background-color: #111827;        /* fond sombre */
-  color: #e5e7eb;                   /* texte clair */
+  background-color: #111827;
+  color: #e5e7eb;
   border: 1px solid #374151;
-  border-radius: 8px;
+  border-radius: 10px;
 
   padding: 10px 36px 10px 12px;
   font-size: 0.95rem;
   line-height: 1.2;
 
   cursor: pointer;
-}
 
-/* Flèche custom */
-.lt-select {
   background-image:
     linear-gradient(45deg, transparent 50%, #9ca3af 50%),
     linear-gradient(135deg, #9ca3af 50%, transparent 50%);
@@ -170,56 +28,46 @@ select {
   background-repeat: no-repeat;
 }
 
-/* Hover */
-.lt-select:hover {
-  border-color: #60a5fa;
-}
+.lt-select:hover { border-color: #60a5fa; }
 
-/* Focus */
-.lt-select:focus {
+.lt-select:focus{
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
 }
 
-/* Options (menu déroulant) */
-.lt-select option {
+.lt-select option{
   background-color: #17233d;
   color: #e5e7eb;
 }
 
-/* Désactivé */
-.lt-select:disabled {
+.lt-select:disabled{
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 /* ==========================
-   Select Qualité (WoW colors)
-========================== */
-
-.lt-quality-select option[value="1"] {
-  color: #ffffff; /* Commun */
-}
-
-.lt-quality-select option[value="2"] {
-  color: #1eff00; /* Inhabituel (vert) */
-}
-
-.lt-quality-select option[value="3"] {
-  color: #0070dd; /* Rare (bleu) */
-}
-
-.lt-quality-select option[value="4"] {
-  color: #a335ee; /* Épique (violet) */
-}
-
-.lt-quality-select option[value="5"] {
-  color: #ff8000; /* Légendaire (orange) */
-}
-
+   Couleurs WoW (réutilisables)
+   ========================== */
+.q0 { color: #9d9d9d; }
 .q1 { color: #ffffff; }
 .q2 { color: #1eff00; }
 .q3 { color: #0070dd; }
 .q4 { color: #a335ee; }
 .q5 { color: #ff8000; }
+
+/* Appliquer aux cellules + cards */
+.lt-quality.q0, .lt-sumCard.q0{ color: #9d9d9d; }
+.lt-quality.q1, .lt-sumCard.q1{ color: #ffffff; }
+.lt-quality.q2, .lt-sumCard.q2{ color: #1eff00; }
+.lt-quality.q3, .lt-sumCard.q3{ color: #0070dd; }
+.lt-quality.q4, .lt-sumCard.q4{ color: #a335ee; }
+.lt-quality.q5, .lt-sumCard.q5{ color: #ff8000; }
+
+/* Colorer les options du select qualité */
+#qualitySelect option[value="0"] { color: #9d9d9d; }
+#qualitySelect option[value="1"] { color: #ffffff; }
+#qualitySelect option[value="2"] { color: #1eff00; }
+#qualitySelect option[value="3"] { color: #0070dd; }
+#qualitySelect option[value="4"] { color: #a335ee; }
+#qualitySelect option[value="5"] { color: #ff8000; }
