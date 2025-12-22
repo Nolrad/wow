@@ -148,3 +148,21 @@ body.index-page .bubble-label{
     height: 150px;
   }
 }
+/* ✅ Alignement parfait des 3 cartes (même hauteur) */
+body.index-page .grid{
+  align-items: stretch;
+}
+
+body.index-page .grid > .card{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CTA collé en bas, mêmes niveaux */
+body.index-page .grid > .card > .btn,
+body.index-page .grid > .card > a.btn,
+body.index-page .grid > .card > span.btn-disabled,
+body.index-page .grid > .card > :last-child{
+  margin-top: auto;
+}
