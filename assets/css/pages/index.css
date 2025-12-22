@@ -11,14 +11,13 @@ body.index-page .card{
   text-align: left;
 }
 
-/* ===== Cartes homepage : mêmes hauteurs (GARANTI) ===== */
+/* ===== Cartes homepage : mêmes hauteurs ===== */
 
 body.index-page .grid{
   display: grid;
   gap: 18px;
-
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: stretch; /* clé : les items prennent la hauteur de la ligne */
+  align-items: stretch; /* clé : items étirés sur la hauteur de la rangée */
 }
 
 @media (max-width: 920px){
@@ -26,27 +25,25 @@ body.index-page .grid{
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 560px){
   body.index-page .grid{
     grid-template-columns: 1fr;
   }
 }
 
-/* IMPORTANT :
-   - height:100% marche si la ligne est étirée (align-items:stretch)
-   - min-height garantit l’égalité même si un style externe casse l’étirement
-*/
+/* La carte remplit sa cellule et devient une colonne */
 body.index-page .grid > .card{
-  height: 100% !important;
-  min-height: 240px;               /* ajuste si tu veux plus/moins haut */
+  height: 100%;
+  min-height: 240px;      /* ajuste si tu veux plus/moins haut */
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* CTA toujours collé en bas */
-body.index-page .grid > .card > a.btn,
+/* CTA toujours en bas (lien OU span) */
 body.index-page .grid > .card > a.btn-primary,
+body.index-page .grid > .card > a.btn,
 body.index-page .grid > .card > span.btn-disabled,
 body.index-page .grid > .card > .btn,
 body.index-page .grid > .card > :last-child{
@@ -55,8 +52,7 @@ body.index-page .grid > .card > :last-child{
 }
 
 /* ===========================
-   OPTIONNEL : BULLLES (non utilisées sur ton HTML actuel)
-   => je les laisse mais elles ne s'appliquent pas tant que tu n'as pas .bubbles/.bubble
+   OPTIONNEL : BULLes (non utilisées sur ton HTML actuel)
    =========================== */
 
 body.index-page .bubbles{
@@ -147,22 +143,4 @@ body.index-page .bubble-label{
     width: 150px;
     height: 150px;
   }
-}
-/* ✅ Alignement parfait des 3 cartes (même hauteur) */
-body.index-page .grid{
-  align-items: stretch;
-}
-
-body.index-page .grid > .card{
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* CTA collé en bas, mêmes niveaux */
-body.index-page .grid > .card > .btn,
-body.index-page .grid > .card > a.btn,
-body.index-page .grid > .card > span.btn-disabled,
-body.index-page .grid > .card > :last-child{
-  margin-top: auto;
 }
