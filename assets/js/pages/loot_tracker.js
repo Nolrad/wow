@@ -30,7 +30,6 @@
   // Wowhead tooltips helper
   // ==========================
   function refreshWowheadTooltips(retries = 8) {
-    // power.js peut charger après -> on retente quelques fois
     if (window.$WowheadPower && typeof window.$WowheadPower.refreshLinks === "function") {
       window.$WowheadPower.refreshLinks();
       return;
@@ -320,15 +319,17 @@
       const rollStr = (r.roll === null || r.roll === undefined) ? "—" : String(r.roll);
 
       const itemId = Number(r.itemID || 0);
+      const qClass = qualityClass(r.quality); // ✅ couleur selon qualité
+
       const itemHtml = itemId
-        ? `<a class="lt-itemLink"
+        ? `<a class="lt-itemLink ${qClass}"
               href="https://www.wowhead.com/classic/fr/item=${itemId}"
               target="_blank"
               rel="noopener"
               data-wowhead="item=${itemId}">
               ${escapeHtml(r.item || "")}
            </a>`
-        : `<span class="lt-itemLink">${escapeHtml(r.item || "")}</span>`;
+        : `<span class="lt-itemLink ${qClass}">${escapeHtml(r.item || "")}</span>`;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -337,7 +338,7 @@
         <td>${escapeHtml(r.boss || "")}</td>
         <td>${escapeHtml(r.winner || "")}</td>
         <td class="lt-item">${itemHtml}</td>
-        <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
+        <td class="lt-quality ${qClass}">${escapeHtml(r.quality_name || "")}</td>
         <td>${escapeHtml(rollStr)}</td>
       `;
       tbody.appendChild(tr);
