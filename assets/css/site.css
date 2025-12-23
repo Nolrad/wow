@@ -9,3 +9,18 @@
 @import url("./pages/decompte.css");
 
 @import url("./pages/notfound.css");
+
+
+/* Navbar toujours visible */
+.navbar{
+  position: sticky;      /* reste en haut pendant le scroll */
+  top: 0;
+  z-index: 9999;         /* passe devant le contenu */
+}
+
+/* si ton header/table passe devant à cause de backdrop-filter */
+.page-header,
+.lt-tableWrap,
+.lt-table th{
+  z-index: 0;
+}
