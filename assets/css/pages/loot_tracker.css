@@ -38,7 +38,7 @@
 
 .lt-select option{
   background-color: #17233d;
-  color: #e5e7eb;
+  color: #e5e7eb; /* par défaut */
 }
 
 .lt-select:disabled{
@@ -47,35 +47,50 @@
 }
 
 /* ==========================
-   Couleurs WoW (réutilisables)
+   Couleurs WoW (source unique)
    ========================== */
-.q0 { color: #9d9d9d; }
-.q1 { color: #ffffff; }
-.q2 { color: #1eff00; }
-.q3 { color: #0070dd; }
-.q4 { color: #a335ee; }
-.q5 { color: #ff8000; }
+
+/* Variables (facultatif mais propre) */
+:root{
+  --q0:#9d9d9d;
+  --q1:#ffffff;
+  --q2:#1eff00;
+  --q3:#0070dd;
+  --q4:#a335ee;
+  --q5:#ff8000;
+}
+
+/* Classes génériques */
+.q0{ color: var(--q0); }
+.q1{ color: var(--q1); }
+.q2{ color: var(--q2); }
+.q3{ color: var(--q3); }
+.q4{ color: var(--q4); }
+.q5{ color: var(--q5); }
 
 /* Appliquer aux cellules + cards */
-.lt-quality.q0, .lt-sumCard.q0{ color: #9d9d9d; }
-.lt-quality.q1, .lt-sumCard.q1{ color: #ffffff; }
-.lt-quality.q2, .lt-sumCard.q2{ color: #1eff00; }
-.lt-quality.q3, .lt-sumCard.q3{ color: #0070dd; }
-.lt-quality.q4, .lt-sumCard.q4{ color: #a335ee; }
-.lt-quality.q5, .lt-sumCard.q5{ color: #ff8000; }
+.lt-quality.q0, .lt-sumCard.q0{ color: var(--q0); }
+.lt-quality.q1, .lt-sumCard.q1{ color: var(--q1); }
+.lt-quality.q2, .lt-sumCard.q2{ color: var(--q2); }
+.lt-quality.q3, .lt-sumCard.q3{ color: var(--q3); }
+.lt-quality.q4, .lt-sumCard.q4{ color: var(--q4); }
+.lt-quality.q5, .lt-sumCard.q5{ color: var(--q5); }
 
-/* Colorer les options du select qualité */
-#qualitySelect option[value="0"] { color: #9d9d9d; }
-#qualitySelect option[value="1"] { color: #ffffff; }
-#qualitySelect option[value="2"] { color: #1eff00; }
-#qualitySelect option[value="3"] { color: #0070dd; }
-#qualitySelect option[value="4"] { color: #a335ee; }
-#qualitySelect option[value="5"] { color: #ff8000; }
+/* ==========================
+   Select qualité : options colorées
+   (⚠ selon navigateur, les couleurs d'option peuvent être ignorées)
+   ========================== */
 
+#qualitySelect option[value="0"]{ color: var(--q0); }
+#qualitySelect option[value="1"]{ color: var(--q1); }
+#qualitySelect option[value="2"]{ color: var(--q2); }
+#qualitySelect option[value="3"]{ color: var(--q3); }
+#qualitySelect option[value="4"]{ color: var(--q4); }
+#qualitySelect option[value="5"]{ color: var(--q5); }
 
 /* ==========================
    Résumé des loots
-========================== */
+   ========================== */
 
 .lt-summary {
   margin: 16px 0 20px;
@@ -88,9 +103,7 @@
 }
 
 @media (max-width: 900px) {
-  .lt-summaryGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .lt-summaryGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .lt-sumCard {
@@ -111,11 +124,3 @@
   opacity: .8;
   margin-top: 2px;
 }
-
-/* Couleurs WoW */
-.lt-sumCard.q1 { color: #ffffff; }
-.lt-sumCard.q2 { color: #1eff00; }
-.lt-sumCard.q3 { color: #0070dd; }
-.lt-sumCard.q4 { color: #a335ee; }
-.lt-sumCard.q5 { color: #ff8000; }
-
