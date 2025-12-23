@@ -71,3 +71,51 @@
 #qualitySelect option[value="3"] { color: #0070dd; }
 #qualitySelect option[value="4"] { color: #a335ee; }
 #qualitySelect option[value="5"] { color: #ff8000; }
+
+
+/* ==========================
+   Résumé des loots
+========================== */
+
+.lt-summary {
+  margin: 16px 0 20px;
+}
+
+.lt-summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .lt-summaryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.lt-sumCard {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.22);
+  text-align: center;
+}
+
+.lt-sumNum {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.lt-sumLabel {
+  font-size: 12px;
+  opacity: .8;
+  margin-top: 2px;
+}
+
+/* Couleurs WoW */
+.lt-sumCard.q1 { color: #ffffff; }
+.lt-sumCard.q2 { color: #1eff00; }
+.lt-sumCard.q3 { color: #0070dd; }
+.lt-sumCard.q4 { color: #a335ee; }
+.lt-sumCard.q5 { color: #ff8000; }
+
