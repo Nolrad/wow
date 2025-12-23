@@ -109,15 +109,21 @@
       throw new Error("JSON invalide (pas un objet)");
     }
 
-    // Nouveau schéma (events)
-    if (raw.schema === 1 && Array.isArray(raw.events)) {
+    // Nouveau schéma (events) — accepte schema 1, 2, ...
+    if (typeof raw.schema === "number" && Array.isArray(raw.events)) {
       if (!raw.realm) throw new Error("Champ 'realm' manquant");
+
+      // support camelCase + snake_case (+ variantes)
+      const minQ = (raw.minQuality ?? raw.min_quality ?? raw.minQ ?? raw.min_q ?? 0);
 
       return {
         _schema: "events_v1",
+        schema: raw.schema,
         realm: raw.realm,
         recorder: raw.recorder || "Recorder",
         exported_at: raw.exported_at || "",
+        session: raw.session || "",
+        min_quality: Number(minQ || 0),
         events: raw.events
       };
     }
@@ -130,7 +136,7 @@
       };
     }
 
-    throw new Error("Format JSON non reconnu (attendu: schema=1 events[] OU player/realm/runs[])");
+    throw new Error("Format JSON non reconnu (attendu: schema>=1 events[] OU player/realm/runs[])");
   }
 
   // ==========================
@@ -159,8 +165,12 @@
 
     // events_v1
     if (payload._schema === "events_v1") {
+      const minQ = Number(payload.min_quality || 0);
+
       for (const ev of (payload.events || [])) {
         const q = Number(ev.quality ?? 0);
+        if (respectMinQuality && q < minQ) continue;
+
         rows.push({
           date: ev.time_human || "",
           instance: ev.instance || "",
@@ -319,7 +329,7 @@
       const rollStr = (r.roll === null || r.roll === undefined) ? "—" : String(r.roll);
 
       const itemId = Number(r.itemID || 0);
-      const qClass = qualityClass(r.quality); // ✅ couleur selon qualité
+      const qClass = qualityClass(r.quality);
 
       const itemHtml = itemId
         ? `<a class="lt-itemLink ${qClass}"
@@ -344,7 +354,6 @@
       tbody.appendChild(tr);
     }
 
-    // Wowhead tooltips
     refreshWowheadTooltips();
   }
 
@@ -442,6 +451,7 @@
       renderTable();
     });
 
+    // Optionnel : seulement si tu ajoutes le bouton dans l'HTML
     $("btnDeleteAll")?.addEventListener("click", () => {
       if (!confirm("Tout supprimer localement ?")) return;
       localStorage.removeItem(LT_PAYLOADS_KEY);
