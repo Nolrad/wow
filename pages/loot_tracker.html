@@ -12,18 +12,22 @@
 </head>
 
 <body>
-  <!-- Navbar injectée par ../assets/js/nav.js -->
+  <!-- Navbar injectée -->
+  <script defer src="../assets/js/nav.js"></script>
 
   <header class="page-header">
     <h1>Loot Tracker</h1>
     <p>
-      Historique des loots de guilde — Vanilla & TBC<br />
+      Historique des loots de guilde — Vanilla &amp; TBC<br />
       Source partagée : <code>/json/loot_thunderstrike.json</code>
     </p>
   </header>
 
   <main class="container">
 
+    <!-- ===================== -->
+    <!-- JSON partagé -->
+    <!-- ===================== -->
     <section class="card">
       <h2>Données partagées (site)</h2>
       <div class="lt-row lt-row-wrap">
@@ -33,21 +37,32 @@
         <span id="sharedStatus" class="lt-status" aria-live="polite"></span>
       </div>
       <p class="hint">
-        Lecture seule depuis le dépôt GitHub.
-        Pour mettre à jour : remplacer le fichier JSON et commit.
+        Lecture seule depuis le dépôt GitHub.<br />
+        Pour mettre à jour : remplacer le fichier JSON puis commit.
       </p>
     </section>
 
+    <!-- ===================== -->
+    <!-- Import local -->
+    <!-- ===================== -->
     <section class="card">
       <h2>Import local (optionnel)</h2>
 
       <div class="lt-grid">
         <div class="lt-block">
           <h3>Importer un fichier JSON</h3>
-          <input id="fileInput" class="lt-file" type="file" accept=".json,application/json" />
+          <input
+            id="fileInput"
+            class="lt-file"
+            type="file"
+            accept=".json,application/json" />
           <div class="lt-row">
-            <button id="btnImportFile" class="btn btn-primary" type="button">Importer</button>
-            <button id="btnClearPaste" class="btn btn-secondary" type="button">Vider</button>
+            <button id="btnImportFile" class="btn btn-primary" type="button">
+              Importer
+            </button>
+            <button id="btnClearPaste" class="btn btn-secondary" type="button">
+              Vider
+            </button>
           </div>
         </div>
 
@@ -58,7 +73,9 @@
             class="lt-textarea"
             placeholder="Colle ici un export JSON de l’addon…"></textarea>
           <div class="lt-row">
-            <button id="btnImportPaste" class="btn btn-primary" type="button">Importer</button>
+            <button id="btnImportPaste" class="btn btn-primary" type="button">
+              Importer
+            </button>
           </div>
         </div>
       </div>
@@ -78,6 +95,9 @@
       <div id="importStatus" class="lt-status" aria-live="polite"></div>
     </section>
 
+    <!-- ===================== -->
+    <!-- Consultation -->
+    <!-- ===================== -->
     <section class="card">
       <h2>Historique des loots</h2>
 
@@ -111,7 +131,11 @@
 
         <label class="lt-label">
           Item
-          <input id="itemFilter" class="lt-input" type="text" placeholder="ex: Chapeau, Égide..." />
+          <input
+            id="itemFilter"
+            class="lt-input"
+            type="text"
+            placeholder="ex : Chapeau, Égide…" />
         </label>
 
         <button id="btnRefresh" class="btn btn-secondary" type="button">
@@ -121,7 +145,7 @@
 
       <div id="summary" class="lt-summary"></div>
 
-      <div class="lt-tableWrap" role="region">
+      <div class="lt-tableWrap" role="region" aria-label="Table des loots">
         <table class="lt-table">
           <thead>
             <tr>
@@ -145,14 +169,21 @@
 
   </main>
 
-  <!-- JS -->
-  <script src="../assets/js/nav.js"></script>
-  <script src="../assets/js/pages/loot_tracker.js"></script>
+  <!-- ===================== -->
+  <!-- JS page -->
+  <!-- ===================== -->
+  <script defer src="../assets/js/pages/loot_tracker.js"></script>
 
+  <!-- ===================== -->
   <!-- Wowhead tooltips -->
+  <!-- ===================== -->
   <script>
-    var whTooltips = { colorLinks: true, iconizeLinks: false, renameLinks: false };
+    var whTooltips = {
+      colorLinks: true,
+      iconizeLinks: false,
+      renameLinks: false
+    };
   </script>
-  <script src="https://wowhead.com/classic/widgets/power.js"></script>
+  <script defer src="https://wowhead.com/classic/widgets/power.js"></script>
 </body>
 </html>
