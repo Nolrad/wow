@@ -1,36 +1,31 @@
 // assets/js/nav.js
 (function () {
-  // Définis ici toutes tes pages
+  "use strict";
+
+  // ✅ Base GitHub Pages: /<repo>/
+  // Ex: https://nolrad.github.io/wow/  -> base = "/wow/"
+  // Si tu changes le nom du repo, adapte ce bout-là.
+  const REPO_NAME = "wow";
+  const BASE = `/${REPO_NAME}/`;
+
+  // ✅ Définis ici toutes tes pages (chemins depuis BASE)
   const NAV_ITEMS = [
-    { label: "Accueil", href: "../index.html", key: "index" },
-    { label: "Joaillerie", href: "./joaillerie.html", key: "joaillerie" },
-    { label: "Raids", href: "./raid.html", key: "raid" },
-    { label: "Décompte", href: "./decompte.html", key: "decompte" },
-    { label: "Loot Tracker", href: "./loot_tracker.html", key: "loot_tracker" }, // ✅ AJOUT
+    { label: "Accueil", href: "index.html", key: "index" },
+    { label: "Joaillerie", href: "pages/joaillerie.html", key: "joaillerie" },
+    { label: "Raids", href: "pages/raid.html", key: "raid" },
+    { label: "Décompte", href: "pages/decompte.html", key: "decompte" },
+    { label: "Loot Tracker", href: "pages/loot_tracker.html", key: "loot_tracker" },
   ];
 
-  // Détecte si on est dans /pages/ ou à la racine
-  const isInPagesFolder = location.pathname.includes("/pages/");
-  const brandHref = isInPagesFolder ? "../index.html" : "./index.html";
-
-  // Corrige les href selon la page courante
-  const items = NAV_ITEMS.map((it) => {
-    if (isInPagesFolder) return it; // déjà bon (pages -> ../index.html et ./xxx.html)
-    // On est à la racine (index.html), donc on doit pointer vers ./pages/...
-    const href =
-      it.key === "index" ? "./index.html" : "./pages/" + it.href.replace("./", "");
-    return { ...it, href };
-  });
-
-  // Construit la navbar
+  // Construit la navbar (liens ABSOLUS via BASE)
   const nav = document.createElement("nav");
   nav.className = "navbar";
   nav.innerHTML = `
     <div class="navbar-inner">
-      <a class="nav-brand" href="${brandHref}">Home</a>
+      <a class="nav-brand" href="${BASE}index.html">Home</a>
       <button class="nav-toggle" id="nav-toggle" aria-label="Ouvrir le menu">Menu</button>
       <div class="nav-links" id="nav-links">
-        ${items.map(i => `<a href="${i.href}" data-nav="${i.key}">${i.label}</a>`).join("")}
+        ${NAV_ITEMS.map(i => `<a href="${BASE}${i.href}" data-nav="${i.key}">${i.label}</a>`).join("")}
       </div>
     </div>
   `;
@@ -52,7 +47,7 @@
     "joaillerie.html": "joaillerie",
     "raid.html": "raid",
     "decompte.html": "decompte",
-    "loot_tracker.html": "loot_tracker", // ✅ AJOUT
+    "loot_tracker.html": "loot_tracker",
   };
   const activeKey = map[file];
 
