@@ -5,7 +5,9 @@
   // Constants & state
   // ==========================
   const LT_PAYLOADS_KEY = "LT_PAYLOADS_V3"; // payloads normalisés (shared + imports)
-  let ALL_ROWS = []; // rows aplaties affichables
+  const SHARED_URL = "../json/loot_thunderstrike.json";
+
+  let ALL_ROWS = [];
 
   function $(id) { return document.getElementById(id); }
 
@@ -42,29 +44,29 @@
     localStorage.setItem(LT_PAYLOADS_KEY, JSON.stringify(payloads));
   }
 
+  // Signature stable pour éviter doublons
   function payloadSig(payload) {
     if (payload._schema === "events_v1") {
-      const last = (payload.events && payload.events.length)
-        ? payload.events[payload.events.length - 1].time
-        : "";
-      return `events|${payload.exported_at || ""}|${payload.events?.length || 0}|${last}`;
+      const count = payload.events?.length || 0;
+      const lastTime = count ? (payload.events[count - 1]?.time || "") : "";
+      return `events|${payload.realm || ""}|${payload.exported_at || ""}|${count}|${lastTime}`;
     }
-    return `runs|${payload.date || ""}|${payload.started_at || ""}|${payload.runs?.length || 0}`;
+    const countRuns = payload.runs?.length || 0;
+    return `runs|${payload.realm || ""}|${payload.player || ""}|${payload.date || ""}|${payload.started_at || ""}|${countRuns}`;
   }
 
   function addPayload(rawObj, merge = true) {
     const payload = normalizePayload(rawObj);
-    const payloads = loadPayloads();
+    const existing = loadPayloads();
+
+    if (!merge) {
+      savePayloads([payload]);
+      return [payload];
+    }
 
     const sig = payloadSig(payload);
-    const exists = payloads.some(p => payloadSig(p) === sig);
-
-    let finalPayloads;
-    if (!merge) {
-      finalPayloads = [payload];
-    } else {
-      finalPayloads = exists ? payloads : payloads.concat([payload]);
-    }
+    const exists = existing.some(p => payloadSig(p) === sig);
+    const finalPayloads = exists ? existing : existing.concat([payload]);
 
     savePayloads(finalPayloads);
     return finalPayloads;
@@ -92,12 +94,12 @@
   // ==========================
   function normalizePayload(raw) {
     if (!raw || typeof raw !== "object") {
-      throw new Error("JSON invalide");
+      throw new Error("JSON invalide (pas un objet)");
     }
 
     // Nouveau schéma (events)
     if (raw.schema === 1 && Array.isArray(raw.events)) {
-      if (!raw.realm) throw new Error("Champ realm manquant");
+      if (!raw.realm) throw new Error("Champ 'realm' manquant");
 
       return {
         _schema: "events_v1",
@@ -116,7 +118,7 @@
       };
     }
 
-    throw new Error("Format JSON non reconnu");
+    throw new Error("Format JSON non reconnu (attendu: schema=1 events[] OU player/realm/runs[])");
   }
 
   // ==========================
@@ -153,10 +155,10 @@
           boss: ev.boss || "",
           winner: ev.winner || "",
           item: ev.item || "",
-          itemID: ev.itemID || null,
+          itemID: Number(ev.itemID || 0) || null,
           quality: q,
           quality_name: ev.quality_name || qualityLabel(q),
-          roll: ev.winning_roll ?? null
+          roll: (ev.winning_roll === null || ev.winning_roll === undefined) ? null : Number(ev.winning_roll)
         });
       }
       return rows;
@@ -181,10 +183,10 @@
             boss: boss.name || "",
             winner: loot.player || payload.player || "",
             item: loot.item || "",
-            itemID: loot.itemID || null,
+            itemID: Number(loot.itemID || 0) || null,
             quality: q,
             quality_name: loot.quality_name || qualityLabel(q),
-            roll: loot.rand ?? null
+            roll: (loot.rand === null || loot.rand === undefined) ? null : Number(loot.rand)
           });
         }
       }
@@ -201,15 +203,12 @@
     const respectMin = $("chkFilterMinQuality")?.checked ?? false;
 
     let rows = [];
-    for (const p of payloads) {
-      rows = rows.concat(extractRows(p, respectMin));
-    }
+    for (const p of payloads) rows = rows.concat(extractRows(p, respectMin));
 
     ALL_ROWS = rows;
 
     populateWinnerSelect(ALL_ROWS);
     populateInstanceSelect(ALL_ROWS);
-    // qualitySelect: pas besoin de populate (options statiques)
   }
 
   function populateWinnerSelect(rows) {
@@ -218,7 +217,6 @@
 
     const current = sel.value || "";
     sel.innerHTML = "";
-
     sel.appendChild(new Option("Tous", ""));
 
     const set = new Set();
@@ -236,7 +234,6 @@
 
     const current = sel.value || "";
     sel.innerHTML = "";
-
     sel.appendChild(new Option("Toutes les instances", ""));
 
     const set = new Set();
@@ -252,35 +249,20 @@
   // Filtering + render table
   // ==========================
   function applyFilters(rows) {
-    // 1) winner select
     const winner = $("winnerSelect")?.value || "";
-
-    // 2) instance select
     const instSel = $("instanceSelect")?.value || "";
 
-    // 3) optional old text instance filter (si tu le gardes)
-    const instText = ($("instanceFilter")?.value || "").trim().toLowerCase();
-
-    // 4) quality select (min quality)
     const qSelRaw = $("qualitySelect")?.value;
     const minQuality = (qSelRaw === "" || qSelRaw == null) ? null : Number(qSelRaw);
 
-    // 5) item search text
     const itemFilter = ($("itemFilter")?.value || "").trim().toLowerCase();
 
     return rows.filter(r => {
       const okWinner = !winner || r.winner === winner;
-
-      // priorité au select instance
-      const okInstSel = !instSel || r.instance === instSel;
-      const okInstText = !instText || (r.instance || "").toLowerCase().includes(instText);
-
+      const okInst = !instSel || r.instance === instSel;
       const okItem = !itemFilter || (r.item || "").toLowerCase().includes(itemFilter);
-
-      // qualité = minQuality (>=)
       const okQuality = (minQuality === null) || Number(r.quality || 0) >= minQuality;
-
-      return okWinner && okInstSel && okInstText && okItem && okQuality;
+      return okWinner && okInst && okItem && okQuality;
     });
   }
 
@@ -302,32 +284,32 @@
     for (const r of rows) {
       const rollStr = (r.roll === null || r.roll === undefined) ? "—" : String(r.roll);
 
+      const itemId = Number(r.itemID || 0);
+      const itemHtml = itemId
+        ? `<a class="lt-itemLink"
+              href="https://www.wowhead.com/classic/fr/item=${itemId}"
+              target="_blank"
+              rel="noopener"
+              data-wowhead="item=${itemId}">
+              ${escapeHtml(r.item || "")}
+           </a>`
+        : `<span class="lt-itemLink">${escapeHtml(r.item || "")}</span>`;
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${escapeHtml(r.date || "")}</td>
         <td>${escapeHtml(r.instance || "")}</td>
         <td>${escapeHtml(r.boss || "")}</td>
         <td>${escapeHtml(r.winner || "")}</td>
-        <td class="lt-item">
-          ${
-            r.itemID
-              ? `<a href="https://www.wowhead.com/classic/fr/item=${r.itemID}"
-                   target="_blank"
-                   rel="noopener"
-                   data-wowhead="item=${r.itemID}">
-                   ${escapeHtml(r.item || "")}
-                 </a>`
-              : escapeHtml(r.item || "")
-          }
-        </td>
+        <td class="lt-item">${itemHtml}</td>
         <td class="lt-quality ${qualityClass(r.quality)}">${escapeHtml(r.quality_name || "")}</td>
         <td>${escapeHtml(rollStr)}</td>
       `;
       tbody.appendChild(tr);
     }
 
-    // Refresh Wowhead tooltips
-    if (window.$WowheadPower?.refreshLinks) {
+    // Refresh Wowhead tooltips (important après injection DOM)
+    if (window.$WowheadPower && typeof window.$WowheadPower.refreshLinks === "function") {
       window.$WowheadPower.refreshLinks();
     }
   }
@@ -336,15 +318,11 @@
   // Shared JSON (repo)
   // ==========================
   async function loadSharedJson() {
-    const url = "../json/loot_thunderstrike.json";
-
     try {
       setSharedStatus("Chargement…", "info");
-      const res = await fetch(url, { cache: "no-store" });
 
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status} (${url})`);
-      }
+      const res = await fetch(SHARED_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status} (${SHARED_URL})`);
 
       const json = await res.json();
       addPayload(json, true);
@@ -355,7 +333,6 @@
       rebuildAllRows();
       renderTable();
     } catch (e) {
-      // message utile
       setSharedStatus(`Erreur chargement: ${e.message || e}`, "warn");
     }
   }
@@ -404,10 +381,11 @@
   // Init
   // ==========================
   document.addEventListener("DOMContentLoaded", () => {
+    // Cache local -> affiche tout de suite
     rebuildAllRows();
     renderTable();
 
-    // auto load shared
+    // Charge le JSON partagé
     loadSharedJson();
 
     $("btnReloadShared")?.addEventListener("click", loadSharedJson);
@@ -425,8 +403,6 @@
     $("winnerSelect")?.addEventListener("change", renderTable);
     $("instanceSelect")?.addEventListener("change", renderTable);
     $("qualitySelect")?.addEventListener("change", renderTable);
-
-    $("instanceFilter")?.addEventListener("input", renderTable); // si tu gardes ce champ
     $("itemFilter")?.addEventListener("input", renderTable);
 
     $("chkFilterMinQuality")?.addEventListener("change", () => {
