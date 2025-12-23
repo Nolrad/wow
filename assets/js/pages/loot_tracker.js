@@ -27,6 +27,19 @@
   }
 
   // ==========================
+  // Wowhead tooltips helper
+  // ==========================
+  function refreshWowheadTooltips(retries = 8) {
+    // power.js peut charger après -> on retente quelques fois
+    if (window.$WowheadPower && typeof window.$WowheadPower.refreshLinks === "function") {
+      window.$WowheadPower.refreshLinks();
+      return;
+    }
+    if (retries <= 0) return;
+    setTimeout(() => refreshWowheadTooltips(retries - 1), 400);
+  }
+
+  // ==========================
   // LocalStorage (payloads)
   // ==========================
   function loadPayloads() {
@@ -266,6 +279,26 @@
     });
   }
 
+  function renderSummary(rows) {
+    const el = $("summary");
+    if (!el) return;
+
+    const total = rows.length;
+    const counts = {0:0,1:0,2:0,3:0,4:0,5:0};
+    for (const r of rows) counts[r.quality] = (counts[r.quality] || 0) + 1;
+
+    el.innerHTML = `
+      <div class="lt-summaryGrid">
+        <div class="lt-sumCard"><div class="lt-sumNum">${total}</div><div class="lt-sumLabel">Loots</div></div>
+        <div class="lt-sumCard ${qualityClass(1)}"><div class="lt-sumNum">${counts[1]||0}</div><div class="lt-sumLabel">Commun</div></div>
+        <div class="lt-sumCard ${qualityClass(2)}"><div class="lt-sumNum">${counts[2]||0}</div><div class="lt-sumLabel">Inhabituel</div></div>
+        <div class="lt-sumCard ${qualityClass(3)}"><div class="lt-sumNum">${counts[3]||0}</div><div class="lt-sumLabel">Rare</div></div>
+        <div class="lt-sumCard ${qualityClass(4)}"><div class="lt-sumNum">${counts[4]||0}</div><div class="lt-sumLabel">Épique</div></div>
+        <div class="lt-sumCard ${qualityClass(5)}"><div class="lt-sumNum">${counts[5]||0}</div><div class="lt-sumLabel">Légendaire</div></div>
+      </div>
+    `;
+  }
+
   function renderTable() {
     const tbody = $("lootTbody");
     if (!tbody) return;
@@ -273,6 +306,8 @@
 
     let rows = applyFilters(ALL_ROWS);
     rows.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+    renderSummary(rows);
 
     if (!rows.length) {
       const tr = document.createElement("tr");
@@ -308,10 +343,8 @@
       tbody.appendChild(tr);
     }
 
-    // Refresh Wowhead tooltips (important après injection DOM)
-    if (window.$WowheadPower && typeof window.$WowheadPower.refreshLinks === "function") {
-      window.$WowheadPower.refreshLinks();
-    }
+    // Wowhead tooltips
+    refreshWowheadTooltips();
   }
 
   // ==========================
@@ -381,11 +414,9 @@
   // Init
   // ==========================
   document.addEventListener("DOMContentLoaded", () => {
-    // Cache local -> affiche tout de suite
     rebuildAllRows();
     renderTable();
 
-    // Charge le JSON partagé
     loadSharedJson();
 
     $("btnReloadShared")?.addEventListener("click", loadSharedJson);
