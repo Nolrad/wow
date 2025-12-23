@@ -11,16 +11,15 @@
 @import url("./pages/notfound.css");
 
 
-/* Navbar toujours visible */
 .navbar{
-  position: sticky;      /* reste en haut pendant le scroll */
+  position: fixed;
   top: 0;
-  z-index: 9999;         /* passe devant le contenu */
+  left: 0;
+  right: 0;
+  z-index: 9999;
 }
 
-/* si ton header/table passe devant à cause de backdrop-filter */
-.page-header,
-.lt-tableWrap,
-.lt-table th{
-  z-index: 0;
+/* Pour éviter que le contenu passe sous la navbar */
+body{
+  padding-top: 64px; /* ajuste à la hauteur réelle de ta navbar */
 }
