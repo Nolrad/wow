@@ -120,12 +120,12 @@
           Qualité
           <select id="qualitySelect" class="lt-select">
             <option value="">Toutes qualités</option>
-            <option value="0" class="q0">Médiocre</option>
-            <option value="1" class="q1">Commun</option>
-            <option value="2" class="q2">Inhabituel</option>
-            <option value="3" class="q3">Rare</option>
-            <option value="4" class="q4">Épique</option>
-            <option value="5" class="q5">Légendaire</option>
+            <option value="0">Médiocre</option>
+            <option value="1">Commun</option>
+            <option value="2">Inhabituel</option>
+            <option value="3">Rare</option>
+            <option value="4">Épique</option>
+            <option value="5">Légendaire</option>
           </select>
         </label>
 
@@ -170,12 +170,7 @@
   </main>
 
   <!-- ===================== -->
-  <!-- JS page -->
-  <!-- ===================== -->
-  <script defer src="../assets/js/pages/loot_tracker.js"></script>
-
-  <!-- ===================== -->
-  <!-- Wowhead tooltips -->
+  <!-- Wowhead tooltips (CDN Zamimg) -->
   <!-- ===================== -->
   <script>
     var whTooltips = {
@@ -184,6 +179,12 @@
       renameLinks: false
     };
   </script>
-  <script src="https://www.wowhead.com/classic/widgets/power.js"></script>
+  <script src="https://wow.zamimg.com/widgets/power.js"></script>
+
+  <!-- ===================== -->
+  <!-- JS page -->
+  <!-- (après power.js comme ça refreshLinks existe quand loot_tracker injecte la table) -->
+  <!-- ===================== -->
+  <script defer src="../assets/js/pages/loot_tracker.js"></script>
 </body>
 </html>
